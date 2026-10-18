@@ -48,3 +48,27 @@ changing the format.
   release age (`pnpm-workspace.yaml`). Never allowlist an install script
   without saying why.
 - Report honestly: what ran, what passed, what was skipped.
+
+## Licensing
+
+Automate the Cloud's licensing playbook governs this project (D-017):
+
+- Code is Apache 2.0, with `NOTICE` and SPDX headers.
+- Guides and study content are CC BY-NC 4.0 with the internal-training
+  permission.
+- Waymark brand assets are not licensed.
+- The OpenWaymark spec text, schema, and fixtures are still undecided (OI-032).
+
+**Before any licensing change,** fetch a fresh copy of the playbook and read
+all of it. If the fetch fails, stop and ask. Delete the clone afterward.
+
+```bash
+tmp=$(mktemp -d) \
+  && GIT_SSH_COMMAND="ssh -i ~/.ssh/gitlab.david_singer.atc.key -o IdentitiesOnly=yes" \
+     git clone --quiet --depth 1 --branch master \
+       git@gitlab.com:automatethecloud/nonprofit/atc-brand_kit.git "$tmp" \
+  && cat "$tmp/LICENSING-PLAYBOOK.md"
+```
+
+Write the legal entity as "Automate the Cloud Inc." and the brand as
+"Automate the Cloud". Never call educational material "open source".

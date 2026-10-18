@@ -42,5 +42,8 @@ not run unless they are allowlisted there.
 
 ## License
 
-Not yet chosen. Until it is, this repository is private and grants no rights.
-The Waymark name and logo are not covered by any future code license.
+Not yet applied. Until license files are added, this repository is private and
+grants no rights. Under Automate the Cloud Inc.'s licensing policy, the code
+(engine, CLI, browser validator) will be Apache 2.0. The license for the
+specification text, schema, and fixtures has not been decided. The Waymark name
+and logo are not licensed.
