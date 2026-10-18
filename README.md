@@ -94,8 +94,9 @@ _The format is a working draft. Field names may change until version 1.0._
 The [browser validator](packages/web-validator) checks and packs bundles on your
 own device, without installing anything and without uploading your files.
 
-[Waymark Study](https://github.com/AutomateTheCloud/waymark-study) is the first
-application that reads OpenWaymark bundles.
+Waymark Study, an offline study app by Automate the Cloud, is the first
+application that reads OpenWaymark bundles. It is in development and not yet
+public.
 
 ## Development
 
