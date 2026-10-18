@@ -41,6 +41,11 @@ export function isIgnorable(name: string): boolean {
   return !name.endsWith("/") && IGNORABLE_FILES.has(last);
 }
 
+/** Whether an entry is reserved for a future signature mechanism (OWM-SIG-001). */
+export function isReservedSignature(name: string): boolean {
+  return name.startsWith("signatures/");
+}
+
 /** Problems with an asset path under OWM-IMG-004 and OWM-IMG-006, or undefined. */
 export function assetPathProblem(path: string): string | undefined {
   if (!path.startsWith("assets/")) return 'does not begin with "assets/"';

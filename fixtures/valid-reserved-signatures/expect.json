@@ -1,0 +1,9 @@
+{
+  "description": "Signature data under signatures/ is ignored with a warning, and the bundle opens.",
+  "format_version": "0.1",
+  "mode": "validate",
+  "outcome": "accept",
+  "rules": [
+    "OWM-SIG-002"
+  ]
+}

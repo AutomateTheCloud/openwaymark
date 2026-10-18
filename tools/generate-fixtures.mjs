@@ -926,6 +926,17 @@ const FIXTURES = [
     `${VALID}sources:\n  - title: Docs\n    url: https://trusted.example.org@evil.example.net/\n`,
   ],
   [
+    "valid-reserved-signatures",
+    "Signature data under signatures/ is ignored with a warning, and the bundle opens.",
+    "accept",
+    ["OWM-SIG-002"],
+    zip([
+      ...imageBundle(),
+      { name: "signatures/", data: new Uint8Array(0) },
+      { name: "signatures/publisher.sig", data: utf8("future signature data") },
+    ]),
+  ],
+  [
     "valid-integrity",
     "An integrity file whose digests all match.",
     "accept",

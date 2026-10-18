@@ -112,7 +112,7 @@ export interface Report {
 }
 
 /** Rules whose violations are warnings rather than errors. */
-const WARNING_RULES = new Set(["OWM-PATH-005", "OWM-COL-011"]);
+const WARNING_RULES = new Set(["OWM-PATH-005", "OWM-COL-011", "OWM-SIG-002"]);
 
 export function severityOf(rule: string): Severity {
   return rule.startsWith("OWM-LINT-") || WARNING_RULES.has(rule) ? "warning" : "error";

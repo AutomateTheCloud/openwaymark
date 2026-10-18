@@ -8,6 +8,9 @@ into a new version.
 
 **Revisions while drafting:**
 
+- Reserved `signatures/` for a future, optional signature mechanism
+  (section 3.8, OWM-SIG-001 to OWM-SIG-003). Readers ignore it, so signed bundles
+  made later still open in readers built for this version.
 - Added the optional integrity file, `integrity.json`, listing a SHA-256
   digest of every file (section 3.7, OWM-INT-001 to OWM-INT-005). Readers
   verify it when it is present. It is excluded from the content fingerprint.

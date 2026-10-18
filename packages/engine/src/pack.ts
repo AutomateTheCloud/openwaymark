@@ -10,7 +10,7 @@
 import { deflateSync } from "fflate";
 import { crc32, encodeUtf8 } from "./bytes.js";
 import { buildIntegrity, INTEGRITY_NAME } from "./integrity.js";
-import { isIgnorable, MANIFEST_NAME } from "./paths.js";
+import { isIgnorable, isReservedSignature, MANIFEST_NAME } from "./paths.js";
 
 export interface PackFile {
   /** Path inside the bundle, such as `study.yaml` or `assets/a.png`. */
@@ -39,11 +39,18 @@ function packOrder(path: string): string {
 
 /** Packs files into a `.waymark` archive. Validate the result before sharing it. */
 export function packBundle(files: readonly PackFile[], options: PackOptions = {}): PackResult {
-  // An old integrity file would describe the old content, so it is always rebuilt.
+  // An old integrity file or signature would describe the old content, so the
+  // integrity file is always rebuilt and signatures are dropped.
   const skipped = files
-    .filter((file) => isIgnorable(file.path) || file.path === INTEGRITY_NAME)
+    .filter(
+      (file) =>
+        isIgnorable(file.path) || isReservedSignature(file.path) || file.path === INTEGRITY_NAME,
+    )
     .map((file) => file.path);
-  const content = files.filter((file) => !isIgnorable(file.path) && file.path !== INTEGRITY_NAME);
+  const content = files.filter(
+    (file) =>
+      !isIgnorable(file.path) && !isReservedSignature(file.path) && file.path !== INTEGRITY_NAME,
+  );
   const included = [...content];
   if (options.integrity ?? true) {
     const integrity = buildIntegrity(new Map(content.map((file) => [file.path, file.bytes])));

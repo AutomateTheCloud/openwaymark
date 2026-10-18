@@ -24,6 +24,7 @@ import {
   entryNameProblem,
   formatFromExtension,
   isIgnorable,
+  isReservedSignature,
   MANIFEST_NAME,
 } from "./paths.js";
 import { ReportBuilder, type BundleSummary, type Report } from "./report.js";
@@ -281,6 +282,7 @@ function summarize(stage: ManifestStage, assets: number, uncompressedBytes: numb
 function checkEntries(entries: readonly ZipEntry[], report: ReportBuilder, ignorable: string[]) {
   let manifest: ZipEntry | undefined;
   let integrity: ZipEntry | undefined;
+  let signatureEntries = 0;
   const assetEntries: ZipEntry[] = [];
   const seen = new Map<string, string>();
   for (const entry of entries) {
@@ -310,6 +312,11 @@ function checkEntries(entries: readonly ZipEntry[], report: ReportBuilder, ignor
           at,
         );
       }
+      continue;
+    }
+    if (isReservedSignature(entry.name)) {
+      // Reserved for future signatures (OWM-SIG-002): never read as content.
+      if (!entry.isDirectory) signatureEntries++;
       continue;
     }
     if (entry.isDirectory) {
@@ -355,6 +362,12 @@ function checkEntries(entries: readonly ZipEntry[], report: ReportBuilder, ignor
       nested
         ? `study.yaml must be at the top of the archive, but it is inside ${nested.name.slice(0, -MANIFEST_NAME.length)}. Compress the folder's contents, not the folder itself.`
         : "The archive has no study.yaml at its top level.",
+    );
+  }
+  if (signatureEntries > 0) {
+    report.add(
+      "OWM-SIG-002",
+      `The bundle carries signature data (${signatureEntries} ${signatureEntries === 1 ? "entry" : "entries"} under signatures/) that this version of the format cannot verify. It is ignored, and the bundle is not treated as signed.`,
     );
   }
   return { manifest, assetEntries, integrity };

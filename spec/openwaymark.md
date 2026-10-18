@@ -274,7 +274,8 @@ follows.
 - **OWM-PATH-003.** An archive bundle MUST contain exactly one manifest, the
   regular file entry named `study.yaml` at the root of the archive.
 - **OWM-PATH-004.** Every other regular file entry MUST be an asset, the
-  integrity file (section 3.7), or an ignorable entry. An asset's name begins
+  integrity file (section 3.7), a reserved signature entry (section 3.8), or an
+  ignorable entry. An asset's name begins
   with `assets/` and satisfies
   section 10.1. An ignorable entry is any entry whose name begins with
   `__MACOSX/`, or whose final segment is `.DS_Store`, `Thumbs.db`, or
@@ -283,7 +284,8 @@ follows.
   MUST NOT treat them as part of the bundle. Validators SHOULD report each one
   as a warning. Producers SHOULD NOT include them.
 - **OWM-PATH-006.** Directory entries MUST be named `assets/` or have names of
-  the form `assets/<segments>/`, or they MUST be ignorable entries.
+  the form `assets/<segments>/`, or they MUST be ignorable entries or reserved
+  signature entries (section 3.8).
 
 > **Note (informative).** The manifest must be at the root. An archive that
 > contains a single folder with `study.yaml` inside it is not a conforming
@@ -330,8 +332,8 @@ show that content changed since its producer packed it. The integrity file can.
 
 - **OWM-INT-003.** `files` MUST list exactly the manifest and every asset: no
   file missing, and no name that is not a file in the archive. The integrity
-  file does not list itself, and it does not list ignorable entries or
-  directory entries.
+  file does not list itself, and it does not list ignorable entries, directory
+  entries, or reserved signature entries.
 - **OWM-INT-004.** When an integrity file is present, readers MUST verify every
   digest, and MUST reject the bundle if any digest does not match.
 - **OWM-INT-005.** A matching integrity file shows only that the files are
@@ -348,6 +350,29 @@ show that content changed since its producer packed it. The integrity file can.
 > **Note (informative).** A bundle edited by hand after packing fails
 > OWM-INT-004. To fix it, repack the bundle with a tool that writes a new
 > integrity file, or delete `integrity.json`.
+
+### 3.8 Reserved for signatures
+
+A future version will define how a publisher signs a bundle, so that a reader
+can tell who published it and that it has not changed since. This draft
+defines no signature mechanism. It reserves a place for one, so that signed
+bundles made in the future still open in readers built today.
+
+- **OWM-SIG-001.** Entry names beginning with `signatures/` are reserved for a
+  future signature mechanism. This version defines no contents for them.
+  Producers MUST NOT place anything else there. Reserved entry names must still
+  satisfy OWM-PATH-001 and OWM-PATH-002, and count toward every limit in
+  section 11.
+- **OWM-SIG-002.** Readers MUST NOT read reserved signature entries as bundle
+  content, and MUST NOT reject a bundle because it contains them. Validators
+  SHOULD warn that the bundle carries signature data that this version cannot
+  verify. A reader MUST NOT present such a bundle as signed or verified.
+- **OWM-SIG-003.** Reserved signature entries are excluded from the integrity
+  file (OWM-INT-003) and from the content fingerprint (OWM-UPD-005).
+
+> **Note (informative).** Signatures will be optional: an unsigned bundle will
+> remain exactly as valid as a signed one. The intended direction is described
+> in Appendix C, issue 8.
 
 ---
 
@@ -1113,9 +1138,9 @@ even if the archive was repacked.
      lowercase hexadecimal SHA-256 digest of the asset's uncompressed bytes,
      and a line feed.
 
-  Ignorable entries, directory entries, and the integrity file (section 3.7)
-  are excluded, so adding or removing an integrity file does not change the
-  fingerprint.
+  Ignorable entries, directory entries, the integrity file (section 3.7), and
+  reserved signature entries (section 3.8) are excluded, so adding or removing
+  an integrity file or a signature does not change the fingerprint.
 
 - **OWM-UPD-006.** Equal fingerprints mean equal content. A fingerprint MUST NOT
   be treated as proof of origin or authorization.
@@ -1407,8 +1432,19 @@ _Informative._ These questions are deliberately unresolved in draft 0.1.
 7. **ZIP64 and packing tools.** The prohibition on ZIP64 (OWM-PKG-003) needs
    testing against common archivers, some of which may emit ZIP64 records for
    small files in streaming modes.
-8. **Signatures.** No mechanism for verifying who published a bundle is
-   defined.
+8. **Signatures.** No mechanism for verifying who published a bundle is defined
+   yet. `signatures/` is reserved for one (section 3.8). The intended direction
+   is publisher-published keys:
+   - a publisher signs `integrity.json` with a public, royalty-free algorithm,
+     such as Ed25519 (RFC 8032);
+   - the publisher publishes the public key at a well-known HTTPS address on a
+     domain it controls;
+   - a reader fetches that key only when the learner asks to verify, or through
+     a trusted catalog, and may remember it.
+
+   No key needs to be built into any reader. Rotation, revocation, and offline
+   verification remain to be designed.
+
 9. **Translations.** A translated collection is a separate bundle. A later draft
    may add an optional link, such as `translation_of`, naming the collection it
    translates, so that readers can offer the other languages and relate items
