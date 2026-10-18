@@ -1,0 +1,50 @@
+# OpenWaymark — working rules
+
+This repo holds the OpenWaymark format specification, its schema, examples, and
+conformance fixtures, plus the reference engine and the CLI. Project decisions,
+the plan, requirement traceability, and open issues live in the sibling
+coordination repo, `../waymark-develop/docs/`. Read the relevant entries before
+changing the format.
+
+## Independence
+
+- The specification must be implementable without Waymark Study, any Waymark
+  service, an account, or this repo's code. Waymark's UX and storage choices
+  are never normative spec text.
+- The format's name is its only link to Waymark (D-012). No Waymark branding,
+  logos, or app code belong here.
+- Nothing in `spec/`, `schema/`, `examples/`, or `fixtures/` may depend on
+  `packages/`. The engine implements the spec, never the reverse.
+- Never write GitLab-specific URLs into normative text or schema `$id`s. The
+  project moves to GitHub when it goes public (D-013).
+
+## Specification discipline
+
+- Normative statements use RFC 2119/8174 keywords and carry an `OWM-` rule ID.
+- Every format change gets an entry in `spec/CHANGELOG.md`.
+- New assumptions are labeled where they appear. Unresolved questions go to
+  `../waymark-develop/docs/open-issues.md`, and decisions to `decisions.md`.
+- Examples must actually validate. Each fixture's expected outcome is stated in
+  its `expect.json`.
+- Structural validation never claims factual correctness, and a scan never
+  claims a bundle is malware-free.
+
+## Engine and CLI
+
+- `packages/engine` runs in Node and in browser Web Workers. It may use only
+  standard ECMAScript APIs; ESLint rejects Node built-ins, and its tsconfig has
+  no Node types. Platform-specific work (file access, image decoding, scanners)
+  goes behind interfaces that the CLI or the app implements.
+- Treat all bundle input as untrusted. Enforce limits while streaming, not
+  after expanding.
+- `pnpm check` must pass before a commit: typecheck, lint, format, tests, and
+  spelling.
+
+## Conventions
+
+- American English everywhere (`pnpm spelling`).
+- TypeScript strict mode, ESM, Node 24, pnpm.
+- New dependencies must be maintained and justified. Installs honor a 7-day
+  release age (`pnpm-workspace.yaml`). Never allowlist an install script
+  without saying why.
+- Report honestly: what ran, what passed, what was skipped.

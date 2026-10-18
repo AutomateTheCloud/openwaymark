@@ -1,0 +1,17 @@
+{
+  "name": "openwaymark",
+  "version": "0.0.0",
+  "description": "Command-line validator, linter, and packer for OpenWaymark study bundles",
+  "private": true,
+  "type": "module",
+  "license": "UNLICENSED",
+  "bin": {
+    "openwaymark": "./dist/main.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "dependencies": {
+    "@openwaymark/engine": "workspace:*"
+  }
+}

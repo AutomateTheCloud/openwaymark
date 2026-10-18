@@ -1,0 +1,9 @@
+packages:
+  - packages/*
+
+# Supply-chain guard: only install versions published at least 7 days ago,
+# so a compromised release has time to be noticed and pulled first.
+minimumReleaseAge: 10080
+
+# pnpm does not run dependency install scripts unless they are listed here.
+onlyBuiltDependencies: []

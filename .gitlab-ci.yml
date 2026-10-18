@@ -1,0 +1,24 @@
+# Thin wrapper on purpose: every check lives in package.json scripts, so moving
+# to another CI system (GitHub Actions when the project goes public) means
+# rewriting this file only. See waymark-develop D-013.
+
+variables:
+  COREPACK_ENABLE_DOWNLOAD_PROMPT: "0"
+
+default:
+  # Full image, not -slim: the spelling check needs git.
+  image: node:24-bookworm
+  retry: 2
+  cache:
+    key:
+      files: [pnpm-lock.yaml]
+    paths: [.pnpm-store/]
+  before_script:
+    - corepack enable
+    - pnpm config set store-dir .pnpm-store
+    - pnpm install --frozen-lockfile
+
+check:
+  stage: test
+  script:
+    - pnpm check
