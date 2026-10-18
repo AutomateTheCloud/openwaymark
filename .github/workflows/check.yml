@@ -31,3 +31,25 @@ jobs:
       - run: corepack enable
       - run: pnpm install --frozen-lockfile
       - run: pnpm check
+
+  # The real malware scanner, separately: installing ClamAV and downloading its
+  # signature database takes a few minutes, and the main check stays fast.
+  scanner:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    env:
+      COREPACK_ENABLE_DOWNLOAD_PROMPT: "0"
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .node-version
+      - run: sudo apt-get update && sudo apt-get install --yes clamav
+      - run: sudo systemctl stop clamav-freshclam || true
+      - run: sudo freshclam
+      - run: corepack enable
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm build
+      - run: node tools/scanner-integration.mjs
