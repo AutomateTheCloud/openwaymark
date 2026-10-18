@@ -12,8 +12,9 @@ and which rule in the [specification](../spec/openwaymark.md) stops it.
 
 Each fixture folder contains:
 
-- `input.waymark` (an archive) or `input.yaml` (a text bundle): the bundle to
-  test;
+- `input.waymark`: the bundle to test. A few fixtures have `input.bin`
+  instead, a file that is deliberately not a ZIP archive, so it is not a
+  bundle;
 - `expect.json`: what should happen.
 
 ```json
@@ -59,7 +60,7 @@ headers. Attackers make them lie.
 | `zip-traversal`, `zip-absolute-path`, `zip-backslash` | A file named `../../evil.png`, `/etc/cron.d/evil`, or `assets\gray.png` | **"Zip slip."** A program that extracts files using their names as paths can be tricked into writing outside the folder it meant to use, and overwrite something important | OWM-PATH-001 |
 | `zip-symlink` | An entry that is a symbolic link, a pointer to another file such as `/etc/passwd` | Extracting it creates a shortcut to a sensitive file, which the app might then read or overwrite | OWM-PKG-009 |
 | `zip-local-central-mismatch` | The table of contents says `assets/gray.png`, but the file's own header says `assets/evil.sh` | Two programs reading the same archive see different files. A checker approves one thing while the app opens another | OWM-PKG-007 |
-| `zip-hidden-gap`, `zip-prepended-data`, `zip-trailing-data` | Bytes hidden between, before, or after the real entries | Hidden data can carry a second payload. A **polyglot** file is valid as two formats at once, such as a script that is also a ZIP | OWM-PKG-006, OWM-PKG-002, OWM-PKG-001 |
+| `zip-hidden-gap`, `zip-prepended-data`, `zip-trailing-data` | Bytes hidden between, before, or after the real entries | Hidden data can carry a second payload. A **polyglot** file is valid as two formats at once, such as a script that is also a ZIP | OWM-PKG-006, OWM-PKG-001, OWM-PKG-002 |
 | `zip-duplicate-name`, `zip-case-collision` | Two `study.yaml` entries, or `assets/gray.png` and `assets/Gray.png` | Which one wins depends on the tool. On Windows and macOS, case-different names land on the same file | OWM-PATH-002 |
 | `zip-unicode-path-extra` | An optional field that gives an entry a second name | Again, different tools show different names | OWM-PKG-011 |
 | `zip-encrypted`, `zip-unsupported-method`, `zip64-extra-field` | Encryption, unusual compression, or 64-bit size records | Features that tools support unevenly. A file that one reader opens and another cannot is not portable, and rarely used code paths are where bugs hide | OWM-PKG-004, OWM-PKG-005, OWM-PKG-003 |
@@ -144,7 +145,8 @@ them kindly.
 | `answer-unknown-choice`, `single-two-correct`, `selection-count-mismatch`, `choice-id-duplicate`, `id-collision` | Answers that do not match the choices | OWM-Q-004 to OWM-Q-006, OWM-ID-002, OWM-ID-003 |
 | `version-unsupported`, `version-missing`, `requires-unknown-feature` | A bundle for a format version or feature this reader does not know | OWM-VER-002, OWM-CONF-004, OWM-VER-006 |
 | `zip-manifest-wrong-case`, `zip-unexpected-file`, `zip-space-in-name` | `Study.yaml` instead of `study.yaml`, a stray `README.txt`, or a file name with a space | OWM-PATH-003, OWM-PATH-004, OWM-PATH-001 |
-| `image-missing-asset`, `image-uppercase-extension`, `text-bundle-asset` | An image that is not in the bundle, a `.PNG` extension, or an image in a single-file text bundle, which cannot carry one | OWM-IMG-001, OWM-IMG-006, OWM-TEXT-002 |
+| `image-missing-asset`, `image-uppercase-extension` | An image that is not in the bundle, or a `.PNG` extension | OWM-IMG-001, OWM-IMG-006 |
+| `not-a-zip` | Sharing `study.yaml` on its own, without packing its folder | OWM-PKG-001 |
 | `collection-no-items`, `collection-uuid-uppercase` | A collection with nothing to study, or an id typed in capitals | OWM-COL-002, OWM-COL-004 |
 | `markdown-heading-in-item` | A heading inside a flashcard | OWM-MD-007 |
 | `language-part-malformed`, `extension-bad-namespace` | `spanish_mx` instead of a language tag such as `es-MX`, or an extension key that is not a domain name | OWM-CONT-003, OWM-EXT-001 |

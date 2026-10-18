@@ -1,7 +1,9 @@
 {
-  "description": "A shell script with an archive appended, as in a polyglot file. It does not start with a ZIP header, so it is read as YAML (OWM-PKG-001) and rejected.",
+  "description": "A shell script with an archive appended, as in a polyglot file. It does not start with a ZIP header, so it is not a bundle.",
   "format_version": "0.1",
   "mode": "validate",
   "outcome": "reject",
-  "rules": []
+  "rules": [
+    "OWM-PKG-001"
+  ]
 }

@@ -26,7 +26,7 @@ const fixtures = readdirSync(FIXTURES)
       id,
       input: existsSync(join(dir, "input.waymark"))
         ? join(dir, "input.waymark")
-        : join(dir, "input.yaml"),
+        : join(dir, "input.bin"),
     };
   });
 
@@ -77,7 +77,7 @@ test("a malicious bundle's text is shown as text, not HTML", async ({ page }) =>
   await page.goto("/");
   await page
     .getByTestId("bundle-input")
-    .setInputFiles(join(FIXTURES, "markdown-event-handler/input.yaml"));
+    .setInputFiles(join(FIXTURES, "markdown-event-handler/input.waymark"));
   await expect(page.getByTestId("report-json")).toBeAttached();
   await expect(page.locator("#result img")).toHaveCount(0);
   await expect(page.locator("#result")).toContainText("<img src=x onerror=alert(1)>");

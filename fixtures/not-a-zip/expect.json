@@ -1,0 +1,9 @@
+{
+  "description": "A study.yaml on its own, not packed in an archive, is not a bundle.",
+  "format_version": "0.1",
+  "mode": "validate",
+  "outcome": "reject",
+  "rules": [
+    "OWM-PKG-001"
+  ]
+}

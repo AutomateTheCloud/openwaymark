@@ -45,7 +45,7 @@ export interface ValidateOptions {
 }
 
 export interface ValidatedBundle {
-  form: "archive" | "text";
+  form: "archive";
   manifest: Mapping;
   /** Asset bytes by path. Ignorable entries are never included. */
   assets: Map<string, Uint8Array>;
@@ -83,7 +83,8 @@ export async function validateBundle(
     if (options.signal?.aborted) throw new ValidationCanceled();
   };
   const head = await source.read(0, 4);
-  const form = ascii(head, 0, 4) === "PK\u0003\u0004" ? "archive" : "text";
+  // A bundle is a ZIP archive (OWM-PKG-001), which always starts with "PK\x03\x04".
+  const form = ascii(head, 0, 4) === "PK\u0003\u0004" ? "archive" : "unrecognized";
   const assets = new Map<string, Uint8Array>();
   const assetInfo = new Map<string, ImageInfo>();
   const ignorable: string[] = [];
@@ -111,12 +112,7 @@ export async function validateBundle(
     const parsed = parseManifestText(decoded.text, report, entry);
     report.check("yaml-profile", "performed");
     if (!parsed) return;
-    const findings = validateManifest(
-      parsed,
-      { isTextBundle: form === "text", assets: assetPaths },
-      report,
-      entry,
-    );
+    const findings = validateManifest(parsed, { assets: assetPaths }, report, entry);
     if (!findings.checked) return;
     report.check("manifest-structure", "performed");
     report.check("cross-references", "performed");
@@ -125,24 +121,11 @@ export async function validateBundle(
     manifestStage = { parsed, ...findings };
   };
 
-  if (form === "text") {
-    report.check("archive-structure", "not-applicable", "text bundle");
-    report.check("entry-names", "not-applicable", "text bundle");
-    report.check("integrity", "not-applicable", "text bundles have no integrity file");
-    for (const id of ["image-signatures", "image-dimensions", "image-decode"] as const)
-      report.check(id, "not-applicable", "text bundles have no images");
-    if (source.size > LIMITS.manifestBytes) {
-      report.add(
-        "OWM-LIM-001",
-        `The file is ${source.size} bytes; a text bundle may be at most ${LIMITS.manifestBytes}. If it is an archive, it is damaged.`,
-      );
-      report.check("resource-limits", "performed");
-    } else {
-      report.check("resource-limits", "performed");
-      const bytes = await source.read(0, source.size);
-      uncompressedBytes = bytes.length;
-      parseAndCheckManifest(bytes, undefined, new Set());
-    }
+  if (form === "unrecognized") {
+    report.add(
+      "OWM-PKG-001",
+      "This file is not a bundle. A bundle is a ZIP archive (a .waymark file). If this is a study.yaml file, put it in a folder and pack the folder.",
+    );
   } else {
     const directory = await readZipDirectory(source, report);
     throwIfCanceled();
@@ -214,7 +197,7 @@ export async function validateBundle(
         ignorableEntries: ignorable,
         missingIntegrityFile: form === "archive" && !hasIntegrityFile,
         descriptionSetextHeadings: manifestStage.descriptionSetextHeadings,
-        entry: form === "archive" ? MANIFEST_NAME : undefined,
+        entry: MANIFEST_NAME,
       },
       report,
     );
@@ -250,7 +233,13 @@ export async function validateBundle(
     result.fingerprint = fingerprint;
     return {
       report: result,
-      bundle: { form, manifest: manifestStage.parsed.root, assets, assetInfo, fingerprint },
+      bundle: {
+        form: "archive",
+        manifest: manifestStage.parsed.root,
+        assets,
+        assetInfo,
+        fingerprint,
+      },
     };
   }
   return { report: result };

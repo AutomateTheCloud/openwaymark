@@ -23,8 +23,7 @@ OpenWaymark is a format for portable study bundles. A bundle holds one pool of
 multiple-choice practice questions, a collection of flashcards, or both. It
 may include explanations, hints, references, and local images. Bundles are
 written in a restricted profile of YAML, with text in a restricted profile of
-Markdown. A bundle with images is an ordinary ZIP archive; a bundle without
-images can be a single YAML file.
+Markdown. Every bundle is an ordinary ZIP archive, with its images inside.
 
 The format defines what a bundle contains and what it means. That includes how
 an answer is graded. It does not define how an application presents study
@@ -35,7 +34,7 @@ Personal learning data is never part of a bundle.
 
 1. [Introduction](#1-introduction)
 2. [Conformance](#2-conformance)
-3. [Bundle forms and the archive profile](#3-bundle-forms-and-the-archive-profile)
+3. [The bundle archive](#3-the-bundle-archive)
 4. [Manifest encoding: the YAML profile](#4-manifest-encoding-the-yaml-profile)
 5. [Versions, compatibility, and extensions](#5-versions-compatibility-and-extensions)
 6. [The collection](#6-the-collection)
@@ -53,6 +52,7 @@ Personal learning data is never part of a bundle.
 - [Appendix A: Recommended lint checks](#appendix-a-recommended-lint-checks)
 - [Appendix B: Example manifest](#appendix-b-example-manifest)
 - [Appendix C: Open issues in this draft](#appendix-c-open-issues-in-this-draft)
+- [Appendix D: Retired rule identifiers](#appendix-d-retired-rule-identifiers)
 
 ---
 
@@ -118,12 +118,10 @@ Byte sizes use binary units: 1 KiB is 1,024 bytes and 1 MiB is 1,048,576 bytes.
 
 ### 1.4 Terminology
 
-- **Bundle:** a collection in one of the two forms defined in section 3.
-- **Archive bundle:** a bundle stored as a ZIP archive (section 3.2).
-- **Text bundle:** a bundle stored as a single YAML file, without assets
-  (section 3.5).
-- **Manifest:** the YAML document that describes the collection. In an archive
-  bundle, it is the entry `study.yaml`.
+- **Bundle:** a collection stored as a ZIP archive, as defined in section 3.
+  "Archive bundle" means the same thing.
+- **Manifest:** the YAML document that describes the collection: the entry
+  `study.yaml` in a bundle.
 - **Collection:** the content a manifest describes, consisting of metadata and
   items.
 - **Item:** a question or a flashcard.
@@ -186,22 +184,22 @@ can belong to more than one.
 
 ---
 
-## 3. Bundle forms and the archive profile
+## 3. The bundle archive
 
-### 3.1 Forms
+### 3.1 One form
 
-A bundle takes one of two forms:
+A bundle is a ZIP archive containing the manifest, `study.yaml`, and,
+optionally, images under `assets/`. A collection with no images is still an
+archive: it simply contains only `study.yaml`.
 
-1. An **archive bundle**: a ZIP archive containing the manifest `study.yaml`
-   and, optionally, assets under `assets/`.
-2. A **text bundle**: a single YAML file that is the manifest itself. It has no
-   assets.
+- **OWM-PKG-001.** A bundle MUST be a ZIP archive. A reader MUST recognize a
+  bundle by its content, not by its file name: the file begins with the ZIP
+  local file header signature (`50 4B 03 04`). A reader MUST reject any other
+  file as not a bundle, without interpreting its content.
 
-- **OWM-PKG-001.** A reader MUST support archive bundles and SHOULD support
-  text bundles. A reader MUST determine the form from the file's content, not
-  from its name. A file that begins with the ZIP local file header signature
-  (`50 4B 03 04`) is an archive bundle. Any other file is a text bundle
-  candidate.
+> **Note (informative).** Authors usually keep a bundle as a folder while
+> writing it, and pack it into an archive to share it. Packing is a tool's job;
+> a validator may also check a folder directly by packing it first.
 
 ### 3.2 ZIP archive profile
 
@@ -292,21 +290,17 @@ follows.
 > bundle. This is the most common packing mistake: compressing the folder
 > instead of its contents. Validators are encouraged to say so explicitly.
 
-### 3.5 Text bundles
+### 3.5 Removed: text bundles
 
-- **OWM-TEXT-001.** A text bundle is a manifest stored on its own. It MUST
-  satisfy every manifest requirement in this specification.
-- **OWM-TEXT-002.** A text bundle MUST NOT reference any asset. It MUST NOT
-  contain image objects (section 9.2), and its Markdown MUST NOT contain image
-  syntax. Readers MUST NOT resolve references against files that sit next to a
-  text bundle on the learner's device.
+Earlier revisions of this draft allowed a bundle without images to be a single
+YAML file. That form was removed, so every bundle has the same structure and
+every reader handles one form. Its rule identifiers are retired (Appendix D).
 
 ### 3.6 File names and media type
 
 - **OWM-PKG-012.** Producers SHOULD name archive bundles with the extension
-  `.waymark`. Readers SHOULD also accept the extension `.zip`. A text bundle
-  SHOULD use `.yaml`. Readers MUST NOT infer the form or the format version from
-  the file name.
+  `.waymark`. Readers SHOULD also accept the extension `.zip`. Readers MUST NOT
+  infer the format version from the file name.
 
 This draft does not register a media type (Appendix C, issue 1).
 
@@ -320,7 +314,7 @@ show that content changed since its producer packed it. The integrity file can.
 
 - **OWM-INT-001.** An archive bundle MAY contain an integrity file: a regular
   file entry named `integrity.json` at the root of the archive. Producers that
-  pack archives SHOULD include one. A text bundle has no integrity file.
+  pack archives SHOULD include one.
 - **OWM-INT-002.** The integrity file MUST be a JSON text [RFC8259] in UTF-8, of
   at most 1 MiB, whose value is an object with exactly two members:
   - `algorithm`: the string `"sha-256"`;
@@ -1051,7 +1045,7 @@ with predictable resources.
 | Archive size                                                                                 | 104,857,600 bytes (100 MiB) |
 | Number of entries, including directories and ignorable entries                               | 2,000                       |
 | Total uncompressed size of all entries                                                       | 268,435,456 bytes (256 MiB) |
-| Uncompressed size of `study.yaml`, or size of a text bundle                                  | 8,388,608 bytes (8 MiB)     |
+| Uncompressed size of `study.yaml`                                                            | 8,388,608 bytes (8 MiB)     |
 | Uncompressed size of any one asset                                                           | 10,485,760 bytes (10 MiB)   |
 | Ratio of uncompressed to compressed size, for an entry whose uncompressed size exceeds 1 MiB | 100                         |
 | Nesting depth of the YAML data model, where the root mapping is depth 1                      | 32                          |
@@ -1465,3 +1459,14 @@ _Informative._ These questions are deliberately unresolved in draft 0.1.
       who is allowed to open a bundle from copying what they see. An open format
       cannot provide copy prevention (DRM), and this specification does not
       attempt it.
+
+---
+
+## Appendix D: Retired rule identifiers
+
+_Informative._ A retired identifier is never reused (section 1.3).
+
+| Identifier   | Status                                                        |
+| ------------ | ------------------------------------------------------------- |
+| OWM-TEXT-001 | Retired in draft 0.1: text bundles were removed (section 3.5) |
+| OWM-TEXT-002 | Retired in draft 0.1: text bundles were removed (section 3.5) |

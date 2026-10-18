@@ -44,7 +44,7 @@ Create `packages/engine/test/lint-front-back.test.ts`:
 // SPDX-License-Identifier: Apache-2.0
 
 import { describe, expect, it } from "vitest";
-import { bytesSource, validateBundle } from "../src/index.js";
+import { bytesSource, packBundle, validateBundle } from "../src/index.js";
 
 function card(front: string, back: string): string {
   return `format_version: "0.1"
@@ -64,8 +64,9 @@ flashcards:
 }
 
 async function lintRules(manifest: string): Promise<string[]> {
-  const bytes = new TextEncoder().encode(manifest);
-  const { report } = await validateBundle(bytesSource(bytes), { lint: true });
+  const files = [{ path: "study.yaml", bytes: new TextEncoder().encode(manifest) }];
+  const { archive } = packBundle(files);
+  const { report } = await validateBundle(bytesSource(archive), { lint: true });
   return report.diagnostics.map((diagnostic) => diagnostic.rule);
 }
 
@@ -82,10 +83,11 @@ describe("OWM-LINT-020", () => {
 
 What this does:
 
-- `card(...)` builds a tiny bundle as text. The `${front}` parts are filled in
-  with whatever you pass.
-- `lintRules(...)` runs the validator with lint turned on, and returns the
-  rule identifiers it reported.
+- `card(...)` writes the text of a tiny `study.yaml`. The `${front}` parts are
+  filled in with whatever you pass.
+- `lintRules(...)` packs that text into a bundle in memory, as `pack` does with
+  a folder, runs the validator with lint turned on, and returns the rule
+  identifiers it reported.
 - Each `it(...)` is one test. `expect(...).toContain(...)` says what must be
   true.
 

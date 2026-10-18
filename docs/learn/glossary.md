@@ -9,7 +9,7 @@ Plain-language definitions of the terms used in this project.
 | **Asset**                         | A file in a bundle other than the manifest. In OpenWaymark, always an image under `assets/`                                                           |
 | **BCP 47**                        | The standard for language tags: `en`, `es-MX`, `pt-BR`                                                                                                |
 | **Branch**                        | In Git, a separate line of work that does not affect the main code until it is merged                                                                 |
-| **Bundle**                        | One OpenWaymark collection of questions and flashcards, as a `.waymark` archive or a single `.yaml` file                                              |
+| **Bundle**                        | One OpenWaymark collection of questions and flashcards, packed as a `.waymark` archive                                                                |
 | **CI (continuous integration)**   | A service that runs a project's checks automatically on every change. This project uses GitHub Actions                                                |
 | **Commit**                        | A saved snapshot of changes in Git, with a message describing them                                                                                    |
 | **Conforming**                    | Following every rule of the specification                                                                                                             |

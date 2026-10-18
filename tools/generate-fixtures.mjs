@@ -3,7 +3,8 @@
 // SPDX-License-Identifier: Apache-2.0
 
 // Generates the conformance fixtures in fixtures/. Each fixture is a directory
-// holding one input (input.waymark or input.yaml) and expect.json. Output is
+// holding one input (input.waymark, or input.bin for a file that is not a
+// bundle at all) and expect.json. Output is
 // deterministic, so `pnpm test` can check that the committed fixtures match.
 //
 // Malicious archives are built byte by byte, which is the only way to make
@@ -20,6 +21,8 @@ import { deflateSync, zlibSync } from "fflate";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const utf8 = (text) => new TextEncoder().encode(text);
+/** Marks input that must stay exactly as given, not wrapped in an archive. */
+const raw = (bytes) => ({ raw: bytes });
 
 const CRC_TABLE = Array.from({ length: 256 }, (_, n) => {
   let c = n;
@@ -256,7 +259,13 @@ const imageBundle = () => [
 /** Each fixture: [id, description, outcome, rules, input, mode]. */
 const FIXTURES = [
   // Accepted bundles.
-  ["valid-text-minimal", "Smallest valid text bundle: one question.", "accept", [], VALID],
+  [
+    "not-a-zip",
+    "A study.yaml on its own, not packed in an archive, is not a bundle.",
+    "reject",
+    ["OWM-PKG-001"],
+    raw(utf8(VALID)),
+  ],
   [
     "valid-archive-minimal",
     "Smallest valid archive bundle: study.yaml only.",
@@ -453,10 +462,10 @@ const FIXTURES = [
   ],
   [
     "zip-prepended-data",
-    "A shell script with an archive appended, as in a polyglot file. It does not start with a ZIP header, so it is read as YAML (OWM-PKG-001) and rejected.",
+    "A shell script with an archive appended, as in a polyglot file. It does not start with a ZIP header, so it is not a bundle.",
     "reject",
-    [],
-    zip([manifestEntry()], { prefix: utf8("#!/bin/sh\necho polyglot\n") }),
+    ["OWM-PKG-001"],
+    raw(zip([manifestEntry()], { prefix: utf8("#!/bin/sh\necho polyglot\n") })),
   ],
   [
     "zip-hidden-gap",
@@ -880,13 +889,6 @@ const FIXTURES = [
     ["OWM-Q-006"],
     VALID.replace("selection: single", "selection: multiple\n    selection_count: 2"),
   ],
-  [
-    "text-bundle-asset",
-    "A text bundle refers to an image.",
-    "reject",
-    ["OWM-TEXT-002"],
-    withPromptImage("assets/gray.png"),
-  ],
 
   // Markdown and links (section 9).
   [
@@ -1031,6 +1033,19 @@ const FIXTURES = [
   ],
 ];
 
+/**
+ * Every bundle is an archive (OWM-PKG-001), so manifest text and manifest
+ * bytes are packed as study.yaml in a minimal archive. Input wrapped in raw()
+ * is used exactly as given.
+ */
+function asInput(input) {
+  if (input && input.raw) return input.raw;
+  const bytes = typeof input === "string" ? utf8(input) : input;
+  return bytes[0] === 0x50 && bytes[1] === 0x4b
+    ? bytes
+    : zip([{ name: "study.yaml", data: bytes }]);
+}
+
 /** Builds every fixture as a map from relative path to bytes. */
 export function generateFixtures() {
   const files = new Map();
@@ -1038,9 +1053,9 @@ export function generateFixtures() {
   for (const [id, description, outcome, rules, input, mode = "validate"] of FIXTURES) {
     if (ids.has(id)) throw new Error(`duplicate fixture id ${id}`);
     ids.add(id);
-    const bytes = typeof input === "string" ? utf8(input) : input;
+    const bytes = asInput(input);
     const isArchive = bytes[0] === 0x50 && bytes[1] === 0x4b;
-    files.set(`${id}/${isArchive ? "input.waymark" : "input.yaml"}`, bytes);
+    files.set(`${id}/${isArchive ? "input.waymark" : "input.bin"}`, bytes);
     const expect = { description, format_version: "0.1", mode, outcome, rules };
     files.set(`${id}/expect.json`, utf8(`${JSON.stringify(expect, null, 2)}\n`));
   }

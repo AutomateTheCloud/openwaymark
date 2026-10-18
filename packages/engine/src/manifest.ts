@@ -51,7 +51,6 @@ export interface ManifestFindings {
 }
 
 export interface ManifestContext {
-  isTextBundle: boolean;
   /** Asset paths present in the bundle. */
   assets: ReadonlySet<string>;
 }
@@ -274,7 +273,6 @@ export function validateManifest(
   const markdown = (text: string, pointer: string, role: ImageRole) => {
     const result = checkMarkdown(text, {
       isDescription: role === "description",
-      isTextBundle: context.isTextBundle,
     });
     for (const finding of result.findings) err(finding.rule, pointer, finding.message);
     if (role === "description") findings.descriptionSetextHeadings += result.setextHeadings;
@@ -328,14 +326,6 @@ export function validateManifest(
     const srcPointer = pointerJoin(pointer, "src");
     const src = string(object.src, srcPointer, "src", { rule: "OWM-IMG-004" });
     if (src === undefined) return;
-    if (context.isTextBundle) {
-      err(
-        "OWM-TEXT-002",
-        srcPointer,
-        `A text bundle cannot reference assets, but this image refers to ${src}.`,
-      );
-      return;
-    }
     const problem = assetPathProblem(src);
     if (problem) {
       err(

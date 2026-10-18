@@ -11,7 +11,7 @@ are. Open each file in your editor as you read about it.
  your file
     │
     ▼
- validate.ts  ── decides: archive (ZIP) or text (YAML)?
+ validate.ts  ── decides: is this a ZIP archive at all?
     │
     ├─▶ zip.ts         read the archive's table of contents; check every header
     ├─▶ paths.ts       check every name: no "..", no surprises, assets only
@@ -36,7 +36,8 @@ the report.
 `validateBundle` reads the first four bytes. A ZIP file always starts with
 `50 4B 03 04`, which is "PK" followed by two control bytes; PK are the
 initials of Phil Katz, who invented the format. If those bytes are there, the
-file is an archive. Otherwise the engine treats it as a text bundle.
+file is an archive. Otherwise it is not a bundle, and the engine stops with
+`OWM-PKG-001` without reading any further.
 
 > **Why look at bytes, not the file name?** A name is a claim anyone can make.
 > The bytes are what the file really is. The same idea appears again for

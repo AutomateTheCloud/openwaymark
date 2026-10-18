@@ -12,7 +12,7 @@
 //   4  no errors, but a required check could not be performed
 //   5  the malware scanner detected a threat
 
-import { writeFile } from "node:fs/promises";
+import { stat, writeFile } from "node:fs/promises";
 import { basename } from "node:path";
 import { parseArgs } from "node:util";
 import {
@@ -57,6 +57,9 @@ Commands:
   scan <bundle>       Validate, and scan for malware with a local ClamAV
   pack <folder>       Make a .waymark bundle from a folder with study.yaml
 
+  <bundle> is a .waymark file, or a folder with study.yaml, which is packed
+  in memory first.
+
 Options:
   --json                    Print a machine-readable JSON report
   --warnings-as-errors      (lint) Exit with status 1 if there are warnings
@@ -81,6 +84,16 @@ async function validateFile(
   maxDiagnostics: number,
   deps: Dependencies,
 ): Promise<ValidationResult> {
+  // A folder is packed in memory first, exactly as `pack` would pack it, so an
+  // author can check their work without making an archive.
+  if ((await stat(path)).isDirectory()) {
+    const { archive } = packBundle(await readFolder(path));
+    return validateBundle(bytesSource(archive), {
+      imageDecoder: deps.imageDecoder,
+      lint,
+      maxDiagnostics,
+    });
+  }
   const source = await openFileSource(path);
   try {
     return await validateBundle(source, { imageDecoder: deps.imageDecoder, lint, maxDiagnostics });
@@ -134,7 +147,7 @@ export async function run(
   }
   if (path === undefined || extra.length > 0) {
     io.stderr(
-      `openwaymark: ${command} needs exactly one ${command === "pack" ? "folder" : "bundle file"}.\n\n${USAGE}`,
+      `openwaymark: ${command} needs exactly one ${command === "pack" ? "folder" : "bundle file or folder"}.\n\n${USAGE}`,
     );
     return EXIT_USAGE;
   }

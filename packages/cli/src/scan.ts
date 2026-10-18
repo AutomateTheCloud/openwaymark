@@ -47,7 +47,14 @@ export const clamscan: Scanner = async (path) => {
       reason: "clamscan was not found. Install ClamAV to scan bundles.",
     };
   const engine = version.stdout.trim() || "ClamAV";
-  const result = await run("clamscan", ["--no-summary", "--infected", "--stdout", path]);
+  // --recursive scans every file when the bundle is still a folder.
+  const result = await run("clamscan", [
+    "--no-summary",
+    "--infected",
+    "--stdout",
+    "--recursive",
+    path,
+  ]);
   if (result.code === 0) return { status: "clean", engine };
   if (result.code === 1) {
     const threats = result.stdout

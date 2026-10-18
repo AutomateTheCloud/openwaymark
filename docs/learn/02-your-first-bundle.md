@@ -10,15 +10,18 @@ such as Word or Pages do not: they add hidden formatting.
 
 ## Step 1: make a folder
 
-Make a folder called `my-first-bundle` **next to** the `openwaymark` folder,
-not inside it. From the terminal, inside `openwaymark`:
+Every bundle starts as a folder. Make a folder called `my-first-bundle`
+**next to** the `openwaymark` folder, not inside it, to hold your work, and a
+folder inside it for your first bundle. From the terminal, inside
+`openwaymark`:
 
 ```bash
-mkdir ../my-first-bundle
+mkdir -p ../my-first-bundle/capitals
 ```
 
-`..` means "the folder above this one", so this creates the new folder beside
-`openwaymark`.
+`..` means "the folder above this one", so this creates the new folders beside
+`openwaymark`. `-p` makes both at once. On Windows PowerShell, `mkdir` makes
+the parent folders by itself, so leave out `-p`.
 
 ## Step 2: get an identifier for your collection
 
@@ -34,8 +37,10 @@ It is yours now: keep using it for every version of this collection.
 
 ## Step 3: write the bundle
 
-In your editor, create `my-first-bundle/capitals.yaml` with this text. Use your
-own UUID in place of the example `id`.
+In your editor, create `my-first-bundle/capitals/study.yaml` with this text.
+The file is always called `study.yaml`: it is the bundle's **manifest**, the
+file that describes everything in it. Use your own UUID in place of the example
+`id`.
 
 ```yaml
 format_version: "0.1"
@@ -89,17 +94,23 @@ because, without them, YAML would read `0.1` as a number.
 From the `openwaymark` folder:
 
 ```bash
-pnpm openwaymark validate ../my-first-bundle/capitals.yaml
+pnpm openwaymark validate ../my-first-bundle/capitals
 ```
 
-pnpm first prints the command it runs, on a line starting with `$`. Then:
+You give the validator the folder. It packs the folder in memory, the same way
+step 8 packs one into a file, and checks the result. pnpm first prints the
+command it runs, on a line starting with `$`. Then:
 
 ```text
-../my-first-bundle/capitals.yaml: passed the configured checks for OpenWaymark 0.1 (0 errors, 0 warnings).
+../my-first-bundle/capitals: passed the configured checks for OpenWaymark 0.1 (0 errors, 0 warnings).
   This means the bundle is well-formed. It does not mean it is safe, or that its answers are right.
 ```
 
-Notice the second line. The validator checks **structure**: that the file
+Give it the `study.yaml` file on its own instead, and it refuses: a manifest by
+itself is not a bundle (rule `OWM-PKG-001`). A bundle is always the packed
+folder, so that its images can never be left behind.
+
+Notice the second line of the output above. The validator checks **structure**: that the file
 follows the rules. It cannot know whether Rome is really the capital of Italy.
 Checking facts is the author's job.
 
@@ -111,9 +122,9 @@ Errors are how a validator teaches. Make one on purpose.
 `format_version: 0.1`, save, and validate again:
 
 ```text
-../my-first-bundle/capitals.yaml: not a conforming OpenWaymark bundle (1 error, 0 warnings).
+../my-first-bundle/capitals: not a conforming OpenWaymark bundle (1 error, 0 warnings).
   4 later checks were skipped because of the errors below.
-  error   OWM-YAML-009  Floating-point numbers such as 0.1 are not permitted. Quote it if it is text. (line 1, column 17, /format_version)
+  error   OWM-YAML-009  Floating-point numbers such as 0.1 are not permitted. Quote it if it is text. (study.yaml, line 1, column 17, /format_version)
 ```
 
 Then pnpm adds `ELIFECYCLE Command failed with exit code 1`. That is pnpm
@@ -121,21 +132,21 @@ reporting that the validator said "no", which is expected here.
 
 Read the error from left to right:
 
-| Part                | Meaning                                                                                                          |
-| ------------------- | ---------------------------------------------------------------------------------------------------------------- |
-| `error`             | A real problem. A `warning` would only be advice                                                                 |
-| `OWM-YAML-009`      | The rule broken. Search for it in the [specification](../../spec/openwaymark.md) to read the rule and its reason |
-| The message         | What is wrong, and how to fix it                                                                                 |
-| `line 1, column 17` | Where it is in your file                                                                                         |
-| `/format_version`   | Where it is in the data, as a path through the structure (a **JSON Pointer**)                                    |
+| Part                            | Meaning                                                                                                          |
+| ------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| `error`                         | A real problem. A `warning` would only be advice                                                                 |
+| `OWM-YAML-009`                  | The rule broken. Search for it in the [specification](../../spec/openwaymark.md) to read the rule and its reason |
+| The message                     | What is wrong, and how to fix it                                                                                 |
+| `study.yaml, line 1, column 17` | Which file, and where in it                                                                                      |
+| `/format_version`               | Where it is in the data, as a path through the structure (a **JSON Pointer**)                                    |
 
 Put the quotes back.
 
 **Mistake 2.** Change `correct_answers` to `correct_answer`, and validate:
 
 ```text
-  error   OWM-VER-004  Unknown member "correct_answer" in question "capital-italy". Did you mean "correct_answers"? (line 33, column 5, /questions/0/correct_answer)
-  error   OWM-Q-004  Question "capital-italy" is missing the required member "correct_answers". (line 21, column 5, /questions/0)
+  error   OWM-VER-004  Unknown member "correct_answer" in question "capital-italy". Did you mean "correct_answers"? (study.yaml, line 33, column 5, /questions/0/correct_answer)
+  error   OWM-Q-004  Question "capital-italy" is missing the required member "correct_answers". (study.yaml, line 21, column 5, /questions/0)
 ```
 
 One typo, two errors: an unknown field, and a missing one. The validator also
@@ -148,12 +159,12 @@ counting starts at zero. Fix the spelling.
 look like a mistake?":
 
 ```bash
-pnpm openwaymark lint ../my-first-bundle/capitals.yaml
+pnpm openwaymark lint ../my-first-bundle/capitals
 ```
 
 ```text
-  warning OWM-LINT-001  Question "capital-italy" has no explanation. (line 21, column 5, /questions/0)
-  warning OWM-LINT-010  The bundle has no license, so nobody may assume they can share it. (line 1, column 1)
+  warning OWM-LINT-001  Question "capital-italy" has no explanation. (study.yaml, line 21, column 5, /questions/0)
+  warning OWM-LINT-010  The bundle has no license, so nobody may assume they can share it. (study.yaml, line 1, column 1)
 ```
 
 Act on both. Add an explanation to the question, indented to line up with
@@ -177,8 +188,8 @@ Run `lint` again: no warnings.
 
 ## Step 7: add an image
 
-A bundle with images is a folder that gets packed into one file. Make this
-structure inside `my-first-bundle`:
+Images go in an `assets` folder next to `study.yaml`. Make a second bundle with
+this structure inside `my-first-bundle`:
 
 ```text
 my-first-bundle/
@@ -196,8 +207,8 @@ mkdir -p ../my-first-bundle/heart/assets
 cp examples/anatomy-basics/assets/heart-chambers.png ../my-first-bundle/heart/assets/
 ```
 
-On Windows PowerShell, `mkdir` makes the parent folders by itself, so leave out
-`-p`. Use `copy` if `cp` is not available.
+On Windows PowerShell, leave out `-p` again, and use `copy` if `cp` is not
+available.
 
 Then write `heart/study.yaml`, with a new UUID from step 2:
 
@@ -271,7 +282,8 @@ changes completely.
 
 ## What you learned
 
-- A bundle is plain text: YAML, plus images in a ZIP file.
+- A bundle is a folder of plain text (YAML) and images, packed into one ZIP
+  file to share.
 - Validators check structure. People check facts.
 - Every error names a rule, a line, and a fix.
 - Licenses travel with content: you can pass on only the rights you have.

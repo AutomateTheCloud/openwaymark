@@ -1,0 +1,69 @@
+# Example OpenWaymark bundle: language learning.
+# The collection is in English, and the Spanish parts declare their own
+# language (OWM-CONT-003), so screen readers pronounce them correctly.
+# Copyright 2026 Automate the Cloud Inc. Licensed under the Apache License 2.0.
+
+format_version: "0.1"
+id: 6d8e62b9-239b-4165-8b83-298a8e88e20a
+title: Spanish Basics
+version: 1.0.0
+language: en
+subject: Spanish
+description: Everyday Spanish words and a first question, for beginners.
+tags: [spanish, vocabulary, high-school]
+authors:
+  - name: Automate the Cloud Inc.
+license:
+  spdx: Apache-2.0
+
+questions:
+  - id: greeting-morning-001
+    type: multiple_choice
+    selection: single
+    prompt:
+      text: How do you say "good morning" in Spanish?
+    choices:
+      - id: buenos-dias
+        text: Buenos días
+        language: es
+      - id: buenas-noches
+        text: Buenas noches
+        language: es
+        explanation:
+          text: This means "good night".
+      - id: buenas-tardes
+        text: Buenas tardes
+        language: es
+        explanation:
+          text: This means "good afternoon".
+    correct_answers: [buenos-dias]
+    explanation:
+      text: _Buenos días_ is used from morning until about midday.
+    tags: [greetings]
+
+flashcards:
+  - id: word-gracias
+    front:
+      text: Gracias
+      language: es
+    back:
+      text: Thank you
+    tags: [courtesy]
+
+  - id: word-por-favor
+    front:
+      text: Por favor
+      language: es
+    back:
+      text: Please
+    tags: [courtesy]
+
+  - id: word-library
+    front:
+      text: library
+    back:
+      text: la biblioteca
+      language: es
+    hint:
+      text: It is not _la librería_, which is a bookshop.
+    tags: [places]

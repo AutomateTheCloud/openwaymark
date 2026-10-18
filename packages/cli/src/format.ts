@@ -86,7 +86,7 @@ export function formatSummary(
     `  id:             ${summary.id ?? "(none)"}`,
     `  version:        ${summary.version ?? "(none)"}`,
     `  language:       ${summary.language ?? "(none)"}`,
-    `  format:         ${report.input.form === "archive" ? "archive bundle" : "text bundle"}, OpenWaymark ${summary.formatVersion ?? "?"}`,
+    `  format:         ${report.input.form === "archive" ? "bundle" : "not a bundle"}, OpenWaymark ${summary.formatVersion ?? "?"}`,
     `  questions:      ${summary.questions}`,
     `  flashcards:     ${summary.flashcards}`,
     `  images:         ${summary.assets}`,

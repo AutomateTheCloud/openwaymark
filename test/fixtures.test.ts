@@ -55,7 +55,7 @@ describe("conformance fixtures", () => {
     const expectation = JSON.parse(readFileSync(join(dir, "expect.json"), "utf8")) as Expectation;
     const input = existsSync(join(dir, "input.waymark"))
       ? join(dir, "input.waymark")
-      : join(dir, "input.yaml");
+      : join(dir, "input.bin");
     const { report, bundle } = await validateBundle(bytesSource(readFileSync(input)), {
       imageDecoder: sharpDecoder,
       lint: expectation.mode === "lint",

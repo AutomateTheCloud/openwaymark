@@ -22,8 +22,6 @@ export interface MarkdownFinding {
 export interface MarkdownContext {
   /** Whether headings are permitted: only in the collection description. */
   isDescription: boolean;
-  /** Whether the bundle is a text bundle, which may reference no assets. */
-  isTextBundle: boolean;
 }
 
 export interface MarkdownResult {
@@ -57,13 +55,6 @@ export function checkMarkdown(text: string, context: MarkdownContext): MarkdownR
   visitDefinitions(tree);
 
   const image = (url: string, alt: string) => {
-    if (context.isTextBundle) {
-      findings.push({
-        rule: "OWM-TEXT-002",
-        message: `A text bundle cannot contain images, but this text includes ![${alt}](${url}).`,
-      });
-      return;
-    }
     const problem = assetPathProblem(url);
     if (problem)
       findings.push({

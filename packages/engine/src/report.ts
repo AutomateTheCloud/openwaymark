@@ -93,7 +93,8 @@ export interface BundleSummary {
 export interface Report {
   engine: { name: "@openwaymark/engine"; version: string };
   supportedFormatVersions: readonly string[];
-  input: { form: "archive" | "text"; bytes: number };
+  /** "unrecognized": not a ZIP archive, so not a bundle (OWM-PKG-001). */
+  input: { form: "archive" | "unrecognized"; bytes: number };
   /**
    * "conforming" only when no error was found and every required check ran
    * (OWM-VAL-002). "incomplete" when no error was found but a required check

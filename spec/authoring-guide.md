@@ -1,8 +1,9 @@
 # Writing OpenWaymark bundles
 
 This guide shows you how to write a study bundle by hand: practice questions,
-flashcards, or both. You need a text editor. If your bundle has images, you also
-need a way to make a ZIP file, which every computer already has.
+flashcards, or both. You need a text editor, and a way to pack a folder into a
+ZIP file: the `openwaymark pack` command, the browser validator, or the ZIP
+tool every computer already has.
 
 The guide follows format **draft 0.1**. The [specification](openwaymark.md) is
 the authority; this guide links to it where the details matter. Working
@@ -10,8 +11,9 @@ examples are in [`examples/`](../examples/).
 
 ## 1. The smallest bundle
 
-A bundle without images can be a single YAML file. Save this as
-`capitals.yaml`:
+Every bundle starts as a folder with a file called `study.yaml` in it, the
+**manifest**. Make a folder called `capitals`, and save this in it as
+`study.yaml`:
 
 ```yaml
 format_version: "0.1"
@@ -38,7 +40,9 @@ The five lines at the top are required in every bundle:
 | `version`        | Your content's version, such as `1.0.0`. Increase it every time you change anything                                            |
 | `language`       | The language of your content, such as `en`, `es`, or `pt-BR`                                                                   |
 
-Then add `questions`, `flashcards`, or both.
+Then add `questions`, `flashcards`, or both. To share the bundle, pack the
+folder into one `.waymark` file (section 5). A `study.yaml` on its own is not a
+bundle, and apps refuse it.
 
 ## 2. Writing questions
 
@@ -208,7 +212,7 @@ blank line above it, or do not use it.
 
 ## 5. Adding images
 
-A bundle with images is a ZIP file. Make a folder like this:
+Images go in an `assets` folder next to `study.yaml`:
 
 ```text
 my-bundle/
@@ -273,8 +277,9 @@ quietly showing changed content. A ZIP file you make yourself has no
 and zip it again, either repack it with `openwaymark pack` or delete
 `integrity.json`. The old digests no longer match.
 
-> An `openwaymark pack` command and a browser-based packer are planned. They will
-> build the archive correctly and check it at the same time.
+> The easiest way to pack is `openwaymark pack my-bundle`, or **Make a bundle
+> from a folder** in the browser validator. Both build the archive correctly,
+> add `integrity.json`, and check the result at the same time.
 
 ## 6. Describing your collection
 
@@ -358,8 +363,8 @@ Lines starting with `#` are comments and are ignored.
 - [ ] You have the right to share every image and every passage you used, and
       the `license` says what others may do.
 - [ ] `version` is higher than the last version you shared.
-- [ ] The bundle passes a validator. The `openwaymark validate` command and the
-      browser validator are coming soon.
+- [ ] The bundle passes a validator: `openwaymark validate`, which also takes
+      the folder, or the browser validator.
 
 A validator checks structure and safety. It cannot tell whether your answers
 are right. That review is yours.

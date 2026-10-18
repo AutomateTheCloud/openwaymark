@@ -57,10 +57,11 @@ describe("validateBundle", () => {
     expect(source.bytesRead).toBeLessThanOrEqual(4);
   });
 
-  it("rejects an oversized text bundle without reading it", async () => {
+  it("rejects a file that is not a ZIP archive after reading its first bytes (OWM-PKG-001)", async () => {
     const source = countingSource(9 * 1024 * 1024);
     const { report } = await validateBundle(source);
-    expect(report.conformance).toBe("not-conforming");
+    expect(report.diagnostics.map((d) => d.rule)).toEqual(["OWM-PKG-001"]);
+    expect(report.input.form).toBe("unrecognized");
     expect(source.bytesRead).toBeLessThanOrEqual(4);
   });
 
@@ -89,7 +90,10 @@ describe("validateBundle", () => {
 
   it("caps the diagnostics it keeps but counts them all", async () => {
     const manifest = `format_version: "0.1"\nid: 4c5e2a10-8b7d-4f3e-9a21-6d0c3b5e7f81\ntitle: T\nversion: 1.0.0\nlanguage: en\nflashcards:\n${Array.from({ length: 50 }, () => "  - id: BAD\n    front:\n      text: F\n    back:\n      text: B\n").join("")}`;
-    const { report } = await validateBundle(bytesSource(new TextEncoder().encode(manifest)), {
+    const { archive } = packBundle([
+      { path: "study.yaml", bytes: new TextEncoder().encode(manifest) },
+    ]);
+    const { report } = await validateBundle(bytesSource(archive), {
       maxDiagnostics: 10,
     });
     expect(report.diagnostics).toHaveLength(10);

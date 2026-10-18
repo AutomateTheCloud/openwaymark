@@ -86,7 +86,7 @@ _The format is a working draft. Field names may change until version 1.0._
 | ------------------------------------ | ---------------------------------------------------------------------------------------------- |
 | [`spec/`](spec/)                     | The OpenWaymark specification, authoring guide, and change log                                 |
 | [`schema/`](schema/)                 | JSON Schema for the manifest, draft 0.1                                                        |
-| [`examples/`](examples/)             | Valid example bundles: IT, high-school, rendering, and a text-only bundle                      |
+| [`examples/`](examples/)             | Valid example bundles, as folders: IT, high-school, rendering, and language learning           |
 | [`fixtures/`](fixtures/)             | Conformance fixtures for implementers, each a lesson in one attack or mistake                  |
 | [`packages/engine`](packages/engine) | Reference engine: validation, linting, and package inspection. It runs in Node and in browsers |
 | [`packages/cli`](packages/cli)       | `openwaymark` command-line tool: `validate`, `lint`, `inspect`, `scan`, `pack`                 |

@@ -4,7 +4,7 @@
 import { describe, expect, it } from "vitest";
 import { checkMarkdown } from "../src/markdown.js";
 
-const item = { isDescription: false, isTextBundle: false };
+const item = { isDescription: false };
 const rules = (text: string, context = item) =>
   checkMarkdown(text, context).findings.map((finding) => finding.rule);
 
@@ -53,10 +53,10 @@ describe("checkMarkdown", () => {
     expect(rules("Bare https://example.org stays text")).toEqual([]);
   });
 
-  it("allows only bundle images (OWM-MD-009, OWM-TEXT-002)", () => {
+  it("allows only bundle images (OWM-MD-009)", () => {
     expect(rules("![x](https://example.org/p.png)")).toEqual(["OWM-MD-009"]);
     expect(rules("![x](assets/../a.png)")).toEqual(["OWM-MD-009"]);
-    expect(rules("![x](assets/a.png)", { ...item, isTextBundle: true })).toEqual(["OWM-TEXT-002"]);
+    expect(rules("![x](assets/a.png)")).toEqual([]);
   });
 
   it("limits nesting to 8 levels (OWM-MD-006)", () => {

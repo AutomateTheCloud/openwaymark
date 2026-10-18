@@ -6,7 +6,7 @@
 // Schema (Ajv), cross-references, asset presence and signatures, and https-only
 // links. The examples are also expected to be lint-clean: no unused assets.
 
-import { readFileSync, readdirSync, statSync } from "node:fs";
+import { existsSync, readFileSync, readdirSync, statSync } from "node:fs";
 import { join, relative } from "node:path";
 import { describe, expect, it } from "vitest";
 import {
@@ -25,9 +25,9 @@ const validate = compileSchema();
 const archiveExamples = readdirSync(EXAMPLES).filter((name) =>
   statSync(join(EXAMPLES, name)).isDirectory(),
 );
-const textExamples = readdirSync(EXAMPLES).filter((name) => name.endsWith(".yaml"));
 
 function filesUnder(directory: string): string[] {
+  if (!existsSync(directory)) return [];
   return readdirSync(directory, { recursive: true, encoding: "utf8" })
     .map((name) => join(directory, name))
     .filter((path) => statSync(path).isFile());
@@ -64,12 +64,12 @@ function urlsIn(value: Value, key = ""): string[] {
 }
 
 describe("example bundles", () => {
-  it("include archive-form and text-form examples", () => {
-    expect(archiveExamples.length).toBeGreaterThanOrEqual(3);
-    expect(textExamples.length).toBeGreaterThanOrEqual(1);
+  it("include bundles with images and bundles without", () => {
+    expect(archiveExamples.length).toBeGreaterThanOrEqual(5);
+    expect(archiveExamples.some((name) => !existsSync(join(EXAMPLES, name, "assets")))).toBe(true);
   });
 
-  describe.each(archiveExamples)("%s (archive form)", (name) => {
+  describe.each(archiveExamples)("%s", (name) => {
     const root = join(EXAMPLES, name);
     const manifest = load(join(root, "study.yaml"));
 
@@ -108,23 +108,6 @@ describe("example bundles", () => {
 
     it("uses only https URLs", () => {
       for (const url of urlsIn(manifest)) expect(url).toMatch(/^https:\/\/[^\s/?#@]+/);
-    });
-  });
-
-  describe.each(textExamples)("%s (text form)", (name) => {
-    const manifest = load(join(EXAMPLES, name));
-
-    it("validates against the JSON Schema", () => {
-      validate(manifest);
-      expect(validate.errors ?? []).toEqual([]);
-    });
-
-    it("satisfies the cross-reference rules", () => {
-      expect(semanticProblems(manifest)).toEqual([]);
-    });
-
-    it("references no assets (OWM-TEXT-002)", () => {
-      expect(imageReferences(manifest)).toEqual([]);
     });
   });
 });

@@ -8,6 +8,10 @@ into a new version.
 
 **Revisions while drafting:**
 
+- **Removed text bundles.** Every bundle is now a ZIP archive; a collection
+  without images is an archive containing only `study.yaml` (section 3.1).
+  OWM-PKG-001 now requires the archive form, and readers reject any other
+  file. OWM-TEXT-001 and OWM-TEXT-002 are retired (Appendix D).
 - Recorded the intended direction for private bundles: an encryption envelope
   using an open standard around an ordinary bundle (Appendix C, issue 10).
 - Reserved `signatures/` for a future, optional signature mechanism

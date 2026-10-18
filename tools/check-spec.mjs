@@ -22,6 +22,9 @@ const KEYWORD =
   /\b(MUST NOT|MUST|REQUIRED|SHALL NOT|SHALL|SHOULD NOT|SHOULD|NOT RECOMMENDED|RECOMMENDED|MAY|OPTIONAL)\b/;
 const RULE_START = /^- \*\*(OWM-[A-Z]+-\d{3})\.\*\*/;
 const LINT_ROW = /^\| (OWM-LINT-\d{3}) \|/;
+// Rows of Appendix D: retired identifiers are defined there, so mentions of
+// them resolve, and they can never be defined again as rules.
+const RETIRED_ROW = /^\| (OWM-[A-Z]+-\d{3}) \| Retired/;
 const ID_MENTION = /\bOWM-[A-Z]+-\d{3}\b/g;
 
 const lines = readFileSync(SPEC, "utf8").split("\n");
@@ -79,7 +82,10 @@ flush();
 const problems = [];
 const defined = new Map();
 for (const unit of units) {
-  const rule = RULE_START.exec(unit.text)?.[1] ?? LINT_ROW.exec(unit.text)?.[1];
+  const rule =
+    RULE_START.exec(unit.text)?.[1] ??
+    LINT_ROW.exec(unit.text)?.[1] ??
+    RETIRED_ROW.exec(unit.text)?.[1];
   if (rule) {
     if (defined.has(rule)) {
       problems.push(

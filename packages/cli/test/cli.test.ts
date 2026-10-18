@@ -123,8 +123,23 @@ describe("validate", () => {
   });
 });
 
+describe("validating a folder", () => {
+  it("packs the folder in memory and validates it", async () => {
+    const result = await cli(["validate", join(REPO, "examples/biology-terms")]);
+    expect(result.status).toBe(EXIT_OK);
+    expect(result.stdout).toContain("passed the configured checks");
+  });
+
+  it("explains that a lone YAML file is not a bundle (OWM-PKG-001)", async () => {
+    const result = await cli(["validate", join(REPO, "examples/biology-terms/study.yaml")]);
+    expect(result.status).toBe(EXIT_NOT_CONFORMING);
+    expect(result.stdout).toContain("OWM-PKG-001");
+    expect(result.stdout).toContain("put it in a folder and pack the folder");
+  });
+});
+
 describe("lint", () => {
-  const ambiguous = join(FIXTURES, "lint-yaml11-ambiguous/input.yaml");
+  const ambiguous = join(FIXTURES, "lint-yaml11-ambiguous/input.waymark");
 
   it("reports warnings but succeeds", async () => {
     const result = await cli(["lint", ambiguous]);
