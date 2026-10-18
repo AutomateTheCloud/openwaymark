@@ -1,0 +1,9 @@
+{
+  "description": "A tag that some YAML libraries use to construct objects.",
+  "format_version": "0.1",
+  "mode": "validate",
+  "outcome": "reject",
+  "rules": [
+    "OWM-YAML-002"
+  ]
+}

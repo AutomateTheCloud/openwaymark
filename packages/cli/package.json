@@ -12,6 +12,7 @@
     "dist"
   ],
   "dependencies": {
-    "@openwaymark/engine": "workspace:*"
+    "@openwaymark/engine": "workspace:*",
+    "sharp": "^0.35.5"
   }
 }

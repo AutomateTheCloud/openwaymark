@@ -1,0 +1,9 @@
+{
+  "description": "A mapping with the same key twice.",
+  "format_version": "0.1",
+  "mode": "validate",
+  "outcome": "reject",
+  "rules": [
+    "OWM-YAML-004"
+  ]
+}

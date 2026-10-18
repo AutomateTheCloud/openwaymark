@@ -1,0 +1,9 @@
+{
+  "description": "A script among the assets.",
+  "format_version": "0.1",
+  "mode": "validate",
+  "outcome": "reject",
+  "rules": [
+    "OWM-IMG-006"
+  ]
+}

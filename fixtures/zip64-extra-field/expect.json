@@ -1,0 +1,9 @@
+{
+  "description": "An entry carries a ZIP64 extra field.",
+  "format_version": "0.1",
+  "mode": "validate",
+  "outcome": "reject",
+  "rules": [
+    "OWM-PKG-003"
+  ]
+}

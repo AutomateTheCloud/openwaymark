@@ -1,0 +1,9 @@
+{
+  "description": "A prompt refers to an image that is not in the bundle.",
+  "format_version": "0.1",
+  "mode": "validate",
+  "outcome": "reject",
+  "rules": [
+    "OWM-IMG-001"
+  ]
+}

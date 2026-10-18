@@ -1,0 +1,9 @@
+{
+  "description": "selection_count differs from the number of correct answers.",
+  "format_version": "0.1",
+  "mode": "validate",
+  "outcome": "reject",
+  "rules": [
+    "OWM-Q-006"
+  ]
+}

@@ -1,0 +1,9 @@
+{
+  "description": "A misspelled member.",
+  "format_version": "0.1",
+  "mode": "validate",
+  "outcome": "reject",
+  "rules": [
+    "OWM-VER-004"
+  ]
+}

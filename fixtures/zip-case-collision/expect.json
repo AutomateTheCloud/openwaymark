@@ -1,0 +1,9 @@
+{
+  "description": "Two entries differ only by case.",
+  "format_version": "0.1",
+  "mode": "validate",
+  "outcome": "reject",
+  "rules": [
+    "OWM-PATH-002"
+  ]
+}

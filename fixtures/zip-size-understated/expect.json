@@ -1,0 +1,9 @@
+{
+  "description": "An entry decompresses to more than its recorded size.",
+  "format_version": "0.1",
+  "mode": "validate",
+  "outcome": "reject",
+  "rules": [
+    "OWM-PKG-007"
+  ]
+}

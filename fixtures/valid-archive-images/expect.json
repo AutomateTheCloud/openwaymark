@@ -1,0 +1,7 @@
+{
+  "description": "PNG, JPEG, and WebP assets, each referenced.",
+  "format_version": "0.1",
+  "mode": "validate",
+  "outcome": "accept",
+  "rules": []
+}

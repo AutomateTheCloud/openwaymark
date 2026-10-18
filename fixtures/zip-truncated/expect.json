@@ -1,0 +1,9 @@
+{
+  "description": "The archive is cut off before its central directory.",
+  "format_version": "0.1",
+  "mode": "validate",
+  "outcome": "reject",
+  "rules": [
+    "OWM-PKG-002"
+  ]
+}

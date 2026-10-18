@@ -1,0 +1,9 @@
+{
+  "description": "2,002 entries: over the limit of 2,000.",
+  "format_version": "0.1",
+  "mode": "validate",
+  "outcome": "reject",
+  "rules": [
+    "OWM-LIM-001"
+  ]
+}

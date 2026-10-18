@@ -67,13 +67,16 @@ const RULES = [
 
 const TEXT_FILE = /\.(md|txt|ts|tsx|js|mjs|cjs|json|ya?ml|html|css)$/i;
 const THIS_FILE = "tools/check-american.mjs";
+// Third-party names are not ours to respell: the lockfile lists packages such
+// as @img/colour, a dependency of sharp.
+const EXCLUDED = new Set([THIS_FILE, "pnpm-lock.yaml"]);
 const PATTERNS = RULES.map(([source, american]) => [new RegExp(`\\b${source}\\b`, "gi"), american]);
 
 const files = execFileSync("git", ["ls-files", "--cached", "--others", "--exclude-standard"], {
   encoding: "utf8",
 })
   .split("\n")
-  .filter((path) => path !== "" && path !== THIS_FILE && TEXT_FILE.test(path));
+  .filter((path) => path !== "" && !EXCLUDED.has(path) && TEXT_FILE.test(path));
 
 const problems = [];
 for (const path of files) {

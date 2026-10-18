@@ -1,0 +1,9 @@
+{
+  "description": "An email autolink, which uses the mailto scheme.",
+  "format_version": "0.1",
+  "mode": "validate",
+  "outcome": "reject",
+  "rules": [
+    "OWM-LINK-001"
+  ]
+}

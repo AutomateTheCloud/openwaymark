@@ -1,0 +1,9 @@
+{
+  "description": "The manifest contains an invalid UTF-8 sequence.",
+  "format_version": "0.1",
+  "mode": "validate",
+  "outcome": "reject",
+  "rules": [
+    "OWM-ENC-001"
+  ]
+}

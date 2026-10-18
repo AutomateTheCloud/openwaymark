@@ -1,0 +1,9 @@
+{
+  "description": "An entry's CRC-32 does not match its data.",
+  "format_version": "0.1",
+  "mode": "validate",
+  "outcome": "reject",
+  "rules": [
+    "OWM-PKG-008"
+  ]
+}

@@ -1,0 +1,7 @@
+{
+  "description": "Entries written with data descriptors, as streaming tools do.",
+  "format_version": "0.1",
+  "mode": "validate",
+  "outcome": "accept",
+  "rules": []
+}

@@ -1,0 +1,9 @@
+{
+  "description": "An entry carries an Info-ZIP Unicode Path extra field that renames it.",
+  "format_version": "0.1",
+  "mode": "validate",
+  "outcome": "reject",
+  "rules": [
+    "OWM-PKG-011"
+  ]
+}

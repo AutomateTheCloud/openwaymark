@@ -1,0 +1,10 @@
+{
+  "description": "A JPEG with GPS data and a rotation tag passes, with lint warnings.",
+  "format_version": "0.1",
+  "mode": "lint",
+  "outcome": "accept",
+  "rules": [
+    "OWM-LINT-013",
+    "OWM-LINT-014"
+  ]
+}

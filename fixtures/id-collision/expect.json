@@ -1,0 +1,9 @@
+{
+  "description": "A question and a flashcard share an id.",
+  "format_version": "0.1",
+  "mode": "validate",
+  "outcome": "reject",
+  "rules": [
+    "OWM-ID-002"
+  ]
+}

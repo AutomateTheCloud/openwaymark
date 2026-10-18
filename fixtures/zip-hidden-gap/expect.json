@@ -1,0 +1,9 @@
+{
+  "description": "Bytes hidden between two entries, outside any entry.",
+  "format_version": "0.1",
+  "mode": "validate",
+  "outcome": "reject",
+  "rules": [
+    "OWM-PKG-006"
+  ]
+}

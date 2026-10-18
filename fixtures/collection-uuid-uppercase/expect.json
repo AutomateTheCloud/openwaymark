@@ -1,0 +1,9 @@
+{
+  "description": "An uppercase collection id.",
+  "format_version": "0.1",
+  "mode": "validate",
+  "outcome": "reject",
+  "rules": [
+    "OWM-COL-004"
+  ]
+}

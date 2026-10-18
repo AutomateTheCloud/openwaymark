@@ -1,0 +1,9 @@
+{
+  "description": "Bytes after the end of central directory record.",
+  "format_version": "0.1",
+  "mode": "validate",
+  "outcome": "reject",
+  "rules": [
+    "OWM-PKG-002"
+  ]
+}

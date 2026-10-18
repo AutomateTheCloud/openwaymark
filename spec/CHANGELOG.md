@@ -6,6 +6,19 @@ into a new version.
 
 ## Draft 0.1 — 2026-10-18 (in review)
 
+**Revisions while drafting:**
+
+- Added OWM-YAML-011: the manifest must be well-formed YAML. This was implied,
+  but no rule stated it.
+- Added OWM-VER-007: required members must be present, with values of the
+  stated types. This was expressed only by the tables.
+- OWM-IMG-006 no longer requires JPEG files to carry a JFIF or Exif header.
+  Many tools write valid JPEGs with neither.
+- OWM-EXT-002 permits `org.example` namespaces in examples and tests.
+- OWM-COL-016 (sequences are nonempty), size limits for `authors` and `spdx`,
+  and the prohibition of user information in URLs, aligning the text with the
+  schema.
+
 First complete draft. It turns the design baseline's illustrative fields into
 normative rules.
 

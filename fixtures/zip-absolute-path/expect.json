@@ -1,0 +1,9 @@
+{
+  "description": "An entry name is an absolute path.",
+  "format_version": "0.1",
+  "mode": "validate",
+  "outcome": "reject",
+  "rules": [
+    "OWM-PATH-001"
+  ]
+}

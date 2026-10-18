@@ -13,10 +13,14 @@ export default tseslint.config(
     languageOptions: {
       parserOptions: {
         projectService: {
-          allowDefaultProject: ["*.js", "*.ts", "tools/*.mjs"],
+          allowDefaultProject: ["*.js", "*.ts", "tools/*.mjs", "tools/*.d.mts"],
         },
         tsconfigRootDir: import.meta.dirname,
       },
+    },
+    rules: {
+      // Numbers in messages ("is 12 bytes") are clear; other non-strings still need String().
+      "@typescript-eslint/restrict-template-expressions": ["error", { allowNumber: true }],
     },
   },
   {

@@ -1,0 +1,9 @@
+{
+  "description": "A file other than the manifest and images.",
+  "format_version": "0.1",
+  "mode": "validate",
+  "outcome": "reject",
+  "rules": [
+    "OWM-PATH-004"
+  ]
+}

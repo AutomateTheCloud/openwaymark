@@ -1,0 +1,9 @@
+{
+  "description": "A 2 MiB entry compressed about 1,000 to 1: over the ratio limit.",
+  "format_version": "0.1",
+  "mode": "validate",
+  "outcome": "reject",
+  "rules": [
+    "OWM-LIM-001"
+  ]
+}

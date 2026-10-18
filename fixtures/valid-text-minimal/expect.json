@@ -1,0 +1,7 @@
+{
+  "description": "Smallest valid text bundle: one question.",
+  "format_version": "0.1",
+  "mode": "validate",
+  "outcome": "accept",
+  "rules": []
+}

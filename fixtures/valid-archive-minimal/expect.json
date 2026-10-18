@@ -1,0 +1,7 @@
+{
+  "description": "Smallest valid archive bundle: study.yaml only.",
+  "format_version": "0.1",
+  "mode": "validate",
+  "outcome": "accept",
+  "rules": []
+}

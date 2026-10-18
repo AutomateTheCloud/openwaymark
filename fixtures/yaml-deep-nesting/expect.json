@@ -1,0 +1,9 @@
+{
+  "description": "Nesting deeper than 32 levels.",
+  "format_version": "0.1",
+  "mode": "validate",
+  "outcome": "reject",
+  "rules": [
+    "OWM-LIM-001"
+  ]
+}

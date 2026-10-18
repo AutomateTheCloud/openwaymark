@@ -1,0 +1,9 @@
+{
+  "description": "study.yaml is inside a folder: the folder was compressed instead of its contents.",
+  "format_version": "0.1",
+  "mode": "validate",
+  "outcome": "reject",
+  "rules": [
+    "OWM-PATH-003"
+  ]
+}

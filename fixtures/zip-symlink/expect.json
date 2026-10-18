@@ -1,0 +1,9 @@
+{
+  "description": "An entry is a Unix symbolic link.",
+  "format_version": "0.1",
+  "mode": "validate",
+  "outcome": "reject",
+  "rules": [
+    "OWM-PKG-009"
+  ]
+}

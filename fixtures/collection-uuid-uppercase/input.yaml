@@ -1,0 +1,21 @@
+format_version: "0.1"
+id: 4C5E2A10-8B7D-4F3E-9A21-6D0C3B5E7F81
+title: Fixture
+version: 1.0.0
+language: en
+license:
+  spdx: Apache-2.0
+questions:
+  - id: q-1
+    type: multiple_choice
+    selection: single
+    prompt:
+      text: Pick the first choice.
+    choices:
+      - id: a
+        text: First
+      - id: b
+        text: Second
+    correct_answers: [a]
+    explanation:
+      text: The first choice is correct.

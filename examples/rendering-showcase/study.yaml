@@ -60,6 +60,8 @@ questions:
           src: assets/shapes/circle.jpg
           alt: A blue circle.
     correct_answers: [triangle]
+    explanation:
+      text: A triangle has three sides, a square four, and a circle none.
     tags: [images]
 
   - id: shell-arithmetic-001

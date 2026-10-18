@@ -1,0 +1,9 @@
+{
+  "description": "The manifest contains a BEL control character.",
+  "format_version": "0.1",
+  "mode": "validate",
+  "outcome": "reject",
+  "rules": [
+    "OWM-ENC-002"
+  ]
+}

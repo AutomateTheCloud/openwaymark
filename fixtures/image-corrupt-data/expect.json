@@ -1,0 +1,9 @@
+{
+  "description": "A PNG whose structure is intact but whose pixel data is not.",
+  "format_version": "0.1",
+  "mode": "validate",
+  "outcome": "reject",
+  "rules": [
+    "OWM-IMG-009"
+  ]
+}

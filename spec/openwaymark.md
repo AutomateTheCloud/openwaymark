@@ -334,6 +334,8 @@ This draft does not register a media type (Appendix C, issue 1).
 
 The manifest is a YAML 1.2.2 [YAML] document, restricted as follows.
 
+- **OWM-YAML-011.** The manifest MUST be a well-formed YAML 1.2.2 stream, free
+  of syntax errors.
 - **OWM-YAML-001.** The manifest MUST contain exactly one YAML document. A
   single leading document start marker (`---`) and a single trailing document
   end marker (`...`) are permitted. Directives (`%YAML`, `%TAG`) MUST NOT be
@@ -410,6 +412,11 @@ never apply to the YAML text.
   members other than those defined for it in the bundle's format version,
   except inside an `extensions` mapping (section 5.4). An unknown member is an
   error.
+
+- **OWM-VER-007.** Every mapping defined by this specification MUST contain
+  the members its table marks as required, and every member's value MUST have
+  the type its table states. A more specific rule applies where one exists,
+  such as OWM-COL-001 for the root or OWM-YAML-006 for strings.
 
 > **Note (informative).** Strictness catches misspelled field names, such as
 > `explaination`, that would otherwise disappear silently.
@@ -904,7 +911,7 @@ This section applies to link destinations, autolinks, and every `url` and
 
 - **OWM-IMG-006.** Every asset MUST be a still image in one of these formats:
   - PNG [PNG], file extension `.png`;
-  - JPEG with JFIF or Exif [JPEG], file extension `.jpg` or `.jpeg`;
+  - JPEG [JPEG], baseline or progressive, file extension `.jpg` or `.jpeg`;
   - WebP [RFC9649], lossy or lossless, file extension `.webp`.
 
   The extension MUST be lowercase.

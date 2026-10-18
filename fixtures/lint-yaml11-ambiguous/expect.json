@@ -1,0 +1,9 @@
+{
+  "description": "Unquoted values that YAML 1.1 tools read differently pass, with lint warnings.",
+  "format_version": "0.1",
+  "mode": "lint",
+  "outcome": "accept",
+  "rules": [
+    "OWM-LINT-012"
+  ]
+}

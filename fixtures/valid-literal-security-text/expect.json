@@ -1,0 +1,7 @@
+{
+  "description": "Shell commands, HTML, SQL, and XSS strings inside code are text and are accepted.",
+  "format_version": "0.1",
+  "mode": "validate",
+  "outcome": "accept",
+  "rules": []
+}

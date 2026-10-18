@@ -1,0 +1,9 @@
+{
+  "description": "Finder and Windows metadata entries are ignored with warnings.",
+  "format_version": "0.1",
+  "mode": "validate",
+  "outcome": "accept",
+  "rules": [
+    "OWM-PATH-005"
+  ]
+}

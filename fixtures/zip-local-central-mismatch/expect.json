@@ -1,0 +1,9 @@
+{
+  "description": "The local header names a different file than the central directory.",
+  "format_version": "0.1",
+  "mode": "validate",
+  "outcome": "reject",
+  "rules": [
+    "OWM-PKG-007"
+  ]
+}

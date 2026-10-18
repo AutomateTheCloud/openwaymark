@@ -1,0 +1,9 @@
+{
+  "description": "An image embedded as a data: URI.",
+  "format_version": "0.1",
+  "mode": "validate",
+  "outcome": "reject",
+  "rules": [
+    "OWM-MD-009"
+  ]
+}

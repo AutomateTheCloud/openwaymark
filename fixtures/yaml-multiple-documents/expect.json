@@ -1,0 +1,9 @@
+{
+  "description": "Two YAML documents in one manifest.",
+  "format_version": "0.1",
+  "mode": "validate",
+  "outcome": "reject",
+  "rules": [
+    "OWM-YAML-001"
+  ]
+}

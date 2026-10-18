@@ -1,0 +1,9 @@
+{
+  "description": "Two entries have the same name.",
+  "format_version": "0.1",
+  "mode": "validate",
+  "outcome": "reject",
+  "rules": [
+    "OWM-PATH-002"
+  ]
+}

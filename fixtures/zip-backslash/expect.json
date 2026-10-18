@@ -1,0 +1,9 @@
+{
+  "description": "An entry name uses a backslash separator.",
+  "format_version": "0.1",
+  "mode": "validate",
+  "outcome": "reject",
+  "rules": [
+    "OWM-PATH-001"
+  ]
+}

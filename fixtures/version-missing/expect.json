@@ -1,0 +1,9 @@
+{
+  "description": "No format_version.",
+  "format_version": "0.1",
+  "mode": "validate",
+  "outcome": "reject",
+  "rules": [
+    "OWM-CONF-004"
+  ]
+}

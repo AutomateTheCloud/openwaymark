@@ -1,0 +1,9 @@
+{
+  "description": "A __proto__ key is ordinary data and cannot affect the engine; here it is an unknown member.",
+  "format_version": "0.1",
+  "mode": "validate",
+  "outcome": "reject",
+  "rules": [
+    "OWM-VER-004"
+  ]
+}

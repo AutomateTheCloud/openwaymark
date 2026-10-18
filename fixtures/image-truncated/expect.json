@@ -1,0 +1,9 @@
+{
+  "description": "A PNG cut off mid-chunk.",
+  "format_version": "0.1",
+  "mode": "validate",
+  "outcome": "reject",
+  "rules": [
+    "OWM-IMG-009"
+  ]
+}

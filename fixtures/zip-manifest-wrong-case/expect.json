@@ -1,0 +1,10 @@
+{
+  "description": "The manifest is named Study.yaml.",
+  "format_version": "0.1",
+  "mode": "validate",
+  "outcome": "reject",
+  "rules": [
+    "OWM-PATH-003",
+    "OWM-PATH-004"
+  ]
+}

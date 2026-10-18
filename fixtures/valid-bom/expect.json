@@ -1,0 +1,7 @@
+{
+  "description": "A UTF-8 byte order mark before the manifest is accepted.",
+  "format_version": "0.1",
+  "mode": "validate",
+  "outcome": "accept",
+  "rules": []
+}

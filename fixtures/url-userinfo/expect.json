@@ -1,0 +1,9 @@
+{
+  "description": "A reference URL with user information before the host.",
+  "format_version": "0.1",
+  "mode": "validate",
+  "outcome": "reject",
+  "rules": [
+    "OWM-LINK-001"
+  ]
+}
