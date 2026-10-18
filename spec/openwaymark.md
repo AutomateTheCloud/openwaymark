@@ -1449,3 +1449,19 @@ _Informative._ These questions are deliberately unresolved in draft 0.1.
    may add an optional link, such as `translation_of`, naming the collection it
    translates, so that readers can offer the other languages and relate items
    by `id`.
+10. **Private (encrypted) bundles.** Encryption inside the archive is
+    prohibited (OWM-PKG-004). The intended direction for organizations that need
+    private bundles:
+    - An encrypted bundle is an **envelope** around an ordinary bundle, not a
+      new kind of bundle. The whole `.waymark` file is encrypted with an open,
+      royalty-free standard, such as age or OpenPGP (RFC 9580), either for
+      specific recipients' public keys or with a passphrase.
+    - Keys belong to the organization. No service is required.
+    - After decryption, the bundle is untrusted input like any other, and goes
+      through every check.
+    - Readers that do not support the envelope should recognize it and say that
+      the bundle is encrypted, rather than reporting it as invalid.
+    - Encryption protects a bundle at rest and in transit. It cannot stop someone
+      who is allowed to open a bundle from copying what they see. An open format
+      cannot provide copy prevention (DRM), and this specification does not
+      attempt it.

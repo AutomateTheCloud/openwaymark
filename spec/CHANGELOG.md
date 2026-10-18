@@ -8,6 +8,8 @@ into a new version.
 
 **Revisions while drafting:**
 
+- Recorded the intended direction for private bundles: an encryption envelope
+  using an open standard around an ordinary bundle (Appendix C, issue 10).
 - Reserved `signatures/` for a future, optional signature mechanism
   (section 3.8, OWM-SIG-001 to OWM-SIG-003). Readers ignore it, so signed bundles
   made later still open in readers built for this version.
