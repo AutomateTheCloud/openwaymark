@@ -1,0 +1,184 @@
+# Example OpenWaymark bundle: IT certification style.
+# Exercises single and multiple answers, selection_count, hints, explanations,
+# per-choice explanations, references, fixed choice order, and images.
+# Copyright 2026 Automate the Cloud Inc. Licensed under the Apache License 2.0.
+
+format_version: "0.1"
+id: d2b48918-89c1-428a-9529-144dc729ba76
+title: Networking Fundamentals
+version: 1.0.0
+language: en
+subject: Computer networking
+description: |
+  Practice questions and flashcards on the **Domain Name System** (DNS): record
+  types, transport, and how a lookup travels from a client to a name server.
+
+  ![A client asks a resolver for example.com's A record. The resolver asks a name server, which answers 192.0.2.10, and the resolver passes that answer back to the client.](assets/dns-lookup.png)
+
+  Addresses use the ranges reserved for documentation (RFC 5737 and RFC 3849).
+tags: [networking, dns]
+authors:
+  - name: Automate the Cloud Inc.
+license:
+  spdx: Apache-2.0
+created: "2026-10-18"
+updated: "2026-10-18"
+sources:
+  - title: "RFC 1035: Domain Names - Implementation and Specification"
+    url: https://www.rfc-editor.org/rfc/rfc1035
+  - title: "RFC 3596: DNS Extensions to Support IP Version 6"
+    url: https://www.rfc-editor.org/rfc/rfc3596
+practice_defaults:
+  passing_percentage: 75
+
+questions:
+  - id: dns-record-001
+    type: multiple_choice
+    selection: single
+    prompt:
+      text: Which DNS record type maps a hostname to an IPv4 address?
+      image:
+        src: assets/dns-lookup.png
+        alt: A client asks a resolver for example.com's A record. The resolver asks a name server, which answers 192.0.2.10, and the resolver passes that answer back to the client.
+    choices:
+      - id: record-a
+        text: A
+      - id: record-aaaa
+        text: AAAA
+        explanation:
+          text: AAAA records map hostnames to IPv6 addresses.
+      - id: record-cname
+        text: CNAME
+        explanation:
+          text: A CNAME record makes one name an alias of another name.
+      - id: record-mx
+        text: MX
+    correct_answers: [record-a]
+    hint:
+      text: Look at the address in the diagram. Which address family is it?
+    explanation:
+      text: An **A** record associates a hostname with a 32-bit IPv4 address.
+    tags: [dns, record-types]
+    references:
+      - title: "RFC 1035: Domain Names - Implementation and Specification"
+        reference: Section 3.4.1, A RDATA format
+        url: https://www.rfc-editor.org/rfc/rfc1035
+
+  - id: dns-record-002
+    type: multiple_choice
+    selection: multiple
+    selection_count: 2
+    prompt:
+      text: Which **two** record types map hostnames to IP addresses?
+    choices:
+      - id: record-a
+        text: A
+      - id: record-aaaa
+        text: AAAA
+      - id: record-mx
+        text: MX
+      - id: record-txt
+        text: TXT
+    correct_answers: [record-a, record-aaaa]
+    explanation:
+      text: |
+        **A** records contain IPv4 addresses, and **AAAA** records contain IPv6
+        addresses. MX names a mail server, and TXT holds arbitrary text.
+    tags: [dns, record-types]
+
+  - id: dns-port-001
+    type: multiple_choice
+    selection: single
+    prompt:
+      text: Which port does DNS use by default?
+    choices:
+      - id: port-25
+        text: "25"
+      - id: port-53
+        text: "53"
+      - id: port-80
+        text: "80"
+      - id: port-443
+        text: "443"
+    correct_answers: [port-53]
+    hint:
+      text: It is the same number for UDP and TCP.
+    explanation:
+      text: DNS uses port 53, over both UDP and TCP.
+    tags: [dns, ports]
+
+  - id: dns-transport-001
+    type: multiple_choice
+    selection: multiple
+    prompt:
+      text: Which transport protocols can carry ordinary DNS queries?
+    choices:
+      - id: transport-udp
+        text: UDP
+      - id: transport-tcp
+        text: TCP
+      - id: transport-icmp
+        text: ICMP
+      - id: transport-arp
+        text: ARP
+    correct_answers: [transport-udp, transport-tcp]
+    explanation:
+      text: |
+        DNS commonly uses UDP, and every implementation must also support TCP,
+        which is used for large responses and zone transfers. ICMP and ARP are
+        not transport protocols for DNS.
+    tags: [dns, transport]
+    references:
+      - title: "RFC 7766: DNS Transport over TCP - Implementation Requirements"
+        url: https://www.rfc-editor.org/rfc/rfc7766
+
+  - id: dns-alias-001
+    type: multiple_choice
+    selection: single
+    shuffle_choices: false
+    prompt:
+      text: Which record type makes one hostname an alias for another?
+    choices:
+      - id: record-a
+        text: A
+      - id: record-mx
+        text: MX
+      - id: record-cname
+        text: CNAME
+      - id: none
+        text: None of the above
+    correct_answers: [record-cname]
+    explanation:
+      text: A **CNAME** (canonical name) record points one name at another.
+    tags: [dns, record-types]
+
+flashcards:
+  - id: dns-card-aaaa
+    front:
+      text: What does an AAAA record contain?
+    back:
+      text: An IPv6 address associated with a hostname.
+      image:
+        src: assets/aaaa-record.png
+        alt: "A DNS record: name example.com, TTL 3600, class IN, type AAAA, value 2001:db8::10."
+    tags: [dns, record-types]
+    references:
+      - title: "RFC 3596: DNS Extensions to Support IP Version 6"
+        reference: Section 2.1, AAAA record type
+        url: https://www.rfc-editor.org/rfc/rfc3596
+
+  - id: dns-card-ptr
+    front:
+      text: Which record type supports a reverse lookup, from an address to a name?
+    back:
+      text: PTR (pointer) records.
+    tags: [dns, record-types]
+
+  - id: dns-card-ttl
+    front:
+      text: What does a record's TTL control?
+    back:
+      text: How many seconds a resolver may cache the record before asking again.
+    hint:
+      text: TTL stands for _time to live_.
+    tags: [dns, caching]

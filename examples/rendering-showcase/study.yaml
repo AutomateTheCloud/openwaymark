@@ -1,0 +1,168 @@
+# Example OpenWaymark bundle: rendering showcase.
+# Exercises choice images (JPEG), a decorative image, headings and a table in
+# the description, code spans and code blocks, literal security examples, block
+# quotes, lists, selection_count, extensions, and an image credit with a URL.
+# Copyright 2026 Automate the Cloud Inc. Licensed under the Apache License 2.0.
+
+format_version: "0.1"
+id: dc39d3b7-4e6d-4ff8-939a-a88947756594
+title: Rendering Showcase
+version: 0.1.0
+language: en-US
+subject: OpenWaymark examples
+description: |
+  # About this collection
+
+  This bundle exists to show what OpenWaymark text can contain. Every
+  construct below is part of the Markdown profile.
+
+  ![](assets/divider.png)
+
+  ## What you will see
+
+  | Feature | Where |
+  |---|---|
+  | Choice images | The shapes question |
+  | Code blocks | The shell and Python questions |
+  | Literal attack strings | The cross-site scripting question |
+
+  > Code is always shown as text. Nothing in a bundle can run.
+tags: [examples, markdown]
+authors:
+  - name: Automate the Cloud Inc.
+    url: https://github.com/AutomateTheCloud/openwaymark
+license:
+  spdx: Apache-2.0
+  url: https://www.apache.org/licenses/LICENSE-2.0
+extensions:
+  org.example.showcase:
+    note: Extension data is ignored by readers that do not understand it.
+
+questions:
+  - id: shape-triangle-001
+    type: multiple_choice
+    selection: single
+    prompt:
+      text: Which shape has exactly three sides?
+    choices:
+      - id: triangle
+        image:
+          src: assets/shapes/triangle.jpg
+          alt: A blue triangle.
+          credit: Drawing by Automate the Cloud Inc.
+          credit_url: https://github.com/AutomateTheCloud/openwaymark
+      - id: square
+        image:
+          src: assets/shapes/square.jpg
+          alt: A blue square.
+      - id: circle
+        image:
+          src: assets/shapes/circle.jpg
+          alt: A blue circle.
+    correct_answers: [triangle]
+    tags: [images]
+
+  - id: shell-arithmetic-001
+    type: multiple_choice
+    selection: single
+    prompt:
+      text: |
+        What does this Bash command print?
+
+        ```bash
+        echo $((2 + 3))
+        ```
+    choices:
+      - id: five
+        text: "`5`"
+      - id: literal
+        text: "`$((2 + 3))`"
+      - id: twenty-three
+        text: "`23`"
+    correct_answers: [five]
+    hint:
+      text: "`$(( ... ))` is arithmetic expansion."
+    explanation:
+      text: |
+        Bash evaluates `$(( ... ))` as an arithmetic expression, so the shell
+        replaces it with `5` before `echo` runs.
+    references:
+      - title: Bash Reference Manual
+        reference: Section 3.5.5, Arithmetic Expansion
+        url: https://www.gnu.org/software/bash/manual/bash.html
+    tags: [code, shell]
+
+  - id: xss-payload-001
+    type: multiple_choice
+    selection: single
+    prompt:
+      text: |
+        A search page echoes the `q` parameter into its HTML without encoding
+        it. Which value of `q` demonstrates reflected cross-site scripting?
+    choices:
+      - id: script-tag
+        text: "`<script>alert(1)</script>`"
+      - id: sql
+        text: "`' OR '1'='1`"
+      - id: traversal
+        text: "`../../etc/passwd`"
+    correct_answers: [script-tag]
+    explanation:
+      text: |
+        The first value injects a script element into the page. The others are
+        examples of SQL injection and path traversal.
+
+        > In this bundle, the payload is only text. A reader displays it and
+        > never runs it.
+    references:
+      - title: "OWASP: Cross Site Scripting (XSS)"
+        url: https://owasp.org/www-community/attacks/xss/
+    tags: [code, security]
+
+  - id: python-types-001
+    type: multiple_choice
+    selection: multiple
+    selection_count: 3
+    prompt:
+      text: |
+        Which **three** of these are built-in sequence types in Python?
+    choices:
+      - id: list
+        text: "`list`"
+      - id: tuple
+        text: "`tuple`"
+      - id: range
+        text: "`range`"
+      - id: dict
+        text: "`dict`"
+        explanation:
+          text: "`dict` is a mapping type, not a sequence."
+      - id: set
+        text: "`set`"
+        explanation:
+          text: "`set` is unordered, so it is not a sequence."
+    correct_answers: [list, tuple, range]
+    explanation:
+      text: |
+        Python's basic sequence types are:
+
+        1. `list`, which is mutable
+        2. `tuple`, which is immutable
+        3. `range`, an immutable sequence of numbers
+    extensions:
+      org.example.showcase:
+        difficulty: 2
+    tags: [code, python]
+
+flashcards:
+  - id: python-len-card
+    front:
+      text: |
+        What does this expression return?
+
+        ```python
+        len("abc")
+        ```
+    back:
+      text: "`3`, the number of characters in the string."
+    tags: [code, python]

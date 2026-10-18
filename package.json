@@ -15,17 +15,21 @@
     "format:check": "prettier --check .",
     "test": "tsc --build && vitest run",
     "spelling": "node tools/check-american.mjs",
-    "check": "pnpm typecheck && pnpm lint && pnpm format:check && pnpm test && pnpm spelling && pnpm headers",
-    "headers": "node tools/check-headers.mjs"
+    "check": "pnpm typecheck && pnpm lint && pnpm format:check && pnpm test && pnpm spelling && pnpm headers && pnpm spec",
+    "headers": "node tools/check-headers.mjs",
+    "spec": "node tools/check-spec.mjs"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
     "@types/node": "^24.19.2",
+    "ajv": "^8.20.0",
+    "ajv-formats": "^3.0.1",
     "eslint": "^10.12.0",
     "globals": "^17.13.0",
     "prettier": "^3.9.10",
     "typescript": "~6.0.3",
     "typescript-eslint": "^8.71.1",
-    "vitest": "^5.0.3"
+    "vitest": "^5.0.3",
+    "yaml": "^2.9.1"
   }
 }

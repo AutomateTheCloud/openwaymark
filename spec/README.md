@@ -1,20 +1,28 @@
 # OpenWaymark specification
 
-This directory will hold the normative OpenWaymark format specification. The
-first draft, 0.1, is milestone M1.
+| Document                                   | Contents                                                                                                                                                                       |
+| ------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| [`openwaymark.md`](openwaymark.md)         | **The specification**, draft 0.1: conformance, package and YAML profiles, data model, grading, Markdown and image profiles, identity, limits, security and privacy, validators |
+| [`authoring-guide.md`](authoring-guide.md) | How to write bundles by hand                                                                                                                                                   |
+| [`ai-authoring.md`](ai-authoring.md)       | Standalone instructions to give an AI assistant that writes bundles                                                                                                            |
+| [`CHANGELOG.md`](CHANGELOG.md)             | Every change to the format                                                                                                                                                     |
 
-Its contents and the related directories are planned as follows. None of them
-exists yet.
+Related material elsewhere in the repository:
 
-| Path                      | Contents                                                                                                                                                                       | Milestone |
-| ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | --------- |
-| `spec/openwaymark.md`     | The specification: conformance classes, package profile, YAML and Markdown profiles, data model, grading, identity and versioning, limits, security and privacy considerations | M1        |
-| `spec/authoring-guide.md` | How to write bundles by hand, with a field reference                                                                                                                           | M1        |
-| `spec/ai-authoring.md`    | Standalone instructions for AI-assisted authoring                                                                                                                              | M1        |
-| `schema/`                 | JSON Schema (2020-12) for the manifest                                                                                                                                         | M1        |
-| `examples/`               | Valid example bundles: high-school, IT, image-heavy                                                                                                                            | M1        |
-| `fixtures/`               | Conformance fixtures, each with an `expect.json`                                                                                                                               | M2        |
+| Path                                                                             | Contents                                                                                                                    |
+| -------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
+| [`../schema/openwaymark-0.1.schema.json`](../schema/openwaymark-0.1.schema.json) | JSON Schema (2020-12) for the manifest. It checks structure only; the specification lists the rules a schema cannot express |
+| [`../examples/`](../examples/)                                                   | Valid example bundles                                                                                                       |
+| `../fixtures/`                                                                   | Conformance fixtures, with expected outcomes _(milestone M2)_                                                               |
 
-The specification must be implementable without Waymark Study, a Waymark
-service, or any account. The reference engine in `packages/engine` implements
-it, but the specification never depends on the engine.
+Every normative statement in the specification carries an `OWM-` rule
+identifier. `pnpm spec` checks the following:
+
+- every sentence using BCP 14 keywords (MUST, SHOULD, MAY, and the rest) is
+  inside a numbered rule;
+- no identifier is defined twice;
+- every identifier mentioned is defined.
+
+The specification must be implementable without Waymark Study, any service, or
+this repository's code. The reference engine in `packages/engine` implements
+it, and the specification never depends on the engine.

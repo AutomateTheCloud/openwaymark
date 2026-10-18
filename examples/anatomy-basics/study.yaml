@@ -1,0 +1,161 @@
+# Example OpenWaymark bundle: high-school anatomy.
+# Exercises labeled diagrams, image credits, a WebP image, a flashcard with an
+# image front, fixed choice order, and "select all that apply".
+# Copyright 2026 Automate the Cloud Inc. Licensed under the Apache License 2.0.
+
+format_version: "0.1"
+id: 1ccd4144-6cf3-4566-832c-0ebcb8e76250
+title: Anatomy Basics
+version: 1.0.0
+language: en
+subject: Human anatomy
+description: |
+  A short introduction to the **heart** and the **skeleton**, written as an
+  example of an OpenWaymark bundle with diagrams.
+
+  The diagrams are simplified schematics, not anatomical drawings.
+tags: [anatomy, high-school]
+authors:
+  - name: Automate the Cloud Inc.
+license:
+  spdx: Apache-2.0
+created: "2026-10-18"
+updated: "2026-10-18"
+sources:
+  - title: Anatomy and Physiology 2e (OpenStax)
+    url: https://openstax.org/details/books/anatomy-and-physiology-2e
+
+questions:
+  - id: heart-chamber-001
+    type: multiple_choice
+    selection: single
+    shuffle_choices: false
+    prompt:
+      text: In the diagram, which number marks the **left ventricle**?
+      image:
+        src: assets/heart-chambers.png
+        alt: >-
+          Schematic front view of the heart as four numbered chambers. Number 1
+          is upper left, 2 is upper right, 3 is lower left, and 4 is lower
+          right, as seen by the viewer. A caption notes that the heart's right
+          side is on the viewer's left.
+        credit: Diagram by Automate the Cloud Inc.
+    choices:
+      - id: label-1
+        text: "1"
+      - id: label-2
+        text: "2"
+      - id: label-3
+        text: "3"
+      - id: label-4
+        text: "4"
+    correct_answers: [label-4]
+    hint:
+      text: In a front view, the heart's left side appears on your right.
+    explanation:
+      text: |
+        The ventricles are the lower chambers. Seen from the front, the heart's
+        left side is on the viewer's right, so the left ventricle is number 4.
+    tags: [heart]
+
+  - id: heart-chamber-002
+    type: multiple_choice
+    selection: single
+    prompt:
+      text: Which chamber pumps blood to the lungs?
+    choices:
+      - id: right-atrium
+        text: Right atrium
+      - id: right-ventricle
+        text: Right ventricle
+      - id: left-atrium
+        text: Left atrium
+      - id: left-ventricle
+        text: Left ventricle
+        explanation:
+          text: The left ventricle pumps blood into the aorta, to the rest of the body.
+    correct_answers: [right-ventricle]
+    explanation:
+      text: |
+        The right ventricle pumps oxygen-poor blood through the pulmonary
+        artery to the lungs.
+
+        ![Blood flows from the body to the right atrium, right ventricle, lungs, left atrium, left ventricle, and aorta, then back to the body.](assets/blood-flow.webp)
+    tags: [heart, circulation]
+    references:
+      - title: Anatomy and Physiology 2e (OpenStax)
+        reference: Chapter 19, The Cardiovascular System - The Heart
+
+  - id: skeleton-count-001
+    type: multiple_choice
+    selection: single
+    prompt:
+      text: How many bones are in a typical adult human skeleton?
+    choices:
+      - id: bones-106
+        text: "106"
+      - id: bones-206
+        text: "206"
+      - id: bones-270
+        text: "270"
+      - id: bones-306
+        text: "306"
+    correct_answers: [bones-206]
+    explanation:
+      text: |
+        A typical adult has 206 bones. A newborn has more, roughly 270 to 300,
+        because some bones fuse during growth.
+    tags: [skeleton]
+
+  - id: skeleton-axial-001
+    type: multiple_choice
+    selection: multiple
+    prompt:
+      text: Which of these are part of the **axial** skeleton?
+    choices:
+      - id: skull
+        text: Skull
+      - id: sternum
+        text: Sternum
+      - id: femur
+        text: Femur
+      - id: humerus
+        text: Humerus
+      - id: vertebrae
+        text: Vertebrae
+    correct_answers: [skull, sternum, vertebrae]
+    explanation:
+      text: |
+        The axial skeleton runs along the body's central axis: skull, vertebral
+        column, ribs, and sternum. The femur and humerus belong to the
+        appendicular skeleton, the bones of the limbs and their girdles.
+    tags: [skeleton]
+
+flashcards:
+  - id: heart-card-chamber-1
+    front:
+      text: Name chamber 1.
+      image:
+        src: assets/heart-chambers.png
+        alt: >-
+          Schematic front view of the heart as four numbered chambers. Number 1
+          is upper left, 2 is upper right, 3 is lower left, and 4 is lower
+          right, as seen by the viewer.
+        credit: Diagram by Automate the Cloud Inc.
+    back:
+      text: The **right atrium**, which receives blood returning from the body.
+    tags: [heart]
+
+  - id: heart-card-aorta
+    front:
+      text: What is the largest artery in the body?
+    back:
+      text: The aorta.
+    tags: [heart, circulation]
+
+  - id: skeleton-card-femur
+    front:
+      text: What is the longest bone in the human body?
+    back:
+      text: The femur (thigh bone).
+    tags: [skeleton]
