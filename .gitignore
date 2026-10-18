@@ -4,4 +4,3 @@ dist-test/
 coverage/
 *.tsbuildinfo
 .DS_Store
-.pnpm-store/

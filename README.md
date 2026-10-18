@@ -14,10 +14,10 @@ packed into an ordinary ZIP archive. This repository holds:
 **Status:** pre-draft. The format is being specified (draft 0.1). Nothing here
 is stable, and nothing is published.
 
-[Waymark Study](https://gitlab.com/automatethecloud/waymark/waymark-study) is
+[Waymark Study](https://github.com/AutomateTheCloud/waymark-study) is
 the first application that reads OpenWaymark bundles. Project decisions are
 recorded in
-[waymark-develop](https://gitlab.com/automatethecloud/waymark/waymark-develop).
+waymark-develop, the internal coordination repository.
 
 ## Development
 

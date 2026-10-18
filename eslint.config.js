@@ -3,7 +3,7 @@ import globals from "globals";
 import tseslint from "typescript-eslint";
 
 export default tseslint.config(
-  { ignores: ["**/dist/", "**/dist-test/", "coverage/", ".pnpm-store/"] },
+  { ignores: ["**/dist/", "**/dist-test/", "coverage/"] },
   js.configs.recommended,
   ...tseslint.configs.strictTypeChecked,
   {

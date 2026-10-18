@@ -2,4 +2,3 @@ dist/
 dist-test/
 coverage/
 pnpm-lock.yaml
-.pnpm-store/

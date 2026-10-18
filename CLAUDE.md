@@ -15,8 +15,8 @@ changing the format.
   logos, or app code belong here.
 - Nothing in `spec/`, `schema/`, `examples/`, or `fixtures/` may depend on
   `packages/`. The engine implements the spec, never the reverse.
-- Never write GitLab-specific URLs into normative text or schema `$id`s. The
-  project moves to GitHub when it goes public (D-013).
+- Never write hosting-specific URLs (GitHub or GitLab) into normative text or
+  schema `$id`s. Repo hosting can change; the spec must not (D-015, OI-036).
 
 ## Specification discipline
 
