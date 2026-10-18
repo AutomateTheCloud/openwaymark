@@ -1,0 +1,9 @@
+{
+  "description": "A JPEG cut off before its end-of-image marker. Some browsers would draw it partially.",
+  "format_version": "0.1",
+  "mode": "validate",
+  "outcome": "reject",
+  "rules": [
+    "OWM-IMG-009"
+  ]
+}

@@ -6,7 +6,8 @@
 // before any large allocation (OWM-IMG-010). Full decoding is delegated to a
 // platform decoder supplied by the caller (OWM-IMG-009).
 
-import { ascii, u16, u16be, u32, u32be } from "./bytes.js";
+import { Unzlib } from "fflate";
+import { ascii, crc32, u16, u16be, u32, u32be } from "./bytes.js";
 import type { ImageFormat } from "./paths.js";
 
 export interface ImageInfo {
@@ -159,4 +160,133 @@ function readExif(tiff: Uint8Array, info: ImageInfo): void {
     if (tag === 0x0112) info.orientation = read16(entry + 8);
     if (tag === 0x8825) info.hasGps = true;
   }
+}
+
+/**
+ * Structural checks that do not depend on a platform decoder, so that every
+ * reader rejects the same damaged images. Browser decoders are often lenient,
+ * drawing a damaged image as blank or partial rather than failing, so a full
+ * decode alone would let some damage through in some browsers.
+ *
+ * PNG: every chunk's CRC-32 must match, and the compressed pixel data must
+ * inflate to exactly the size the header implies. JPEG: an end-of-image marker
+ * must follow the scan data. Returns a problem, or undefined if none is found.
+ */
+export function verifyImageStructure(bytes: Uint8Array, info: ImageInfo): string | undefined {
+  if (info.format === "png") return verifyPng(bytes, info);
+  if (info.format === "jpeg") return verifyJpeg(bytes);
+  return undefined; // WebP chunk sizes are already checked by inspectImage.
+}
+
+const PNG_CHANNELS: Record<number, number> = { 0: 1, 2: 3, 3: 1, 4: 2, 6: 4 };
+const PNG_DEPTHS: Record<number, number[]> = {
+  0: [1, 2, 4, 8, 16],
+  2: [8, 16],
+  3: [1, 2, 4, 8],
+  4: [8, 16],
+  6: [8, 16],
+};
+
+/** Size of the filtered pixel data the header implies, including Adam7 interlacing. */
+function pngRawSize(
+  width: number,
+  height: number,
+  bitsPerPixel: number,
+  interlaced: boolean,
+): number {
+  const rowBytes = (w: number) => Math.ceil((w * bitsPerPixel) / 8);
+  if (!interlaced) return height * (1 + rowBytes(width));
+  // Adam7 passes: [x start, y start, x step, y step].
+  const passes = [
+    [0, 0, 8, 8],
+    [4, 0, 8, 8],
+    [0, 4, 4, 8],
+    [2, 0, 4, 4],
+    [0, 2, 2, 4],
+    [1, 0, 2, 2],
+    [0, 1, 1, 2],
+  ] as const;
+  let total = 0;
+  for (const [x0, y0, dx, dy] of passes) {
+    const w = Math.ceil((width - x0) / dx);
+    const h = Math.ceil((height - y0) / dy);
+    if (w > 0 && h > 0) total += h * (1 + rowBytes(w));
+  }
+  return total;
+}
+
+function verifyPng(bytes: Uint8Array, info: ImageInfo): string | undefined {
+  const bitDepth = bytes[24] ?? 0;
+  const colorType = bytes[25] ?? 0;
+  const interlace = bytes[28] ?? 0;
+  const channels = PNG_CHANNELS[colorType];
+  if (
+    channels === undefined ||
+    !(PNG_DEPTHS[colorType] ?? []).includes(bitDepth) ||
+    interlace > 1
+  ) {
+    return "has an invalid PNG header (color type, bit depth, or interlace method)";
+  }
+  const expected = pngRawSize(info.width, info.height, channels * bitDepth, interlace === 1);
+  let produced = 0;
+  let failed = false;
+  const inflater = new Unzlib();
+  inflater.ondata = (chunk) => {
+    produced += chunk.length;
+  };
+  let offset = 8;
+  let sawData = false;
+  while (offset + 12 <= bytes.length) {
+    const length = u32be(bytes, offset);
+    const type = ascii(bytes, offset + 4, 4);
+    const end = offset + 12 + length;
+    if (crc32(bytes.subarray(offset + 4, end - 4)) !== u32be(bytes, end - 4))
+      return `has a ${type} chunk whose CRC does not match`;
+    if (type === "IDAT" && !failed) {
+      sawData = true;
+      const data = bytes.subarray(offset + 8, end - 4);
+      try {
+        for (let at = 0; at < data.length && produced <= expected; at += 4096)
+          inflater.push(data.subarray(at, at + 4096));
+      } catch {
+        failed = true;
+      }
+    }
+    if (type === "IEND") break;
+    offset = end;
+  }
+  if (!sawData) return "has no image data (IDAT chunk)";
+  try {
+    if (!failed) inflater.push(new Uint8Array(0), true);
+  } catch {
+    failed = true;
+  }
+  if (failed) return "has compressed pixel data that is damaged";
+  if (produced !== expected)
+    return `has ${produced} bytes of pixel data where its header implies ${expected}`;
+  return undefined;
+}
+
+function verifyJpeg(bytes: Uint8Array): string | undefined {
+  let offset = 2;
+  while (offset + 4 <= bytes.length) {
+    const marker = bytes[offset + 1] ?? 0;
+    if (bytes[offset] !== 0xff) return "has a malformed JPEG marker";
+    if (marker === 0xff) {
+      offset++;
+      continue;
+    }
+    if (marker === 0xda) {
+      // Scan data follows; it must end with an end-of-image marker (FF D9).
+      for (let at = bytes.length - 2; at > offset; at--)
+        if (bytes[at] === 0xff && bytes[at + 1] === 0xd9) return undefined;
+      return "is truncated: no end-of-image marker follows its image data";
+    }
+    if (marker >= 0xd0 && marker <= 0xd7) {
+      offset += 2;
+      continue;
+    }
+    offset += 2 + u16be(bytes, offset + 2);
+  }
+  return "has no image data (start of scan)";
 }

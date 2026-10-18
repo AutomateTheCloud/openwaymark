@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>OpenWaymark Validator</title>
+    <meta
+      name="description"
+      content="Check and pack OpenWaymark study bundles in your browser. Your files never leave your device."
+    />
+  </head>
+  <body>
+    <main>
+      <header>
+        <h1>OpenWaymark Validator</h1>
+        <p class="lede">
+          Check a study bundle, or make one from a folder.
+          <strong>Your files never leave this device:</strong> everything runs in your browser, and
+          this page is not allowed to send anything over the network.
+        </p>
+      </header>
+
+      <section aria-labelledby="check-heading">
+        <h2 id="check-heading">Check a bundle</h2>
+        <p>Choose a <code>.waymark</code>, <code>.zip</code>, or <code>.yaml</code> file.</p>
+        <label class="picker">
+          <span>Choose a bundle…</span>
+          <input
+            id="bundle-input"
+            type="file"
+            accept=".waymark,.zip,.yaml,.yml"
+            data-testid="bundle-input"
+          />
+        </label>
+      </section>
+
+      <section aria-labelledby="pack-heading">
+        <h2 id="pack-heading">Make a bundle from a folder</h2>
+        <p>
+          Choose a folder containing <code>study.yaml</code> and, if you have images, an
+          <code>assets</code> folder. The page packs it, checks the result, and offers it for
+          download.
+        </p>
+        <label class="picker">
+          <span>Choose a folder…</span>
+          <input
+            id="folder-input"
+            type="file"
+            webkitdirectory
+            multiple
+            data-testid="folder-input"
+          />
+        </label>
+      </section>
+
+      <section id="result" aria-live="polite" aria-labelledby="result-heading" hidden>
+        <h2 id="result-heading">Result</h2>
+        <div id="result-body"></div>
+      </section>
+
+      <footer>
+        <p>
+          Passing these checks means a bundle follows the
+          <a href="https://github.com/AutomateTheCloud/openwaymark/blob/master/spec/openwaymark.md"
+            >OpenWaymark format</a
+          >. It does not mean the bundle is safe, or that its answers are right.
+        </p>
+      </footer>
+    </main>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

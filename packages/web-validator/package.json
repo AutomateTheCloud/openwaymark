@@ -1,0 +1,21 @@
+{
+  "name": "@openwaymark/web-validator",
+  "version": "0.0.0",
+  "description": "Browser page that validates and packs OpenWaymark bundles on the user's own device",
+  "private": true,
+  "type": "module",
+  "license": "Apache-2.0",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview --strictPort --port 4173",
+    "test:browser": "playwright test"
+  },
+  "dependencies": {
+    "@openwaymark/engine": "workspace:*"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.64.0",
+    "vite": "^8.3.4"
+  }
+}

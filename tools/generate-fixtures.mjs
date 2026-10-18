@@ -602,6 +602,33 @@ const FIXTURES = [
     ]),
   ],
   [
+    "image-jpeg-truncated",
+    "A JPEG cut off before its end-of-image marker. Some browsers would draw it partially.",
+    "reject",
+    ["OWM-IMG-009"],
+    zip([
+      manifestEntry(withPromptImage("assets/cut.jpg")),
+      { name: "assets/cut.jpg", data: triangleJpeg.subarray(0, triangleJpeg.length - 400) },
+    ]),
+  ],
+  [
+    "image-png-bad-crc",
+    "A PNG chunk whose CRC does not match its data.",
+    "reject",
+    ["OWM-IMG-009"],
+    zip([
+      manifestEntry(withPromptImage("assets/gray.png")),
+      {
+        name: "assets/gray.png",
+        data: (() => {
+          const copy = tinyPng.slice();
+          copy[29] ^= 0xff;
+          return copy;
+        })(),
+      },
+    ]),
+  ],
+  [
     "image-animated-png",
     "A PNG with an animation control chunk.",
     "reject",

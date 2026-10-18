@@ -1,0 +1,9 @@
+{
+  "description": "A PNG chunk whose CRC does not match its data.",
+  "format_version": "0.1",
+  "mode": "validate",
+  "outcome": "reject",
+  "rules": [
+    "OWM-IMG-009"
+  ]
+}

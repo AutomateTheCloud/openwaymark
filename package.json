@@ -9,7 +9,7 @@
   },
   "scripts": {
     "build": "tsc --build",
-    "typecheck": "tsc --build",
+    "typecheck": "tsc --build && tsc -p packages/web-validator --noEmit",
     "lint": "eslint .",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
@@ -17,7 +17,8 @@
     "spelling": "node tools/check-american.mjs",
     "check": "pnpm typecheck && pnpm lint && pnpm format:check && pnpm test && pnpm spelling && pnpm headers && pnpm spec",
     "headers": "node tools/check-headers.mjs",
-    "spec": "node tools/check-spec.mjs"
+    "spec": "node tools/check-spec.mjs",
+    "test:browser": "pnpm build && pnpm --filter @openwaymark/web-validator build && pnpm --filter @openwaymark/web-validator test:browser"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",

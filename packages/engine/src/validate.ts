@@ -8,7 +8,7 @@
 
 import { ascii, decodeUtf8, type ByteSource } from "./bytes.js";
 import { contentFingerprint } from "./fingerprint.js";
-import { inspectImage, type ImageDecoder, type ImageInfo } from "./images.js";
+import { inspectImage, verifyImageStructure, type ImageDecoder, type ImageInfo } from "./images.js";
 import {
   INTEGRITY_MAX_BYTES,
   INTEGRITY_NAME,
@@ -454,6 +454,12 @@ async function checkAssets(
       info.width > LIMITS.imageSide ||
       info.height > LIMITS.imageSide ||
       info.width * info.height > LIMITS.imagePixels;
+    // Structural checks run only on images within the limits, so the pixel data
+    // they measure is bounded; they do not depend on the platform's decoder.
+    const structural =
+      !tooLarge && info.width > 0 && info.height > 0 && !info.animated
+        ? verifyImageStructure(read.bytes, info)
+        : undefined;
     if (info.width === 0 || info.height === 0)
       report.add("OWM-IMG-009", `${entry.name} declares zero width or height.`, at);
     else if (tooLarge) {
@@ -462,6 +468,8 @@ async function checkAssets(
         `${entry.name} is ${info.width} × ${info.height} pixels; the limits are ${LIMITS.imageSide} per side and ${LIMITS.imagePixels} in total.`,
         at,
       );
+    } else if (structural) {
+      report.add("OWM-IMG-009", `${entry.name} ${structural}.`, at);
     } else if (decoder && !info.animated) {
       decodable++;
       try {
