@@ -273,8 +273,9 @@ follows.
 
 - **OWM-PATH-003.** An archive bundle MUST contain exactly one manifest, the
   regular file entry named `study.yaml` at the root of the archive.
-- **OWM-PATH-004.** Every other regular file entry MUST be either an asset or an
-  ignorable entry. An asset's name begins with `assets/` and satisfies
+- **OWM-PATH-004.** Every other regular file entry MUST be an asset, the
+  integrity file (section 3.7), or an ignorable entry. An asset's name begins
+  with `assets/` and satisfies
   section 10.1. An ignorable entry is any entry whose name begins with
   `__MACOSX/`, or whose final segment is `.DS_Store`, `Thumbs.db`, or
   `desktop.ini`. Any other entry is an error.
@@ -306,6 +307,47 @@ follows.
   the file name.
 
 This draft does not register a media type (Appendix C, issue 1).
+
+### 3.7 Integrity file
+
+An archive bundle can record a SHA-256 digest of every file it contains. A
+reader then detects any file that changed after the bundle was packed. Each ZIP
+entry already carries a CRC-32 (OWM-PKG-008), which catches accidental damage.
+But anyone who unpacks and repacks an archive gets fresh CRCs, so CRCs cannot
+show that content changed since its producer packed it. The integrity file can.
+
+- **OWM-INT-001.** An archive bundle MAY contain an integrity file: a regular
+  file entry named `integrity.json` at the root of the archive. Producers that
+  pack archives SHOULD include one. A text bundle has no integrity file.
+- **OWM-INT-002.** The integrity file MUST be a JSON text [RFC8259] in UTF-8, of
+  at most 1 MiB, whose value is an object with exactly two members:
+  - `algorithm`: the string `"sha-256"`;
+  - `files`: an object with one member per file. Each key is the file's entry
+    name, and each value is the lowercase hexadecimal SHA-256 [FIPS180-4]
+    digest of the file's uncompressed bytes.
+
+  Objects MUST NOT contain duplicate keys.
+
+- **OWM-INT-003.** `files` MUST list exactly the manifest and every asset: no
+  file missing, and no name that is not a file in the archive. The integrity
+  file does not list itself, and it does not list ignorable entries or
+  directory entries.
+- **OWM-INT-004.** When an integrity file is present, readers MUST verify every
+  digest, and MUST reject the bundle if any digest does not match.
+- **OWM-INT-005.** A matching integrity file shows only that the files are
+  unchanged since the integrity file was written. Readers and validators MUST
+  NOT present it as evidence of who produced the bundle, or that the bundle is
+  authentic or safe (OWM-SEC-006).
+
+> **Note (informative).** Anyone who changes a bundle can also rewrite its
+> integrity file, so the integrity file is not protection against tampering.
+> That protection needs a digest from a channel the attacker cannot alter, such
+> as a catalog that publishes each bundle's SHA-256, or a signature (Appendix C,
+> issue 8). A future signature mechanism would sign the integrity file.
+
+> **Note (informative).** A bundle edited by hand after packing fails
+> OWM-INT-004. To fix it, repack the bundle with a tool that writes a new
+> integrity file, or delete `integrity.json`.
 
 ---
 
@@ -1071,7 +1113,9 @@ even if the archive was repacked.
      lowercase hexadecimal SHA-256 digest of the asset's uncompressed bytes,
      and a line feed.
 
-  Ignorable entries and directory entries are excluded.
+  Ignorable entries, directory entries, and the integrity file (section 3.7)
+  are excluded, so adding or removing an integrity file does not change the
+  fingerprint.
 
 - **OWM-UPD-006.** Equal fingerprints mean equal content. A fingerprint MUST NOT
   be treated as proof of origin or authorization.
@@ -1119,6 +1163,7 @@ informative.
 | Script injection through text                                                         | No raw HTML; inert rendering (OWM-MD-003, OWM-MD-004)                                                                    |
 | Tracking and remote content                                                           | No automatic fetching; `https` links only on activation (section 9.5)                                                    |
 | Dangerous URL schemes                                                                 | `https` only (OWM-LINK-001)                                                                                              |
+| Files changed after packing, with the archive rezipped                                | Integrity file, when present (section 3.7)                                                                               |
 | Identity hijacking                                                                    | Identifiers grant no authority (OWM-UPD-002)                                                                             |
 | Misleading text direction (bidirectional controls)                                    | Lint warning (OWM-LINT-011)                                                                                              |
 
@@ -1210,6 +1255,8 @@ issue 4).
   Notation (JSON) Pointer", RFC 6901, 2013.
 - **[RFC8174]** Leiba, B., "Ambiguity of Uppercase vs Lowercase in RFC 2119 Key
   Words", BCP 14, RFC 8174, 2017.
+- **[RFC8259]** Bray, T., Ed., "The JavaScript Object Notation (JSON) Data
+  Interchange Format", STD 90, RFC 8259, 2017.
 - **[RFC8785]** Rundgren, A., Jordan, B., and S. Erdtman, "JSON Canonicalization
   Scheme (JCS)", RFC 8785, 2020.
 - **[RFC9562]** Davis, K., Peabody, B., and P. Leach, "Universally Unique
@@ -1261,6 +1308,7 @@ report them as warnings (OWM-VAL-005). Each check has a stable identifier.
 | OWM-LINT-016 | The bundle contains ignorable entries (OWM-PATH-005)                                                                                                                           |
 | OWM-LINT-017 | A text appears to contain a paragraph accidentally turned into a setext heading (in `description`)                                                                             |
 | OWM-LINT-018 | A language subtag is not registered (OWM-COL-008)                                                                                                                              |
+| OWM-LINT-019 | An archive bundle has no integrity file (section 3.7)                                                                                                                          |
 
 ---
 

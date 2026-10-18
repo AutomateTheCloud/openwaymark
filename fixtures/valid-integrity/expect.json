@@ -1,0 +1,7 @@
+{
+  "description": "An integrity file whose digests all match.",
+  "format_version": "0.1",
+  "mode": "validate",
+  "outcome": "accept",
+  "rules": []
+}

@@ -37,6 +37,7 @@ export type CheckId =
   | "image-dimensions"
   | "image-decode"
   | "spdx-syntax"
+  | "integrity"
   | "lint"
   | "spdx-license-list"
   | "language-subtag-registry"
@@ -71,6 +72,7 @@ export const REQUIRED_CHECKS: readonly CheckId[] = [
   "image-dimensions",
   "image-decode",
   "spdx-syntax",
+  "integrity",
 ];
 
 export type Conformance = "conforming" | "not-conforming" | "incomplete";

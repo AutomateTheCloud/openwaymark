@@ -9,6 +9,12 @@
 import { ascii, decodeUtf8, type ByteSource } from "./bytes.js";
 import { contentFingerprint } from "./fingerprint.js";
 import { inspectImage, type ImageDecoder, type ImageInfo } from "./images.js";
+import {
+  INTEGRITY_MAX_BYTES,
+  INTEGRITY_NAME,
+  parseIntegrity,
+  verifyIntegrity,
+} from "./integrity.js";
 import { LIMITS } from "./limits.js";
 import { lintBundle } from "./lint.js";
 import { SUPPORTED_FORMAT_VERSIONS, validateManifest } from "./manifest.js";
@@ -82,6 +88,7 @@ export async function validateBundle(
   const ignorable: string[] = [];
   let manifestStage: ManifestStage | undefined;
   let uncompressedBytes = 0;
+  let hasIntegrityFile = false;
 
   const parseAndCheckManifest = (
     bytes: Uint8Array,
@@ -120,6 +127,7 @@ export async function validateBundle(
   if (form === "text") {
     report.check("archive-structure", "not-applicable", "text bundle");
     report.check("entry-names", "not-applicable", "text bundle");
+    report.check("integrity", "not-applicable", "text bundles have no integrity file");
     for (const id of ["image-signatures", "image-dimensions", "image-decode"] as const)
       report.check(id, "not-applicable", "text bundles have no images");
     if (source.size > LIMITS.manifestBytes) {
@@ -139,7 +147,12 @@ export async function validateBundle(
     throwIfCanceled();
     if (directory) {
       report.check("archive-structure", "performed");
-      const { manifest, assetEntries } = checkEntries(directory.entries, report, ignorable);
+      const { manifest, assetEntries, integrity } = checkEntries(
+        directory.entries,
+        report,
+        ignorable,
+      );
+      hasIntegrityFile = integrity !== undefined;
       report.check("entry-names", "performed");
       checkDeclaredSizes(directory.entries, report);
       report.check("resource-limits", "performed");
@@ -165,6 +178,27 @@ export async function validateBundle(
           options,
           throwIfCanceled,
         );
+        if (integrity) {
+          // Compare digests of everything that could be read; files that failed
+          // earlier checks are already errors and cannot be compared.
+          const files = new Map(assets);
+          if (read.ok) files.set(MANIFEST_NAME, read.bytes);
+          const unreadable = new Set(
+            [MANIFEST_NAME, ...assetEntries.map((entry) => entry.name)].filter(
+              (name) => !files.has(name),
+            ),
+          );
+          const integrityRead = await readZipEntry(source, integrity, INTEGRITY_MAX_BYTES, report);
+          const digests = integrityRead.ok
+            ? parseIntegrity(integrityRead.bytes, report)
+            : undefined;
+          if (digests) {
+            verifyIntegrity(digests, files, unreadable, report);
+            report.check("integrity", "performed");
+          }
+        } else {
+          report.check("integrity", "not-applicable", "the archive has no integrity.json");
+        }
       }
     }
   }
@@ -177,6 +211,7 @@ export async function validateBundle(
         assetInfo,
         assets: new Set(assets.keys()),
         ignorableEntries: ignorable,
+        missingIntegrityFile: form === "archive" && !hasIntegrityFile,
         descriptionSetextHeadings: manifestStage.descriptionSetextHeadings,
         entry: form === "archive" ? MANIFEST_NAME : undefined,
       },
@@ -245,6 +280,7 @@ function summarize(stage: ManifestStage, assets: number, uncompressedBytes: numb
 
 function checkEntries(entries: readonly ZipEntry[], report: ReportBuilder, ignorable: string[]) {
   let manifest: ZipEntry | undefined;
+  let integrity: ZipEntry | undefined;
   const assetEntries: ZipEntry[] = [];
   const seen = new Map<string, string>();
   for (const entry of entries) {
@@ -285,6 +321,10 @@ function checkEntries(entries: readonly ZipEntry[], report: ReportBuilder, ignor
       manifest = entry;
       continue;
     }
+    if (entry.name === INTEGRITY_NAME) {
+      integrity = entry;
+      continue;
+    }
     if (entry.name.startsWith("assets/")) {
       const assetProblem = assetPathProblem(entry.name);
       if (assetProblem)
@@ -317,7 +357,7 @@ function checkEntries(entries: readonly ZipEntry[], report: ReportBuilder, ignor
         : "The archive has no study.yaml at its top level.",
     );
   }
-  return { manifest, assetEntries };
+  return { manifest, assetEntries, integrity };
 }
 
 function checkDeclaredSizes(entries: readonly ZipEntry[], report: ReportBuilder): void {

@@ -1,0 +1,9 @@
+{
+  "description": "study.yaml was edited after packing, so its digest no longer matches.",
+  "format_version": "0.1",
+  "mode": "validate",
+  "outcome": "reject",
+  "rules": [
+    "OWM-INT-004"
+  ]
+}

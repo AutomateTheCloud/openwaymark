@@ -8,6 +8,10 @@ into a new version.
 
 **Revisions while drafting:**
 
+- Added the optional integrity file, `integrity.json`, listing a SHA-256
+  digest of every file (section 3.7, OWM-INT-001 to OWM-INT-005). Readers
+  verify it when it is present. It is excluded from the content fingerprint.
+  Lint check OWM-LINT-019 notes an archive without one.
 - Added `language` on content objects and choices, for parts of a bundle in
   another language, such as the target language of a vocabulary card
   (OWM-CONT-003, OWM-CONT-004). Translations of a whole collection remain

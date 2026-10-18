@@ -265,6 +265,14 @@ folder. Open your bundle folder, select **its contents** (`study.yaml` and
 
 Rename the result to end in `.waymark`. Apps also accept `.zip`.
 
+**About `integrity.json`.** Bundles made with `openwaymark pack` also contain
+`integrity.json`, a list of fingerprints (SHA-256 digests) of every file. If
+anything changes after packing, apps notice and refuse the bundle, instead of
+quietly showing changed content. A ZIP file you make yourself has no
+`integrity.json`, and that is fine. But if you unzip a packed bundle, edit it,
+and zip it again, either repack it with `openwaymark pack` or delete
+`integrity.json`. The old digests no longer match.
+
 > An `openwaymark pack` command and a browser-based packer are planned. They will
 > build the archive correctly and check it at the same time.
 

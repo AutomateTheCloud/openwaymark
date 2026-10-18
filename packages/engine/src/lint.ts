@@ -32,6 +32,8 @@ export interface LintInput {
   assets: ReadonlySet<string>;
   ignorableEntries: readonly string[];
   descriptionSetextHeadings: number;
+  /** True for an archive bundle without integrity.json (OWM-LINT-019). */
+  missingIntegrityFile: boolean;
   entry: string | undefined;
 }
 
@@ -199,6 +201,13 @@ export function lintBundle(input: LintInput, report: ReportBuilder): void {
       undefined,
       `${name} is operating-system metadata. Readers ignore it; leave it out of the archive.`,
       name,
+    );
+  }
+  if (input.missingIntegrityFile) {
+    warn(
+      "OWM-LINT-019",
+      undefined,
+      "The archive has no integrity.json. Packing with openwaymark pack adds one, so readers can detect files changed after packing.",
     );
   }
   if (input.descriptionSetextHeadings > 0) {

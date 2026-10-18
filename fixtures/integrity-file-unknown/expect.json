@@ -1,0 +1,9 @@
+{
+  "description": "The integrity file lists a file that is not in the archive.",
+  "format_version": "0.1",
+  "mode": "validate",
+  "outcome": "reject",
+  "rules": [
+    "OWM-INT-003"
+  ]
+}

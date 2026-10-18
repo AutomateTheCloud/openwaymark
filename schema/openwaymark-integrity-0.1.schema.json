@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:openwaymark:schema:integrity:0.1",
+  "title": "OpenWaymark integrity file (integrity.json), format version 0.1 (draft)",
+  "description": "Spec section 3.7. Copyright 2026 Automate the Cloud Inc. Licensed under the Apache License 2.0. The schema checks structure only; OWM-INT-003 (exactly the files in the archive) and OWM-INT-004 (digests match) need the archive itself.",
+  "$comment": "The $id is a placeholder URN until the project has a permanent domain.",
+  "type": "object",
+  "required": ["algorithm", "files"],
+  "additionalProperties": false,
+  "properties": {
+    "algorithm": { "const": "sha-256" },
+    "files": {
+      "type": "object",
+      "minProperties": 1,
+      "propertyNames": { "type": "string", "pattern": "^(study\\.yaml|assets/[A-Za-z0-9._/-]+)$" },
+      "additionalProperties": { "type": "string", "pattern": "^[0-9a-f]{64}$" }
+    }
+  }
+}

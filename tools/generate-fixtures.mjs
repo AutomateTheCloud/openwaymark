@@ -14,6 +14,7 @@
 
 import { mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
+import { createHash } from "node:crypto";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { deflateSync, zlibSync } from "fflate";
 
@@ -233,6 +234,24 @@ const triangleJpeg = readFileSync(
 );
 const flowWebp = readFileSync(join(ROOT, "examples/anatomy-basics/assets/blood-flow.webp"));
 const manifestEntry = (text = VALID) => ({ name: "study.yaml", data: utf8(text) });
+const sha256 = (bytes) => createHash("sha256").update(bytes).digest("hex");
+/** An integrity.json entry for the given entries, optionally with its JSON text altered. */
+const integrityEntry = (entries, edit = (text) => text) => {
+  const files = Object.fromEntries(
+    entries
+      .filter((e) => !e.name.endsWith("/"))
+      .map((e) => [e.name, sha256(e.data)])
+      .sort(([a], [b]) => (a < b ? -1 : 1)),
+  );
+  return {
+    name: "integrity.json",
+    data: utf8(edit(`${JSON.stringify({ algorithm: "sha-256", files }, null, 2)}\n`)),
+  };
+};
+const imageBundle = () => [
+  manifestEntry(withPromptImage("assets/gray.png")),
+  { name: "assets/gray.png", data: tinyPng },
+];
 
 /** Each fixture: [id, description, outcome, rules, input, mode]. */
 const FIXTURES = [
@@ -905,6 +924,65 @@ const FIXTURES = [
     "reject",
     ["OWM-LINK-001"],
     `${VALID}sources:\n  - title: Docs\n    url: https://trusted.example.org@evil.example.net/\n`,
+  ],
+  [
+    "valid-integrity",
+    "An integrity file whose digests all match.",
+    "accept",
+    [],
+    zip([...imageBundle(), integrityEntry(imageBundle())]),
+  ],
+  [
+    "integrity-file-changed",
+    "study.yaml was edited after packing, so its digest no longer matches.",
+    "reject",
+    ["OWM-INT-004"],
+    zip([
+      manifestEntry(
+        withPromptImage("assets/gray.png").replace("Pick the first", "Pick the second"),
+      ),
+      imageBundle()[1],
+      integrityEntry(imageBundle()),
+    ]),
+  ],
+  [
+    "integrity-file-unlisted",
+    "An asset is missing from the integrity file.",
+    "reject",
+    ["OWM-INT-003"],
+    zip([...imageBundle(), integrityEntry([manifestEntry(withPromptImage("assets/gray.png"))])]),
+  ],
+  [
+    "integrity-file-unknown",
+    "The integrity file lists a file that is not in the archive.",
+    "reject",
+    ["OWM-INT-003"],
+    zip([
+      ...imageBundle(),
+      integrityEntry([...imageBundle(), { name: "assets/ghost.png", data: tinyPng }]),
+    ]),
+  ],
+  [
+    "integrity-duplicate-key",
+    "The integrity file lists study.yaml twice, which JSON.parse alone would not notice.",
+    "reject",
+    ["OWM-INT-002"],
+    zip([
+      ...imageBundle(),
+      integrityEntry(imageBundle(), (text) =>
+        text.replace('"files": {', `"files": {\n    "study.yaml": "${"0".repeat(64)}",`),
+      ),
+    ]),
+  ],
+  [
+    "integrity-wrong-algorithm",
+    "The integrity file uses MD5.",
+    "reject",
+    ["OWM-INT-002"],
+    zip([
+      ...imageBundle(),
+      integrityEntry(imageBundle(), (text) => text.replace("sha-256", "md5")),
+    ]),
   ],
   [
     "language-part-malformed",

@@ -3,11 +3,13 @@
 
 // Builds archive bundles that satisfy the ZIP profile (spec section 3.2):
 // stored or deflate entries, no ZIP64, no extra fields, no data descriptors,
-// no gaps. Output is deterministic: entries are sorted, with the manifest
-// first, and every timestamp is 1980-01-01 00:00.
+// no gaps. Output is deterministic: the manifest comes first, then the
+// integrity file, then assets in sorted order, and every timestamp is
+// 1980-01-01 00:00.
 
 import { deflateSync } from "fflate";
-import { crc32 } from "./bytes.js";
+import { crc32, encodeUtf8 } from "./bytes.js";
+import { buildIntegrity, INTEGRITY_NAME } from "./integrity.js";
 import { isIgnorable, MANIFEST_NAME } from "./paths.js";
 
 export interface PackFile {
@@ -16,30 +18,41 @@ export interface PackFile {
   bytes: Uint8Array;
 }
 
+export interface PackOptions {
+  /** Write integrity.json with a SHA-256 of every file (spec section 3.7). Default true. */
+  integrity?: boolean;
+}
+
 export interface PackResult {
   archive: Uint8Array;
-  /** Operating-system metadata files that were left out. */
+  /** Operating-system metadata files, and any old integrity.json, that were left out. */
   skipped: string[];
 }
 
 const DOS_DATE_1980_01_01 = 0x0021;
 
+function packOrder(path: string): string {
+  // Sort keys: control characters sort before every printable path, so the
+  // manifest comes first and the integrity file second.
+  return path === MANIFEST_NAME ? "\u0000" : path === INTEGRITY_NAME ? "\u0001" : path;
+}
+
 /** Packs files into a `.waymark` archive. Validate the result before sharing it. */
-export function packBundle(files: readonly PackFile[]): PackResult {
-  const skipped = files.filter((file) => isIgnorable(file.path)).map((file) => file.path);
-  const included = files
-    .filter((file) => !isIgnorable(file.path))
-    .sort((a, b) =>
-      a.path === MANIFEST_NAME
-        ? -1
-        : b.path === MANIFEST_NAME
-          ? 1
-          : a.path < b.path
-            ? -1
-            : a.path > b.path
-              ? 1
-              : 0,
-    );
+export function packBundle(files: readonly PackFile[], options: PackOptions = {}): PackResult {
+  // An old integrity file would describe the old content, so it is always rebuilt.
+  const skipped = files
+    .filter((file) => isIgnorable(file.path) || file.path === INTEGRITY_NAME)
+    .map((file) => file.path);
+  const content = files.filter((file) => !isIgnorable(file.path) && file.path !== INTEGRITY_NAME);
+  const included = [...content];
+  if (options.integrity ?? true) {
+    const integrity = buildIntegrity(new Map(content.map((file) => [file.path, file.bytes])));
+    included.push({ path: INTEGRITY_NAME, bytes: encodeUtf8(integrity) });
+  }
+  included.sort((a, b) => {
+    const [x, y] = [packOrder(a.path), packOrder(b.path)];
+    return x < y ? -1 : x > y ? 1 : 0;
+  });
   const local: Uint8Array[] = [];
   const central: Uint8Array[] = [];
   let offset = 0;

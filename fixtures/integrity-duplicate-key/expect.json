@@ -1,0 +1,9 @@
+{
+  "description": "The integrity file lists study.yaml twice, which JSON.parse alone would not notice.",
+  "format_version": "0.1",
+  "mode": "validate",
+  "outcome": "reject",
+  "rules": [
+    "OWM-INT-002"
+  ]
+}
