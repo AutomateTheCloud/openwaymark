@@ -344,10 +344,23 @@ export function validateManifest(
     findings.images.push({ src, alt: alt ?? "", pointer, role, kind: "object" });
   };
 
+  /** The language of one part of the bundle (OWM-CONT-003). */
+  const partLanguage = (value: Value | undefined, pointer: string) => {
+    const tag = string(value, pointer, "language", { rule: "OWM-CONT-003" });
+    if (tag !== undefined && !isWellFormedLanguageTag(tag)) {
+      err(
+        "OWM-CONT-003",
+        pointer,
+        `language "${tag}" is not a well-formed BCP 47 language tag, such as es or ar.`,
+      );
+    }
+  };
+
   const content = (value: Value | undefined, pointer: string, name: string, role: ImageRole) => {
     const object = mapping(value, pointer, name);
     if (!object) return;
-    members(object, pointer, ["text", "image"], {}, name);
+    members(object, pointer, ["text", "image", "language"], {}, name);
+    partLanguage(object.language, pointerJoin(pointer, "language"));
     if (!("text" in object) && !("image" in object)) {
       err(
         role === "front" || role === "back" ? "OWM-CARD-001" : "OWM-CONT-001",
@@ -457,10 +470,11 @@ export function validateManifest(
       members(
         choice,
         at,
-        ["id", "text", "image", "explanation", "extensions"],
+        ["id", "text", "image", "explanation", "language", "extensions"],
         { id: "OWM-ID-003" },
         "a choice",
       );
+      partLanguage(choice.language, pointerJoin(at, "language"));
       const id = string(choice.id, pointerJoin(at, "id"), "Choice id", { rule: "OWM-ID-003" });
       if (id !== undefined) {
         if (!ITEM_ID.test(id))

@@ -133,6 +133,25 @@ flashcards:
 
 Each side can have text, an image, or both.
 
+### Text in another language
+
+If part of your bundle is in a different language from the rest, as on a
+vocabulary card, say which language it is. Screen readers then pronounce it
+correctly, and right-to-left languages such as Arabic display properly:
+
+```yaml
+- id: word-gracias
+  front:
+    text: Gracias
+    language: es
+  back:
+    text: Thank you
+```
+
+`language` works on any prompt, flashcard side, hint, explanation, or choice.
+A translated version of a whole collection is a separate bundle, one per
+language.
+
 ## 4. Formatting text
 
 Text fields use a limited form of Markdown:

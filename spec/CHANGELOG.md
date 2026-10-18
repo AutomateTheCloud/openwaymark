@@ -8,6 +8,10 @@ into a new version.
 
 **Revisions while drafting:**
 
+- Added `language` on content objects and choices, for parts of a bundle in
+  another language, such as the target language of a vocabulary card
+  (OWM-CONT-003, OWM-CONT-004). Translations of a whole collection remain
+  separate bundles (Appendix C, issue 9).
 - Added OWM-YAML-011: the manifest must be well-formed YAML. This was implied,
   but no rule stated it.
 - Added OWM-VER-007: required members must be present, with values of the

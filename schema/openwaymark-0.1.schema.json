@@ -37,9 +37,7 @@
       "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-((?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\\.(?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\\+([0-9a-zA-Z-]+(?:\\.[0-9a-zA-Z-]+)*))?$"
     },
     "language": {
-      "description": "OWM-COL-008: BCP 47 language tag. This pattern approximates well-formedness; validators apply the full RFC 5646 grammar.",
-      "type": "string",
-      "pattern": "^[A-Za-z]{2,8}(-[A-Za-z0-9]{1,8})*$"
+      "$ref": "#/$defs/language"
     },
     "description": {
       "$ref": "#/$defs/markdown"
@@ -242,6 +240,10 @@
         },
         "image": {
           "$ref": "#/$defs/image"
+        },
+        "language": {
+          "description": "OWM-CONT-003: language of this part, when it differs from the collection's.",
+          "$ref": "#/$defs/language"
         }
       }
     },
@@ -342,6 +344,10 @@
         },
         "extensions": {
           "$ref": "#/$defs/extensions"
+        },
+        "language": {
+          "description": "OWM-CONT-003: language of this part, when it differs from the collection's.",
+          "$ref": "#/$defs/language"
         }
       }
     },
@@ -462,6 +468,11 @@
           "$ref": "#/$defs/extensions"
         }
       }
+    },
+    "language": {
+      "description": "OWM-COL-008: BCP 47 language tag. This pattern approximates well-formedness; validators apply the full RFC 5646 grammar.",
+      "type": "string",
+      "pattern": "^[A-Za-z]{2,8}(-[A-Za-z0-9]{1,8})*$"
     }
   }
 }

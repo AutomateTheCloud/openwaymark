@@ -114,7 +114,10 @@ Breaking any of these makes the bundle invalid.
     image needs `alt` text that describes what matters in the image. If there
     are no images, do not reference any.
 11. **No personal data.** Never include learner notes, scores, or progress.
-12. **Tags.** Lowercase words joined by hyphens (`record-types`), at most 32 per
+12. **Languages.** Set the collection `language` to the main language. Give any
+    prompt, card side, hint, explanation, or choice in a different language its
+    own `language` tag, such as `language: es`.
+13. **Tags.** Lowercase words joined by hyphens (`record-types`), at most 32 per
     item.
 
 ## Quality rules

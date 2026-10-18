@@ -906,6 +906,13 @@ const FIXTURES = [
     ["OWM-LINK-001"],
     `${VALID}sources:\n  - title: Docs\n    url: https://trusted.example.org@evil.example.net/\n`,
   ],
+  [
+    "language-part-malformed",
+    "A choice declares a language that is not a BCP 47 tag.",
+    "reject",
+    ["OWM-CONT-003"],
+    VALID.replace("        text: Second\n", "        text: Second\n        language: spanish_mx\n"),
+  ],
 ];
 
 /** Builds every fixture as a map from relative path to bytes. */

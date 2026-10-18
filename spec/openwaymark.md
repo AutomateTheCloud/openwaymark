@@ -533,8 +533,8 @@ Section 12 explains what an identifier means, and what it does not prove.
   [BCP47], for example `en`, `en-US`, or `pt-BR`. Validators SHOULD warn when
   a subtag is not in the IANA Language Subtag Registry.
 
-Language applies to the whole collection. This version has no per-item
-language.
+`language` is the language of the collection as a whole. Individual parts
+can declare a different language (section 9.1.1).
 
 ### 6.5 Authors
 
@@ -647,13 +647,14 @@ A question is a mapping with the common members and the following.
 
 A choice is a mapping with these members:
 
-| Member        | Type              | Required  | Meaning                           |
-| ------------- | ----------------- | --------- | --------------------------------- |
-| `id`          | string            | yes       | Choice identifier (section 7.1)   |
-| `text`        | string (Markdown) | see below | The choice's text                 |
-| `image`       | image object      | see below | The choice's image                |
-| `explanation` | content object    | no        | Why this choice is right or wrong |
-| `extensions`  | mapping           | no        | Extension data                    |
+| Member        | Type              | Required  | Meaning                                                       |
+| ------------- | ----------------- | --------- | ------------------------------------------------------------- |
+| `id`          | string            | yes       | Choice identifier (section 7.1)                               |
+| `text`        | string (Markdown) | see below | The choice's text                                             |
+| `image`       | image object      | see below | The choice's image                                            |
+| `explanation` | content object    | no        | Why this choice is right or wrong                             |
+| `language`    | string (BCP 47)   | no        | Language of the choice's text and image `alt` (section 9.1.1) |
+| `extensions`  | mapping           | no        | Extension data                                                |
 
 - **OWM-Q-008.** A choice MUST have a `text`, an `image`, or both. `text` and
   `image` follow the same rules as in a content object (section 9.1).
@@ -771,16 +772,39 @@ A content object holds text, an image, or both. Prompts, flashcard faces,
 hints, and explanations are content objects. A choice carries the same two
 members directly.
 
-| Member  | Type              | Required  | Meaning                                    |
-| ------- | ----------------- | --------- | ------------------------------------------ |
-| `text`  | string (Markdown) | see below | Text in the Markdown profile (section 9.3) |
-| `image` | image object      | see below | One image (section 9.2)                    |
+| Member     | Type              | Required  | Meaning                                                                                            |
+| ---------- | ----------------- | --------- | -------------------------------------------------------------------------------------------------- |
+| `text`     | string (Markdown) | see below | Text in the Markdown profile (section 9.3)                                                         |
+| `image`    | image object      | see below | One image (section 9.2)                                                                            |
+| `language` | string (BCP 47)   | no        | Language of this text and the image's `alt`, when it differs from the collection's (section 9.1.1) |
 
 - **OWM-CONT-001.** A content object MUST be a mapping with a `text`, an `image`,
   or both. `text` MUST be nonblank and at most 65,536 bytes when encoded in
   UTF-8.
 - **OWM-CONT-002.** When a content object has both, readers MUST present the text
   before the image, in reading order.
+
+#### 9.1.1 Language of parts
+
+A bundle has one primary `language` (section 6.4). Parts of it can be in another
+language. Examples include the Spanish side of a vocabulary card, a Latin
+anatomical term, or a quotation in Arabic.
+
+- **OWM-CONT-003.** A content object or a choice MAY have a `language` member. It
+  MUST be a well-formed BCP 47 language tag, and it applies to that object's
+  `text` and to its image's `alt` and `credit`. It does not apply to nested
+  members that are content objects themselves, such as a choice's
+  `explanation`. Those have their own `language`, or fall back to the
+  collection's.
+- **OWM-CONT-004.** Readers MUST expose the language of each part to assistive
+  technology, so that a screen reader pronounces it correctly. In HTML, for
+  example, that is the `lang` attribute. Readers SHOULD lay out the part in the
+  writing direction its language implies, such as right to left for Arabic or
+  Hebrew.
+
+> **Note (informative).** One bundle holds one version of its content. A
+> collection translated into several languages is several bundles, one per
+> language (Appendix C, issue 9).
 
 ### 9.2 Image objects
 
@@ -1337,3 +1361,7 @@ _Informative._ These questions are deliberately unresolved in draft 0.1.
    small files in streaming modes.
 8. **Signatures.** No mechanism for verifying who published a bundle is
    defined.
+9. **Translations.** A translated collection is a separate bundle. A later draft
+   may add an optional link, such as `translation_of`, naming the collection it
+   translates, so that readers can offer the other languages and relate items
+   by `id`.
