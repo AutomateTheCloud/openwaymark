@@ -11,8 +11,11 @@ changing the format.
 - The specification must be implementable without Waymark Study, any Waymark
   service, an account, or this repo's code. Waymark's UX and storage choices
   are never normative spec text.
-- The format's name is its only link to Waymark (D-012). No Waymark branding,
-  logos, or app code belong here.
+- The format's name is its only link to Waymark (D-012). The one exception is
+  the README logo (D-019): the Waymark ribbon mark in `.github/brand/`. Those
+  files are unlicensed, unmodified copies from the brand kit. No other Waymark
+  branding, and no app code, belongs here. Never use brand assets in the spec,
+  schema, examples, or fixtures.
 - Nothing in `spec/`, `schema/`, `examples/`, or `fixtures/` may depend on
   `packages/`. The engine implements the spec, never the reverse.
 - Never write hosting-specific URLs (GitHub or GitLab) into normative text or
@@ -63,7 +66,8 @@ Automate the Cloud's licensing playbook governs this project (D-017):
   illustrative. Never seed real catalog content from them, because real
   bundles are CC BY-NC 4.0 with the internal-training permission and live
   elsewhere. Use only images we created.
-- Waymark brand assets are not licensed.
+- Waymark brand assets are not licensed. The logo files in `.github/brand/`
+  are excluded from the Apache license, as the README states.
 
 **Before any licensing change,** fetch a fresh copy of the playbook and read
 all of it. If the fetch fails, stop and ask. Delete the clone afterward.
