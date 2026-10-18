@@ -66,6 +66,11 @@ function describeType(value: Value): string {
   return typeof value === "number" ? `the number ${String(value)}` : `the boolean ${String(value)}`;
 }
 
+/** Capitalizes the first letter, so a message built from a phrase reads as a sentence. */
+function sentence(text: string): string {
+  return text.charAt(0).toUpperCase() + text.slice(1);
+}
+
 function codePoints(text: string): number {
   return Array.from(text).length;
 }
@@ -132,7 +137,8 @@ export function validateManifest(
       );
     }
     for (const [key, rule] of Object.entries(required)) {
-      if (!(key in map)) err(rule, pointer, `${what} is missing the required member "${key}".`);
+      if (!(key in map))
+        err(rule, pointer, `${sentence(what)} is missing the required member "${key}".`);
     }
   };
 

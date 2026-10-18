@@ -18,7 +18,8 @@
     "check": "pnpm typecheck && pnpm lint && pnpm format:check && pnpm test && pnpm spelling && pnpm headers && pnpm spec",
     "headers": "node tools/check-headers.mjs",
     "spec": "node tools/check-spec.mjs",
-    "test:browser": "pnpm build && pnpm --filter @openwaymark/web-validator build && pnpm --filter @openwaymark/web-validator test:browser"
+    "test:browser": "pnpm build && pnpm --filter @openwaymark/web-validator build && pnpm --filter @openwaymark/web-validator test:browser",
+    "openwaymark": "node packages/cli/dist/main.js"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",

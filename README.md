@@ -34,6 +34,16 @@ can build software that reads it.
 - **Independent.** Implementing the format requires nothing from Waymark,
   including any service or account.
 
+## Learn by doing
+
+New to all of this? [`docs/learn/`](docs/learn/) starts from zero: set up your
+computer, make a bundle, see how the validator works, and make your first code
+change, with tests. Not a developer yet? These tutorials are written for you.
+
+Every attack the validator stops is explained in
+[`fixtures/README.md`](fixtures/README.md), as a short lesson in how files
+attack the programs that open them.
+
 ## A bundle at a glance
 
 ```yaml
@@ -77,12 +87,12 @@ _The format is a working draft. Field names may change until version 1.0._
 | [`spec/`](spec/)                     | The OpenWaymark specification, authoring guide, and change log                                 |
 | [`schema/`](schema/)                 | JSON Schema for the manifest, draft 0.1                                                        |
 | [`examples/`](examples/)             | Valid example bundles: IT, high-school, rendering, and a text-only bundle                      |
-| `fixtures/`                          | Conformance fixtures for implementers _(planned)_                                              |
+| [`fixtures/`](fixtures/)             | Conformance fixtures for implementers, each a lesson in one attack or mistake                  |
 | [`packages/engine`](packages/engine) | Reference engine: validation, linting, and package inspection. It runs in Node and in browsers |
-| [`packages/cli`](packages/cli)       | `openwaymark` command-line tool: `validate`, `lint`, `inspect`, `scan`, `pack` _(planned)_     |
+| [`packages/cli`](packages/cli)       | `openwaymark` command-line tool: `validate`, `lint`, `inspect`, `scan`, `pack`                 |
 
-A browser-based validator is also planned. It will check and pack bundles on
-your own device, without installing anything and without uploading your files.
+The [browser validator](packages/web-validator) checks and packs bundles on your
+own device, without installing anything and without uploading your files.
 
 [Waymark Study](https://github.com/AutomateTheCloud/waymark-study) is the first
 application that reads OpenWaymark bundles.
