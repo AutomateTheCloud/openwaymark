@@ -42,8 +42,14 @@ not run unless they are allowlisted there.
 
 ## License
 
-Not yet applied. Until license files are added, this repository is private and
-grants no rights. Under Automate the Cloud Inc.'s licensing policy, the code
-(engine, CLI, browser validator) will be Apache 2.0. The license for the
-specification text, schema, and fixtures has not been decided. The Waymark name
-and logo are not licensed.
+Everything in this repository is licensed under the
+[Apache License 2.0](LICENSE): the specification, schema, fixtures, examples,
+engine, CLI, and browser validator. Copyright 2026 Automate the Cloud Inc.; see
+[NOTICE](NOTICE).
+
+The license does not cover the Waymark name, the Waymark Study name, or their
+logos, which are property of Automate the Cloud Inc. (Apache 2.0 §6 grants no
+trademark rights).
+
+Study bundles are licensed by their authors and are not covered by this
+repository's license. A bundle states its own terms in its `license` field.

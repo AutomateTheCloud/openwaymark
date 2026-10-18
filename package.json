@@ -2,7 +2,7 @@
   "name": "openwaymark-workspace",
   "private": true,
   "type": "module",
-  "license": "UNLICENSED",
+  "license": "Apache-2.0",
   "packageManager": "pnpm@12.14.0",
   "engines": {
     "node": ">=24"
@@ -15,7 +15,8 @@
     "format:check": "prettier --check .",
     "test": "tsc --build && vitest run",
     "spelling": "node tools/check-american.mjs",
-    "check": "pnpm typecheck && pnpm lint && pnpm format:check && pnpm test && pnpm spelling"
+    "check": "pnpm typecheck && pnpm lint && pnpm format:check && pnpm test && pnpm spelling && pnpm headers",
+    "headers": "node tools/check-headers.mjs"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",

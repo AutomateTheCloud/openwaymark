@@ -4,7 +4,7 @@
   "description": "Command-line validator, linter, and packer for OpenWaymark study bundles",
   "private": true,
   "type": "module",
-  "license": "UNLICENSED",
+  "license": "Apache-2.0",
   "bin": {
     "openwaymark": "./dist/main.js"
   },

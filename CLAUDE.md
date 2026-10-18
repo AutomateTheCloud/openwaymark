@@ -53,11 +53,17 @@ changing the format.
 
 Automate the Cloud's licensing playbook governs this project (D-017):
 
-- Code is Apache 2.0, with `NOTICE` and SPDX headers.
-- Guides and study content are CC BY-NC 4.0 with the internal-training
-  permission.
+- **This whole repo is Apache 2.0** (owner decision D-018, an exception to
+  the playbook's documentation default). That includes spec text, schema,
+  fixtures, examples, and code.
+- Every `.ts`, `.js`, and `.mjs` file starts with the two-line copyright and
+  SPDX header, after any shebang. `pnpm headers` checks it. Keep each file's
+  existing year.
+- **Example bundles become Apache 2.0 permanently.** Keep them small and
+  illustrative. Never seed real catalog content from them, because real
+  bundles are CC BY-NC 4.0 with the internal-training permission and live
+  elsewhere. Use only images we created.
 - Waymark brand assets are not licensed.
-- The OpenWaymark spec text, schema, and fixtures are still undecided (OI-032).
 
 **Before any licensing change,** fetch a fresh copy of the playbook and read
 all of it. If the fetch fails, stop and ask. Delete the clone afterward.

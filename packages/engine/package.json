@@ -4,7 +4,7 @@
   "description": "Reference validation engine for the OpenWaymark study bundle format",
   "private": true,
   "type": "module",
-  "license": "UNLICENSED",
+  "license": "Apache-2.0",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",

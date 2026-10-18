@@ -1,4 +1,7 @@
 #!/usr/bin/env node
+// Copyright 2026 Automate the Cloud Inc.
+// SPDX-License-Identifier: Apache-2.0
+
 // Fails when a British spelling appears in a tracked or new text file.
 //
 // Each rule is a whole-word pattern and the American spelling to use instead. The
