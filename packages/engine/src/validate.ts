@@ -31,7 +31,7 @@ import { ReportBuilder, type BundleSummary, type Report } from "./report.js";
 import { checkCharacters, parseManifestText, type Mapping, type ParsedManifest } from "./yaml.js";
 import { readZipDirectory, readZipEntry, type ZipEntry } from "./zip.js";
 
-export const ENGINE_VERSION = "0.1.0";
+export const ENGINE_VERSION = "0.1.1";
 
 export interface ValidateOptions {
   /** Decodes images fully (OWM-IMG-009). Without one, the result is at best "incomplete". */
