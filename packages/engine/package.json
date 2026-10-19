@@ -1,10 +1,25 @@
 {
-  "name": "@openwaymark/engine",
-  "version": "0.0.0",
+  "name": "@automatethecloud/openwaymark-engine",
+  "version": "0.1.0",
   "description": "Reference validation engine for the OpenWaymark study bundle format",
-  "private": true,
-  "type": "module",
+  "keywords": [
+    "openwaymark",
+    "study",
+    "flashcards",
+    "quiz",
+    "validator",
+    "bundle"
+  ],
+  "author": "Automate the Cloud Inc.",
   "license": "Apache-2.0",
+  "homepage": "https://github.com/AutomateTheCloud/openwaymark/tree/master/packages/engine#readme",
+  "bugs": "https://github.com/AutomateTheCloud/openwaymark/issues",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AutomateTheCloud/openwaymark.git",
+    "directory": "packages/engine"
+  },
+  "type": "module",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
@@ -12,9 +27,17 @@
     }
   },
   "files": [
-    "dist"
+    "dist",
+    "src",
+    "NOTICE"
   ],
   "sideEffects": false,
+  "engines": {
+    "node": ">=24"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
   "dependencies": {
     "fflate": "^0.8.3",
     "mdast-util-from-markdown": "^2.1.0",

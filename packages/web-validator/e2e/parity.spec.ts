@@ -11,7 +11,7 @@
 import { existsSync, readFileSync, readdirSync, statSync } from "node:fs";
 import { join } from "node:path";
 import { expect, test } from "@playwright/test";
-import { bytesSource, validateBundle, type Report } from "@openwaymark/engine";
+import { bytesSource, validateBundle, type Report } from "@automatethecloud/openwaymark-engine";
 import { sharpDecoder as nodeDecoder } from "../../cli/src/decoder.js";
 
 const REPO = new URL("../../../", import.meta.url).pathname;

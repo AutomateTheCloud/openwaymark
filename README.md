@@ -91,6 +91,11 @@ _The format is a working draft. Field names may change until version 1.0._
 | [`packages/engine`](packages/engine) | Reference engine: validation, linting, and package inspection. It runs in Node and in browsers |
 | [`packages/cli`](packages/cli)       | `openwaymark` command-line tool: `validate`, `lint`, `inspect`, `scan`, `pack`                 |
 
+The engine and the CLI are on npm as
+[`@automatethecloud/openwaymark-engine`](https://www.npmjs.com/package/@automatethecloud/openwaymark-engine)
+and [`@automatethecloud/openwaymark`](https://www.npmjs.com/package/@automatethecloud/openwaymark).
+To try the CLI: `npx @automatethecloud/openwaymark validate my-bundle.waymark`.
+
 The [browser validator](packages/web-validator) checks and packs bundles on your
 own device, without installing anything and without uploading your files.
 

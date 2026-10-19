@@ -5,7 +5,7 @@
 // never innerHTML. Diagnostics quote text from the bundle, and a malicious
 // bundle must not be able to inject HTML into the page that reports on it.
 
-import type { Diagnostic, Report } from "@openwaymark/engine";
+import type { Diagnostic, Report } from "@automatethecloud/openwaymark-engine";
 import type { AssetSummary, Request, Response } from "./protocol.js";
 import "./style.css";
 

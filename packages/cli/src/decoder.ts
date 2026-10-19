@@ -6,8 +6,8 @@
 // sharp's own pixel limit is a second line of defense, not the first.
 
 import sharp from "sharp";
-import type { ImageDecoder } from "@openwaymark/engine";
-import { LIMITS } from "@openwaymark/engine";
+import type { ImageDecoder } from "@automatethecloud/openwaymark-engine";
+import { LIMITS } from "@automatethecloud/openwaymark-engine";
 
 export const sharpDecoder: ImageDecoder = {
   name: `sharp ${sharp.versions.sharp} (libvips ${sharp.versions.vips})`,

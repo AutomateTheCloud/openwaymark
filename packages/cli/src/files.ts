@@ -7,7 +7,7 @@
 
 import { open, readdir, lstat, readFile } from "node:fs/promises";
 import { join, relative, sep } from "node:path";
-import type { ByteSource, PackFile } from "@openwaymark/engine";
+import type { ByteSource, PackFile } from "@automatethecloud/openwaymark-engine";
 
 export interface FileSource extends ByteSource {
   close(): Promise<void>;

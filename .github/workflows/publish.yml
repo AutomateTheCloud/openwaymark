@@ -1,0 +1,66 @@
+# Publishes the engine and the CLI to npm when a version tag (v0.1.0) is
+# pushed. npm trusted publishing authenticates this workflow by OIDC, so no
+# npm token is stored anywhere, and npm attaches provenance to each version.
+# Each package's trusted publisher on npmjs.com must name this file and the
+# `npm` environment.
+name: publish
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: publish
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    # Add required reviewers to this environment in the repository settings
+    # to make every release wait for a maintainer's approval.
+    environment: npm
+    permissions:
+      contents: read
+      id-token: write
+    env:
+      COREPACK_ENABLE_DOWNLOAD_PROMPT: "0"
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .node-version
+          registry-url: https://registry.npmjs.org
+      - run: corepack enable
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm check
+
+      - name: Check the tag matches both package versions
+        run: |
+          for dir in packages/engine packages/cli; do
+            version="v$(node -p "require('./$dir/package.json').version")"
+            if [ "$version" != "$GITHUB_REF_NAME" ]; then
+              echo "::error::$dir is $version, but the tag is $GITHUB_REF_NAME"
+              exit 1
+            fi
+          done
+
+      # pnpm pack replaces `workspace:*` with the engine's real version; npm
+      # then publishes the tarballs, since trusted publishing needs npm 11.5.1+.
+      - name: Pack
+        run: |
+          npm --version
+          mkdir "$RUNNER_TEMP/packages"
+          pnpm --filter @automatethecloud/openwaymark-engine pack --pack-destination "$RUNNER_TEMP/packages"
+          pnpm --filter @automatethecloud/openwaymark pack --pack-destination "$RUNNER_TEMP/packages"
+
+      # The engine goes first: the CLI depends on that exact version.
+      - name: Publish
+        run: |
+          npm publish "$RUNNER_TEMP"/packages/automatethecloud-openwaymark-engine-*.tgz
+          npm publish "$RUNNER_TEMP"/packages/automatethecloud-openwaymark-[0-9]*.tgz

@@ -11,7 +11,7 @@ import {
   validateBundle,
   type ByteSource,
   type ImageDecoder,
-} from "@openwaymark/engine";
+} from "@automatethecloud/openwaymark-engine";
 import type { Request, Response } from "./protocol.js";
 
 const MIME = { png: "image/png", jpeg: "image/jpeg", webp: "image/webp" } as const;
