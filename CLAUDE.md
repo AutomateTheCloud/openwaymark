@@ -45,7 +45,9 @@ change.
 
 ## Conventions
 
-- American English everywhere (`pnpm spelling`).
+- American English in this project's own code, spec, and docs (`pnpm spelling`).
+  Never in bundle content: `study.yaml` files are skipped, and the validator
+  has no spelling rule.
 - TypeScript strict mode, ESM, Node 24, pnpm.
 - New dependencies must be maintained and justified. Installs honor a 7-day
   release age (`pnpm-workspace.yaml`). Never allowlist an install script

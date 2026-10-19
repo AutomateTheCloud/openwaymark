@@ -2,7 +2,12 @@
 // Copyright 2026 Automate the Cloud Inc.
 // SPDX-License-Identifier: Apache-2.0
 
-// Fails when a British spelling appears in a tracked or new text file.
+// Fails when a British spelling appears in a tracked or new text file of this
+// project: its code, specification, and documentation.
+//
+// Bundle content is never checked. A bundle's text belongs to its author, in
+// any language and any spelling, so every study.yaml (a bundle's manifest,
+// wherever it is) is left out. The validator itself has no spelling rule.
 //
 // Each rule is a whole-word pattern and the American spelling to use instead. The
 // -ise verbs list their endings explicitly rather than matching any word that starts
@@ -70,13 +75,16 @@ const THIS_FILE = "tools/check-american.mjs";
 // Third-party names are not ours to respell: the lockfile lists packages such
 // as @img/colour, a dependency of sharp.
 const EXCLUDED = new Set([THIS_FILE, "pnpm-lock.yaml"]);
+// A bundle's manifest: the author's content, not this project's writing.
+const BUNDLE_CONTENT = /(^|\/)study\.ya?ml$/i;
 const PATTERNS = RULES.map(([source, american]) => [new RegExp(`\\b${source}\\b`, "gi"), american]);
 
 const files = execFileSync("git", ["ls-files", "--cached", "--others", "--exclude-standard"], {
   encoding: "utf8",
 })
   .split("\n")
-  .filter((path) => path !== "" && !EXCLUDED.has(path) && TEXT_FILE.test(path));
+  .filter((path) => path !== "" && !EXCLUDED.has(path) && TEXT_FILE.test(path))
+  .filter((path) => !BUNDLE_CONTENT.test(path));
 
 const problems = [];
 for (const path of files) {

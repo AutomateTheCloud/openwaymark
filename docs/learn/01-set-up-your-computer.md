@@ -120,8 +120,9 @@ This runs, in order:
 2. **lint:** ESLint looks for code patterns that are likely to be bugs;
 3. **format check:** Prettier checks the layout of the code;
 4. **tests:** Vitest runs a few hundred automated tests;
-5. **spelling:** a small tool checks for British spellings, because the
-   project uses American English;
+5. **spelling:** a small tool checks this project's own writing for British
+   spellings, because the project uses American English. It skips bundle
+   content: a bundle's text belongs to its author;
 6. **license headers:** every source file must carry its copyright line;
 7. **spec rules:** every requirement in the specification must have a rule
    number.

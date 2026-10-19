@@ -26,7 +26,9 @@ change.
    and tests. Bug fixes get a test that fails without the fix.
 4. **Write for learners.** Comments explain why, not just what. Messages say
    what is wrong and how to fix it. Plain language; jargon defined on first use.
-5. **American English** (`pnpm spelling`).
+5. **American English** for this project's own code, specification, and
+   documentation (`pnpm spelling`). Bundle content is never checked: a
+   bundle's text belongs to its author, in any language or spelling.
 6. **New source files** start with the two-line header:
 
    ```ts
