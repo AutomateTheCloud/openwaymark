@@ -2,4 +2,4 @@
 // SPDX-License-Identifier: Apache-2.0
 
 /** CLI release version. Kept equal to `version` in package.json by test. */
-export const CLI_VERSION = "0.1.1";
+export const CLI_VERSION = "0.1.2";
