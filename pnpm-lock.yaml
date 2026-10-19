@@ -211,7 +211,7 @@ importers:
 
   packages/cli:
     dependencies:
-      '@openwaymark/engine':
+      '@automatethecloud/openwaymark-engine':
         specifier: workspace:*
         version: link:../engine
       sharp:
@@ -238,7 +238,7 @@ importers:
 
   packages/web-validator:
     dependencies:
-      '@openwaymark/engine':
+      '@automatethecloud/openwaymark-engine':
         specifier: workspace:*
         version: link:../engine
     devDependencies:

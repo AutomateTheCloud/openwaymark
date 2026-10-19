@@ -23,7 +23,7 @@ import {
   type ImageDecoder,
   type Report,
   type ValidationResult,
-} from "@openwaymark/engine";
+} from "@automatethecloud/openwaymark-engine";
 import { sharpDecoder } from "./decoder.js";
 import { openFileSource, readFolder } from "./files.js";
 import { formatDiagnostics, formatScan, formatSummary, formatVerdict } from "./format.js";

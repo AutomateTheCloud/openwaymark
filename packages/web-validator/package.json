@@ -1,5 +1,5 @@
 {
-  "name": "@openwaymark/web-validator",
+  "name": "@automatethecloud/openwaymark-web-validator",
   "version": "0.0.0",
   "description": "Browser page that validates and packs OpenWaymark bundles on the user's own device",
   "private": true,
@@ -12,7 +12,7 @@
     "test:browser": "playwright test"
   },
   "dependencies": {
-    "@openwaymark/engine": "workspace:*"
+    "@automatethecloud/openwaymark-engine": "workspace:*"
   },
   "devDependencies": {
     "@playwright/test": "^1.64.0",

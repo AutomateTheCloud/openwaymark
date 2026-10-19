@@ -16,6 +16,7 @@ import {
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { beforeAll, describe, expect, it } from "vitest";
+import { ENGINE_VERSION } from "@automatethecloud/openwaymark-engine";
 import {
   EXIT_INCOMPLETE,
   EXIT_IO,
@@ -72,7 +73,7 @@ describe("help and version", () => {
 
   it("prints CLI and engine versions", async () => {
     const result = await cli(["--version"]);
-    expect(result.stdout).toBe(`openwaymark ${CLI_VERSION} (engine 0.0.0)\n`);
+    expect(result.stdout).toBe(`openwaymark ${CLI_VERSION} (engine ${ENGINE_VERSION})\n`);
   });
 
   it("rejects unknown commands, unknown options, and missing paths", async () => {

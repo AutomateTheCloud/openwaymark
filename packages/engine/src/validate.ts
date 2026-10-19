@@ -31,7 +31,7 @@ import { ReportBuilder, type BundleSummary, type Report } from "./report.js";
 import { checkCharacters, parseManifestText, type Mapping, type ParsedManifest } from "./yaml.js";
 import { readZipDirectory, readZipEntry, type ZipEntry } from "./zip.js";
 
-export const ENGINE_VERSION = "0.0.0";
+export const ENGINE_VERSION = "0.1.0";
 
 export interface ValidateOptions {
   /** Decodes images fully (OWM-IMG-009). Without one, the result is at best "incomplete". */
@@ -217,7 +217,7 @@ export async function validateBundle(
   const checks = report.finishChecks("an earlier error prevented this check");
   const conformance = report.conformance(checks);
   const result: Report = {
-    engine: { name: "@openwaymark/engine", version: ENGINE_VERSION },
+    engine: { name: "@automatethecloud/openwaymark-engine", version: ENGINE_VERSION },
     supportedFormatVersions: SUPPORTED_FORMAT_VERSIONS,
     input: { form, bytes: source.size },
     conformance,

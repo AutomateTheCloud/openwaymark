@@ -1,10 +1,29 @@
-# openwaymark (command-line tool)
+# @automatethecloud/openwaymark
 
-Checks, describes, and packs [OpenWaymark](../../README.md) study bundles from
+Checks, describes, and packs [OpenWaymark](https://github.com/AutomateTheCloud/openwaymark) study bundles from
 a terminal. Everything runs on your own computer. Nothing is uploaded.
 
-> **New to the command line?** [`docs/learn/`](../../docs/learn/) walks you
+> **New to the command line?** [`docs/learn/`](https://github.com/AutomateTheCloud/openwaymark/tree/master/docs/learn) walks you
 > through installing the tools and running your first check, step by step.
+
+## Install
+
+Requires [Node.js](https://nodejs.org/) 24 or later.
+
+```bash
+npm install --global @automatethecloud/openwaymark
+openwaymark --help
+```
+
+Or run it once without installing:
+
+```bash
+npx @automatethecloud/openwaymark validate my-bundle.waymark
+```
+
+The format is a working draft, so expect breaking changes in 0.x releases.
+Image decoding uses [sharp](https://sharp.pixelplumbing.com/), which npm
+installs with a prebuilt binary for your platform.
 
 ## Commands
 
@@ -18,7 +37,7 @@ openwaymark pack my-bundle/              # Make my-bundle.waymark from a folder
 
 Add `--json` to any command for a machine-readable report: the engine's
 diagnostics, each with a rule identifier such as `OWM-PATH-001` that you can
-look up in the [specification](../../spec/openwaymark.md).
+look up in the [specification](https://github.com/AutomateTheCloud/openwaymark/blob/master/spec/openwaymark.md).
 
 | Option                  | Command | Effect                                                               |
 | ----------------------- | ------- | -------------------------------------------------------------------- |
@@ -72,10 +91,16 @@ the scan as not performed and exits with status 4, never with a clean result.
 
 ## Building from source
 
-From the repository root:
+From the root of a clone of the
+[repository](https://github.com/AutomateTheCloud/openwaymark):
 
 ```bash
 pnpm install
 pnpm build
 node packages/cli/dist/main.js --help
 ```
+
+## License
+
+[Apache License 2.0](https://github.com/AutomateTheCloud/openwaymark/blob/master/LICENSE).
+Copyright 2026 Automate the Cloud Inc. The Waymark name is not licensed.
