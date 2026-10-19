@@ -91,7 +91,7 @@ export interface BundleSummary {
 }
 
 export interface Report {
-  engine: { name: "@openwaymark/engine"; version: string };
+  engine: { name: "@automatethecloud/openwaymark-engine"; version: string };
   supportedFormatVersions: readonly string[];
   /** "unrecognized": not a ZIP archive, so not a bundle (OWM-PKG-001). */
   input: { form: "archive" | "unrecognized"; bytes: number };

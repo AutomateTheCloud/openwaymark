@@ -14,7 +14,7 @@ try. The browser tests check this.
 ```bash
 pnpm install
 pnpm build                                         # build the engine
-pnpm --filter @openwaymark/web-validator dev       # open the printed address
+pnpm --filter @automatethecloud/openwaymark-web-validator dev       # open the printed address
 ```
 
 ## How it works
@@ -43,7 +43,7 @@ pnpm test:browser   # from the repository root: builds, then runs Playwright
 ```
 
 The first time, install the browsers with
-`pnpm --filter @openwaymark/web-validator exec playwright install`.
+`pnpm --filter @automatethecloud/openwaymark-web-validator exec playwright install`.
 
 Playwright's WebKit is close to Safari, but it is not Safari on an iPhone.
 Tests here do not stand in for checks on real devices.

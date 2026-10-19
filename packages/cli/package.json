@@ -1,18 +1,41 @@
 {
-  "name": "openwaymark",
-  "version": "0.0.0",
+  "name": "@automatethecloud/openwaymark",
+  "version": "0.1.0",
   "description": "Command-line validator, linter, and packer for OpenWaymark study bundles",
-  "private": true,
-  "type": "module",
+  "keywords": [
+    "openwaymark",
+    "study",
+    "flashcards",
+    "quiz",
+    "validator",
+    "cli"
+  ],
+  "author": "Automate the Cloud Inc.",
   "license": "Apache-2.0",
+  "homepage": "https://github.com/AutomateTheCloud/openwaymark/tree/master/packages/cli#readme",
+  "bugs": "https://github.com/AutomateTheCloud/openwaymark/issues",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AutomateTheCloud/openwaymark.git",
+    "directory": "packages/cli"
+  },
+  "type": "module",
   "bin": {
     "openwaymark": "./dist/main.js"
   },
   "files": [
-    "dist"
+    "dist",
+    "src",
+    "NOTICE"
   ],
+  "engines": {
+    "node": ">=24"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
   "dependencies": {
-    "@openwaymark/engine": "workspace:*",
+    "@automatethecloud/openwaymark-engine": "workspace:*",
     "sharp": "^0.35.5"
   }
 }

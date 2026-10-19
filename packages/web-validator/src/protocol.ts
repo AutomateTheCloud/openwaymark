@@ -4,7 +4,7 @@
 // Messages between the page and the validation worker. The worker does the
 // heavy work, so the page stays responsive while a large bundle is checked.
 
-import type { ImageInfo, Report } from "@openwaymark/engine";
+import type { ImageInfo, Report } from "@automatethecloud/openwaymark-engine";
 
 export type Request =
   { type: "validate"; file: File } | { type: "pack"; files: { path: string; file: File }[] };

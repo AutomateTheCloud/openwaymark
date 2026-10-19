@@ -5,7 +5,7 @@
 // configured checks", which says nothing about whether it is safe or whether
 // its answers are right (spec OWM-SEC-006).
 
-import type { Diagnostic, Report } from "@openwaymark/engine";
+import type { Diagnostic, Report } from "@automatethecloud/openwaymark-engine";
 import type { ScanResult } from "./scan.js";
 
 function where(diagnostic: Diagnostic): string {

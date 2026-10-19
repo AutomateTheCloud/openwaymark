@@ -70,5 +70,5 @@ jobs:
           node-version-file: .node-version
       - run: corepack enable
       - run: pnpm install --frozen-lockfile
-      - run: pnpm --filter @openwaymark/web-validator exec playwright install --with-deps chromium firefox webkit
+      - run: pnpm --filter @automatethecloud/openwaymark-web-validator exec playwright install --with-deps chromium firefox webkit
       - run: pnpm test:browser
