@@ -1,6 +1,6 @@
 {
   "name": "@automatethecloud/openwaymark-engine",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Reference validation engine for the OpenWaymark study bundle format",
   "keywords": [
     "openwaymark",
