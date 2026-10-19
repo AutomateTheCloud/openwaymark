@@ -17,6 +17,7 @@
   <a href="https://github.com/AutomateTheCloud/openwaymark/actions/workflows/check.yml"><img src="https://github.com/AutomateTheCloud/openwaymark/actions/workflows/check.yml/badge.svg" alt="Check status"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-Apache--2.0-146B63" alt="License: Apache 2.0"></a>
   <img src="https://img.shields.io/badge/format-draft%200.1-163D3A" alt="Format status: draft 0.1">
+  <a href="https://www.npmjs.com/package/@automatethecloud/openwaymark"><img src="https://img.shields.io/npm/v/@automatethecloud/openwaymark?label=npm&color=146B63" alt="npm version"></a>
 </p>
 
 ---
@@ -33,6 +34,55 @@ can build software that reads it.
   notes and progress survive updates.
 - **Independent.** Implementing the format requires nothing from Waymark,
   including any service or account.
+
+## Install the tools
+
+You do not need to clone this repository to check or pack bundles. The
+command-line tool and the engine are published on npm, and need
+[Node.js](https://nodejs.org/) 24 or later.
+
+**The command-line tool**,
+[`@automatethecloud/openwaymark`](https://www.npmjs.com/package/@automatethecloud/openwaymark):
+
+```bash
+npm install --global @automatethecloud/openwaymark
+openwaymark validate my-bundle/       # Does it follow the format?
+openwaymark pack my-bundle/           # Make my-bundle.waymark
+```
+
+Or try it once without installing anything:
+
+```bash
+npx @automatethecloud/openwaymark validate my-bundle/
+```
+
+The [CLI guide](packages/cli/README.md) covers every command, the exit
+statuses, and malware scanning.
+
+**The engine**, for your own programs,
+[`@automatethecloud/openwaymark-engine`](https://www.npmjs.com/package/@automatethecloud/openwaymark-engine):
+
+```bash
+npm install @automatethecloud/openwaymark-engine
+```
+
+It runs in Node and in browsers. The [engine guide](packages/engine/README.md)
+shows how to validate a bundle in a few lines.
+
+**Check where a release came from.** Every release is built and published by
+this repository's GitHub Actions workflow, and npm records a signed
+[provenance statement](https://docs.npmjs.com/generating-provenance-statements)
+that links it to the exact commit. `npm audit signatures`, run in a project that
+installs the packages, verifies them.
+
+The engine and the CLI share one version number. The format is a working
+draft, so expect breaking changes in 0.x releases. If your project only
+installs packages after they have been public for some days (pnpm's
+`minimumReleaseAge`, for example), a new release becomes available to it once
+that time has passed.
+
+Want to change the code, or run the tests? Clone the repository and see
+[Development](#development).
 
 ## Learn by doing
 
@@ -91,10 +141,7 @@ _The format is a working draft. Field names may change until version 1.0._
 | [`packages/engine`](packages/engine) | Reference engine: validation, linting, and package inspection. It runs in Node and in browsers |
 | [`packages/cli`](packages/cli)       | `openwaymark` command-line tool: `validate`, `lint`, `inspect`, `scan`, `pack`                 |
 
-The engine and the CLI are on npm as
-[`@automatethecloud/openwaymark-engine`](https://www.npmjs.com/package/@automatethecloud/openwaymark-engine)
-and [`@automatethecloud/openwaymark`](https://www.npmjs.com/package/@automatethecloud/openwaymark).
-To try the CLI: `npx @automatethecloud/openwaymark validate my-bundle.waymark`.
+The engine and the CLI are on npm; see [Install the tools](#install-the-tools).
 
 The [browser validator](packages/web-validator) checks and packs bundles on your
 own device, without installing anything and without uploading your files.
@@ -105,7 +152,8 @@ public.
 
 ## Development
 
-Requires Node 24 and pnpm (the version is pinned in `package.json`).
+To work on the code itself, clone the repository. Requires Node 24 and pnpm
+(the version is pinned in `package.json`).
 
 ```bash
 pnpm install
