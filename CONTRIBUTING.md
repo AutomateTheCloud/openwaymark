@@ -36,6 +36,43 @@ change.
    // SPDX-License-Identifier: Apache-2.0
    ```
 
+## Releasing (maintainers)
+
+The engine and the CLI are released together, with one version number, by
+`.github/workflows/publish.yml`. The workflow publishes to npm through trusted
+publishing: npm trusts this repository's workflow directly, so no npm token
+is stored anywhere, and each release gets a signed provenance statement.
+
+1. **Pick the version.** While the format is a draft (0.x), raise the minor
+   number (0.2.0) for a breaking change and the patch number (0.1.3) for
+   anything else.
+2. **Bump it in four places:** `version` in `packages/engine/package.json` and
+   `packages/cli/package.json`, `ENGINE_VERSION` in
+   `packages/engine/src/validate.ts`, and `CLI_VERSION` in
+   `packages/cli/src/version.ts`. `pnpm check` fails if any of them disagree.
+3. **Open a pull request** titled "Release 0.1.3" and merge it once the checks
+   pass.
+4. **Tag the merged commit** on `master` and push the tag:
+
+   ```bash
+   git switch master && git pull
+   git tag -a v0.1.3 -m "Release 0.1.3"
+   git push origin v0.1.3
+   ```
+
+5. **Approve the deployment.** The publish run waits for a maintainer to
+   approve it in the `npm` environment (Actions, then Review deployments). It
+   runs `pnpm check`, confirms that the tag matches both versions, and
+   publishes the engine, then the CLI.
+6. **Check the result.** npm can take a few minutes to show a new version.
+   `npm view @automatethecloud/openwaymark version` prints it once it is
+   there.
+
+A version number can be used only once, even if it is later unpublished. If a
+release goes wrong after publishing, fix it in a new patch release. If the run
+fails before publishing anything, fix the problem, move the tag to the new
+commit (`git tag -d`, then `git push origin :refs/tags/v0.1.3`), and tag again.
+
 ## How contributions are licensed
 
 This repository is licensed under the [Apache License 2.0](LICENSE). Under
