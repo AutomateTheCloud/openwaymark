@@ -1460,6 +1460,40 @@ _Informative._ These questions are deliberately unresolved in draft 0.1.
       cannot provide copy prevention (DRM), and this specification does not
       attempt it.
 
+11. **Video.** Video files do not belong in bundles: they are large, and
+    readers would need to decode untrusted media. Today an author can already
+    link to a video from Markdown text, such as an explanation, and the link
+    follows the rules for every link (section 9.5): `https` only, and opened
+    only when the learner activates it. A later draft may add a structured
+    video reference on prompts and explanations, with members such as a URL, a
+    title, a duration, a start time, and a text alternative (a transcript or a
+    summary of what the video shows). Questions to settle:
+    - Readers must still never load a video, its thumbnail, or a player
+      automatically (OWM-LINK-002), so a reader cannot embed a player that
+      contacts the host before the learner chooses to watch.
+    - The text alternative should be enough to answer the question, for
+      learners offline, using assistive technology, or after the link breaks.
+    - Whether to name video hosts at all, or treat every video as a plain
+      `https` URL.
+
+12. **Answer variants.** A question could hold several wordings of its
+    correct answers and more wrong answers than it shows, and a reader could
+    choose which to present each time. Learners would then have to recognize
+    what an answer means, not what it looks like. Questions to settle:
+    - Whether a variant is another text for an existing choice, sharing its
+      `id`, or a choice in a pool with a count of how many to show. Choice
+      identifiers carry grading and learner progress (OWM-Q-009, section 12),
+      so variants of one answer probably share an identifier.
+    - How a `multiple` question draws its set: how many correct choices to
+      show, and how that interacts with `selection_count` and with stems such
+      as "Which two...".
+    - Whether variants of the same choice may differ in what they claim, and
+      how a change to one variant counts under the material-change rules
+      (section 12.2).
+    - Whether prompts may have variants too.
+    - Readers that do not support variants must still present a valid
+      question, for example by showing each choice's first wording.
+
 ---
 
 ## Appendix D: Retired rule identifiers

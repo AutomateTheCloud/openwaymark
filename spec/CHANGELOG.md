@@ -14,6 +14,9 @@ into a new version.
   file. OWM-TEXT-001 and OWM-TEXT-002 are retired (Appendix D).
 - Recorded the intended direction for private bundles: an encryption envelope
   using an open standard around an ordinary bundle (Appendix C, issue 10).
+- Listed two new open issues: links to video from prompts and explanations
+  (Appendix C, issue 11), and answer variants that readers draw from each time
+  (issue 12). Neither changes the format in this draft.
 - Reserved `signatures/` for a future, optional signature mechanism
   (section 3.8, OWM-SIG-001 to OWM-SIG-003). Readers ignore it, so signed bundles
   made later still open in readers built for this version.
