@@ -74,8 +74,12 @@ jobs:
       # mirror, which has stalled long enough to use up the whole job. Keep
       # apt's downloads and the browsers between runs, per runner image and
       # Playwright version, and retry a stalled install instead of waiting.
+      # ImageOS and ImageVersion are set on the runner machine, which the
+      # env context cannot see, so a step reads them.
       - id: playwright
-        run: echo "version=$(pnpm --filter @automatethecloud/openwaymark-web-validator exec playwright --version | awk '{print $2}')" >> "$GITHUB_OUTPUT"
+        run: |
+          echo "image=$ImageOS-$ImageVersion" >> "$GITHUB_OUTPUT"
+          echo "version=$(pnpm --filter @automatethecloud/openwaymark-web-validator exec playwright --version | awk '{print $2}')" >> "$GITHUB_OUTPUT"
       - run: |
           mkdir -p ~/apt-archives/partial
           printf '%s\n' "Dir::Cache::Archives \"$HOME/apt-archives\";" \
@@ -87,8 +91,8 @@ jobs:
           path: |
             ~/apt-archives
             ~/.cache/ms-playwright
-          key: playwright-${{ env.ImageOS }}-${{ env.ImageVersion }}-${{ steps.playwright.outputs.version }}
-          restore-keys: playwright-${{ env.ImageOS }}-
+          key: playwright-${{ steps.playwright.outputs.image }}-${{ steps.playwright.outputs.version }}
+          restore-keys: playwright-${{ steps.playwright.outputs.image }}-
       - run: |
           for attempt in 1 2 3; do
             timeout 480 pnpm --filter @automatethecloud/openwaymark-web-validator exec playwright install --with-deps chromium firefox webkit && exit 0
