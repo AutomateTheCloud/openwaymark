@@ -12,7 +12,9 @@ lettered choices, and the key is kept in a separate file.
     python3 blind_solve.py score <dir>/blind-key.json <answers.json>
 
 `make` writes <dir>/blind-questions.md (numbered questions with lettered
-choices, and no IDs, answers, explanations, or hints), <dir>/blind-cards.md
+choices, and no IDs, answers, explanations, or hints), <dir>/blind-variants.md
+when choices have answer variants (every wording of each choice, to check that
+they make the same claim), <dir>/blind-cards.md
 (flashcards with their references, for checking each back against the
 source), and <dir>/blind-key.json. Give the solver only the two .md files and
 the source pack. Ask for answers as JSON,
@@ -75,6 +77,32 @@ def make(manifest_path: Path, out: Path, only: set[str] | None = None) -> None:
     if key:
         (out / "blind-questions.md").write_text("\n".join(lines), encoding="utf-8")
 
+    # Answer variants (format 0.2): every wording of each choice, without the
+    # key, so a solver can confirm that all wordings of a choice say the same.
+    wordings = [
+        "# Answer variants",
+        "",
+        "The app shows each choice in one of the wordings listed under it. For every",
+        "choice, check that all its wordings make the same claim: a learner who knows",
+        "the material would judge them all correct, or all incorrect. List any wording",
+        "that differs, and any that would stand out next to the other choices.",
+        "",
+    ]
+    varied = 0
+    for number, question in enumerate(manifest.get("questions") or [], start=1):
+        choices = question.get("choices") or []
+        if not any(c.get("variants") for c in choices):
+            continue
+        varied += 1
+        wordings += [f"## Q{number}", "", text(question.get("prompt")).strip(), ""]
+        for index, choice in enumerate(choices):
+            wordings.append(f"{string.ascii_uppercase[index]}.")
+            for wording in [choice, *(choice.get("variants") or [])]:
+                wordings.append(f"   - {text(wording).strip() or '(image only)'}")
+        wordings.append("")
+    if varied:
+        (out / "blind-variants.md").write_text("\n".join(wordings), encoding="utf-8")
+
     cards = ["# Flashcards", "", "Check that each back is correct and supported by the cited passage.", ""]
     flashcards = manifest.get("flashcards") or []
     for card in flashcards:
@@ -94,7 +122,10 @@ def make(manifest_path: Path, out: Path, only: set[str] | None = None) -> None:
         (out / "blind-cards.md").write_text("\n".join(cards), encoding="utf-8")
     if key:
         (out / "blind-key.json").write_text(json.dumps(key, indent=2) + "\n", encoding="utf-8")
-    print(f"Wrote {len(key)} questions and {len(flashcards)} flashcards to {out}")
+    print(
+        f"Wrote {len(key)} questions ({varied} with answer variants) and "
+        f"{len(flashcards)} flashcards to {out}"
+    )
 
 
 def score(key_path: Path, answers_path: Path) -> None:

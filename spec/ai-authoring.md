@@ -139,6 +139,40 @@ Breaking any of these makes the bundle invalid.
 - **Cite sources** in `references` when an item depends on specific material.
 - **Vary the position of the correct answer** in the list.
 
+## Answer variants (only when asked)
+
+If the person asks for answer variants, that is, several wordings of each
+choice so that learners cannot memorize how an answer looks, use format
+draft 0.2: write `format_version: "0.2"` and give choices a `variants` list.
+The app shows every choice once, in one of its wordings, picked at random each
+time.
+
+```yaml
+choices:
+  - id: toward-more-solute
+    text: Toward the side with more dissolved solute
+    variants:
+      - text: From the dilute side to the concentrated side
+      - text: Toward the more concentrated solution
+  - id: toward-less-solute
+    text: Toward the side with less dissolved solute
+    variants:
+      - text: From the concentrated side to the dilute side
+```
+
+- **Same claim.** Every variant says exactly what its choice says, in other
+  words. Never add a qualifier, change the scope, or make it more or less
+  precise. A correct choice stays correct in every wording, and an incorrect
+  one stays incorrect.
+- **Vary the wrong choices too,** so the correct answer is not the only choice
+  that changes.
+- **Same form and length.** The app picks each choice's wording separately, so
+  any wording can appear beside any other. Keep every wording of every choice
+  in the same grammatical form and of similar length.
+- **Limits.** At most 8 variants per choice. A variant has `text`, and may have
+  an `image` or `language`; it never has its own `id` or `explanation`.
+- Without variants, keep `format_version: "0.1"`.
+
 ## Self-check before you answer
 
 Go through the output once and confirm:
@@ -150,6 +184,8 @@ Go through the output once and confirm:
 - [ ] No HTML, no anchors or aliases, no null values, no invented URLs.
 - [ ] Every code sample or payload is inside backticks or a code block.
 - [ ] Ambiguous scalars are quoted.
+- [ ] If any choice has `variants`, `format_version` is `"0.2"`, and every
+      variant makes the same claim as its choice.
 
 ## After you answer
 

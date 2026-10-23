@@ -16,7 +16,7 @@
 <p align="center">
   <a href="https://github.com/AutomateTheCloud/openwaymark/actions/workflows/check.yml"><img src="https://github.com/AutomateTheCloud/openwaymark/actions/workflows/check.yml/badge.svg" alt="Check status"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-Apache--2.0-146B63" alt="License: Apache 2.0"></a>
-  <img src="https://img.shields.io/badge/format-draft%200.1-163D3A" alt="Format status: draft 0.1">
+  <img src="https://img.shields.io/badge/format-draft%200.2-163D3A" alt="Format status: draft 0.2">
   <a href="https://www.npmjs.com/package/@automatethecloud/openwaymark"><img src="https://img.shields.io/npm/v/@automatethecloud/openwaymark?label=npm&color=146B63" alt="npm version"></a>
 </p>
 
@@ -135,7 +135,7 @@ _The format is a working draft. Field names may change until version 1.0._
 | Path                                 | Contents                                                                                       |
 | ------------------------------------ | ---------------------------------------------------------------------------------------------- |
 | [`spec/`](spec/)                     | The OpenWaymark specification, authoring guide, and change log                                 |
-| [`schema/`](schema/)                 | JSON Schema for the manifest, draft 0.1                                                        |
+| [`schema/`](schema/)                 | JSON Schema for the manifest, drafts 0.1 and 0.2                                               |
 | [`examples/`](examples/)             | Valid example bundles, as folders: IT, high-school, rendering, and language learning           |
 | [`fixtures/`](fixtures/)             | Conformance fixtures for implementers, each a lesson in one attack or mistake                  |
 | [`packages/engine`](packages/engine) | Reference engine: validation, linting, and package inspection. It runs in Node and in browsers |

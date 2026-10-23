@@ -1,0 +1,9 @@
+{
+  "description": "A variant repeats another choice's text; it passes, with a lint warning.",
+  "format_version": "0.2",
+  "mode": "lint",
+  "outcome": "accept",
+  "rules": [
+    "OWM-LINT-003"
+  ]
+}

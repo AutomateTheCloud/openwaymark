@@ -31,6 +31,8 @@ export const LIMITS = {
   urlChars: 2_048,
   choicesMin: 2,
   choicesMax: 26,
+  /** Variants on one choice (OWM-Q-013, format 0.2). */
+  variantsMax: 8,
   itemTags: 32,
   collectionTags: 64,
   tagChars: 64,

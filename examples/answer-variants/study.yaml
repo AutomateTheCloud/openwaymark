@@ -1,0 +1,107 @@
+# Example OpenWaymark bundle for format draft 0.2: answer variants.
+# Exercises several wordings of correct and incorrect choices, a
+# multiple-answer question with variants, and a question without variants,
+# which needs nothing new.
+# Copyright 2026 Automate the Cloud Inc. Licensed under the Apache License 2.0.
+
+format_version: "0.2"
+id: 6313ca2a-af24-4b0b-b6bd-53850da49f4f
+title: Networking Basics with Answer Variants
+version: 1.0.0
+language: en
+subject: Computer networking
+description: |
+  A few networking questions whose choices have several wordings. Each time a
+  question appears, the app shows every choice once, in one of its wordings,
+  so the right answer cannot be learned by its look alone.
+tags: [networking, dns, transport]
+authors:
+  - name: Automate the Cloud Inc.
+license:
+  spdx: Apache-2.0
+
+questions:
+  - id: dns-purpose
+    type: multiple_choice
+    selection: single
+    prompt:
+      text: What does DNS do?
+    choices:
+      - id: names-to-addresses
+        text: It translates host names into IP addresses
+        variants:
+          - text: It finds the IP address for a name such as `example.org`
+          - text: It maps domain names to the addresses computers connect to
+      - id: assigns-addresses
+        text: It assigns IP addresses to devices on a network
+        explanation:
+          text: That is DHCP. DNS looks addresses up; it does not hand them out.
+        variants:
+          - text: It gives each device on the network its IP address
+      - id: encrypts-traffic
+        text: It encrypts traffic between a browser and a server
+        variants:
+          - text: It keeps web traffic private by encrypting it
+      - id: routes-packets
+        text: It chooses the path packets take across the internet
+    correct_answers: [names-to-addresses]
+    explanation:
+      text: The Domain Name System answers the question "what is the address
+        for this name?", so people can use names instead of numbers.
+    tags: [dns]
+
+  - id: udp-properties
+    type: multiple_choice
+    selection: multiple
+    selection_count: 2
+    prompt:
+      text: Which **two** statements describe UDP?
+    choices:
+      - id: no-handshake
+        text: It sends data without setting up a connection first
+        variants:
+          - text: It needs no handshake before it starts sending
+          - text: It skips connection setup and just sends
+      - id: no-delivery-guarantee
+        text: It does not guarantee that data arrives
+        variants:
+          - text: It does not resend data that gets lost
+          - text: Lost data stays lost unless the application acts
+      - id: ordered-delivery
+        text: It always delivers data in the order it was sent
+        explanation:
+          text: Ordering is a TCP feature. UDP data can arrive out of order.
+        variants:
+          - text: Data always arrives in the order it left
+      - id: congestion-control
+        text: It slows down by itself when the network is busy
+        explanation:
+          text: Congestion control is a TCP feature. UDP sends at whatever rate
+            the application chooses.
+        variants:
+          - text: It lowers its sending rate when the network is congested
+    correct_answers: [no-handshake, no-delivery-guarantee]
+    explanation:
+      text: UDP is connectionless and makes no delivery promises. Reliability,
+        ordering, and congestion control are what TCP adds.
+    tags: [transport]
+
+  - id: port-order
+    type: multiple_choice
+    selection: single
+    shuffle_choices: false
+    prompt:
+      text: Which port does HTTPS use by default?
+    choices:
+      - id: port-80
+        text: "80"
+      - id: port-443
+        text: "443"
+      - id: port-8080
+        text: "8080"
+    correct_answers: [port-443]
+    hint:
+      text: It is not the port plain HTTP uses.
+    explanation:
+      text: HTTPS uses port 443 by default; plain HTTP uses port 80.
+    tags: [ports]

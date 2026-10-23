@@ -1,0 +1,9 @@
+{
+  "description": "A variant with its own explanation, which belongs to the choice.",
+  "format_version": "0.2",
+  "mode": "validate",
+  "outcome": "reject",
+  "rules": [
+    "OWM-VER-004"
+  ]
+}

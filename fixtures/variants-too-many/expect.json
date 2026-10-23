@@ -1,0 +1,9 @@
+{
+  "description": "A choice with nine variants; at most eight are permitted.",
+  "format_version": "0.2",
+  "mode": "validate",
+  "outcome": "reject",
+  "rules": [
+    "OWM-Q-013"
+  ]
+}

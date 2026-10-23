@@ -32,6 +32,7 @@ Each fixture folder contains:
 | `outcome` | **Normative.** `accept` means a conforming reader accepts the bundle; `reject` means it must reject it. |
 | `rules` | **Informative.** The rule identifiers the reference engine reports. Another validator may word or number its findings differently, but it should reject for the same reason. |
 | `mode` | `validate` for conformance only, or `lint` to also run the recommended lint checks. Lint findings are warnings and never change the outcome. |
+| `format_version` | The draft the fixture tests. A reader that does not implement that draft skips the fixture. |
 
 To run them against the reference engine, run `pnpm test` from the repository
 root. To run them against your own implementation, loop over the folders, feed
@@ -151,6 +152,7 @@ them kindly.
 | `markdown-heading-in-item` | A heading inside a flashcard | OWM-MD-007 |
 | `language-part-malformed`, `extension-bad-namespace` | `spanish_mx` instead of a language tag such as `es-MX`, or an extension key that is not a domain name | OWM-CONT-003, OWM-EXT-001 |
 | `integrity-file-changed` and the other `integrity-*` fixtures | Editing a packed bundle by hand, so `integrity.json` no longer matches | OWM-INT-002 to OWM-INT-004 |
+| `variants-in-0-1`, `variant-without-text-or-image`, `variants-too-many`, `variant-unknown-member`, `variant-missing-image` | Answer variants (draft 0.2) in a 0.1 bundle, empty, too many, with their own explanation, or with a missing image | OWM-VER-004, OWM-Q-013, OWM-Q-014, OWM-IMG-001 |
 
 ## Accepted on purpose
 
@@ -161,4 +163,7 @@ rules are not so strict that they reject real bundles:
 - data descriptors, written by streaming tools, are accepted;
 - a byte order mark is accepted;
 - signature data reserved for the future is ignored;
-- a valid integrity file is checked and accepted.
+- a valid integrity file is checked and accepted;
+- choices with several wordings, in a draft 0.2 bundle, are accepted
+  (`valid-answer-variants`), and a variant that repeats another choice's text
+  only draws a lint warning (`lint-variant-same-text`).

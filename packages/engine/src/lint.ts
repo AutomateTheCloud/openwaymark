@@ -66,23 +66,38 @@ export function lintBundle(input: LintInput, report: ReportBuilder): void {
     ) {
       warn("OWM-LINT-001", pointer, `Question "${idOf(question)}" has no explanation.`);
     }
-    const seen = new Map<string, number>();
+    // Every wording in the question: each choice's own text and, in format
+    // 0.2, its variants' (OWM-LINT-003, OWM-LINT-004).
+    const seen = new Set<string>();
     choices.forEach((choice, choiceIndex) => {
-      if (typeof choice.text !== "string") return;
-      const key = choice.text.trim().toLowerCase();
-      if (seen.has(key))
-        warn(
-          "OWM-LINT-003",
-          pointerJoin(pointerJoin(pointer, "choices"), choiceIndex),
-          `Two choices in "${idOf(question)}" have the same text.`,
-        );
-      seen.set(key, choiceIndex);
-      if (question.shuffle_choices !== false && ORDER_DEPENDENT.test(choice.text)) {
-        warn(
-          "OWM-LINT-004",
-          pointerJoin(pointerJoin(pointer, "choices"), choiceIndex),
-          `"${choice.text}" refers to other choices, but shuffling is allowed. Set shuffle_choices: false if order matters.`,
-        );
+      const choicePointer = pointerJoin(pointerJoin(pointer, "choices"), choiceIndex);
+      const wordings = [
+        { text: choice.text, pointer: choicePointer, variant: false },
+        ...list(choice.variants).map((variant, variantIndex) => ({
+          text: variant.text,
+          pointer: pointerJoin(pointerJoin(choicePointer, "variants"), variantIndex),
+          variant: true,
+        })),
+      ];
+      for (const wording of wordings) {
+        if (typeof wording.text !== "string") continue;
+        const key = wording.text.trim().toLowerCase();
+        if (seen.has(key))
+          warn(
+            "OWM-LINT-003",
+            wording.pointer,
+            wording.variant
+              ? `Two wordings in "${idOf(question)}" have the same text: "${wording.text}".`
+              : `Two choices in "${idOf(question)}" have the same text.`,
+          );
+        seen.add(key);
+        if (question.shuffle_choices !== false && ORDER_DEPENDENT.test(wording.text)) {
+          warn(
+            "OWM-LINT-004",
+            wording.pointer,
+            `"${wording.text}" refers to other choices, but shuffling is allowed. Set shuffle_choices: false if order matters.`,
+          );
+        }
       }
     });
     if (

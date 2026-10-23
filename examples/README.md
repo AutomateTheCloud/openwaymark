@@ -1,6 +1,7 @@
 # Example bundles
 
-Valid OpenWaymark bundles for format **draft 0.1**. Each one exercises a
+Valid OpenWaymark bundles for format **draft 0.1**, and one for **draft 0.2**
+(`answer-variants`). Each one exercises a
 different part of the format. Every manifest here is checked in CI against the
 JSON Schema and the cross-reference rules (`test/examples.test.ts`).
 
@@ -11,6 +12,7 @@ JSON Schema and the cross-reference rules (`test/examples.test.ts`).
 | [`rendering-showcase/`](rendering-showcase/)           | Archive | Choice images (JPEG), a decorative image, headings and a table in the description, code spans and blocks, literal security examples, block quotes, lists, extensions                  |
 | [`biology-terms/`](biology-terms/)                     | Archive | A flashcards-only collection with no images, so the folder holds only `study.yaml`                                                                                                    |
 | [`spanish-basics/`](spanish-basics/)                   | Archive | Language learning: Spanish choices and card sides that declare their own `language`                                                                                                   |
+| [`answer-variants/`](answer-variants/)                 | Archive | Draft 0.2: correct and incorrect choices with several wordings, in single- and multiple-answer questions                                                                              |
 
 Each folder is the source of a bundle. To make a `.waymark` file, pack it:
 

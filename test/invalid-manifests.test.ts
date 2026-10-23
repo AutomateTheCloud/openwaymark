@@ -53,7 +53,7 @@ describe("the minimal manifest", () => {
 describe("schema rejects", () => {
   const cases: [string, (manifest: Manifest) => void][] = [
     ["a missing title (OWM-COL-001)", (m) => delete m.title],
-    ["an unsupported format_version (OWM-VER-001)", (m) => (m.format_version = "0.2")],
+    ["an unsupported format_version (OWM-VER-001)", (m) => (m.format_version = "0.9")],
     ["a numeric format_version (OWM-YAML-006)", (m) => (m.format_version = 0.1)],
     ["an uppercase UUID (OWM-COL-004)", (m) => (m.id = asText(m.id).toUpperCase())],
     ["the nil UUID (OWM-COL-004)", (m) => (m.id = "00000000-0000-0000-0000-000000000000")],

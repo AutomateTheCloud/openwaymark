@@ -19,6 +19,7 @@ export { LIMITS } from "./limits.js";
 export { checkMarkdown, parseMarkdown } from "./markdown.js";
 export { SUPPORTED_FORMAT_VERSIONS } from "./manifest.js";
 export { packBundle, type PackFile, type PackResult } from "./pack.js";
+export { presentQuestion, type PresentedChoice } from "./presentation.js";
 export { isIgnorable } from "./paths.js";
 export type {
   BundleSummary,

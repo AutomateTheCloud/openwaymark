@@ -13,6 +13,7 @@ teach rather than trip people up. Read this before writing the blueprint.
 6. Explanations, hints, and references
 7. Identifiers and tags
 8. Verifying against the source
+9. Answer variants
 
 ## 1. Decide what matters
 
@@ -202,3 +203,34 @@ answers are right. Before finishing:
 4. **Read the bundle as a learner** once, start to finish: repetitive items,
    cards and questions that test the same fact the same way, and gaps against
    the blueprint all show up.
+
+## 9. Answer variants
+
+Write variants only when the person asks for them (they need format draft
+0.2). A variant is another wording of a choice; the app shows each choice in
+one of its wordings, picked at random, so a learner has to recognize what the
+answer means, not what it looks like.
+
+- **Change the words, not the claim.** Paraphrase: other vocabulary, other
+  sentence structure, the idea from another angle ("toward the more
+  concentrated solution" for "toward the side with more solute"). Do not add
+  or drop a qualifier, change the scope, or make the statement more precise.
+  If a learner could reasonably judge one wording right and another wrong,
+  one of them is a different claim.
+- **Vary the distractors as much as the correct answer.** If only the correct
+  choice changes from one attempt to the next, it becomes the one that looks
+  unfamiliar, which is a new giveaway.
+- **Keep every wording interchangeable.** Wordings are drawn separately for
+  each choice, so any wording of one choice can appear beside any wording of
+  another. Keep them all in the same grammatical form, at the same level of
+  detail, and of similar length. "Port 443" beside a bare "80" and "8080"
+  gives the answer away.
+- **Two or three variants per choice is usually enough.** More than that tends
+  to drift in meaning. The format allows up to 8.
+- **Leave out variants where wording is the point:** numbers, formulas, names,
+  and other answers with one standard form. A question can mix choices with
+  and without variants.
+- **Explanations cover all wordings.** Write the choice's `explanation` so it
+  makes sense whichever wording the learner saw.
+- **Check variants like answers.** The blind check (section 8) must also
+  confirm that every wording of a choice makes the same claim.

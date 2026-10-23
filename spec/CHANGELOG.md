@@ -4,6 +4,31 @@ Every change to the format is recorded here, including changes between drafts.
 Once a format version is released, its meaning never changes. Corrections go
 into a new version.
 
+## Draft 0.2 — 2026-10-23 (working draft)
+
+Draft 0.2 is draft 0.1 with answer variants added. Nothing else changes, and
+every 0.1 bundle stays valid as a 0.1 bundle.
+
+- **Added answer variants.** A choice may carry `variants`, up to 8 other
+  wordings of the same answer, each with `text`, `image`, or both, and an
+  optional `language` (section 7.3, OWM-Q-013 to OWM-Q-015). Each time readers
+  present a question, they show every choice once in one of its wordings,
+  chosen at random, and keep that wording through feedback (OWM-Q-016,
+  OWM-Q-017). Grading is unchanged: it uses choice identifiers.
+- `format_version` is `"0.2"` for this draft (OWM-VER-001). A reader of draft
+  0.2 may also accept `"0.1"` bundles, checking them by these rules with the
+  0.2 members treated as unknown (OWM-VER-008). Producers should keep writing
+  `"0.1"` for bundles without variants (OWM-VER-009).
+- OWM-UPD-004: changing what a variant claims is a change in meaning; adding or
+  removing variants that make the same claim is not.
+- Lint checks OWM-LINT-003 (same text twice) and OWM-LINT-004 (choices that
+  refer to other choices) now cover variants.
+- OWM-YAML-009 no longer names a format version.
+- New schema: `schema/openwaymark-0.2.schema.json`. The 0.1 schema is
+  unchanged.
+- Appendix C, issue 12, now lists what remains open: distractor pools and
+  variants of prompts and flashcards.
+
 ## Draft 0.1 — 2026-10-18 (in review)
 
 **Revisions while drafting:**

@@ -1,0 +1,7 @@
+{
+  "description": "Format 0.2: choices with other wordings, one in another language.",
+  "format_version": "0.2",
+  "mode": "validate",
+  "outcome": "accept",
+  "rules": []
+}
