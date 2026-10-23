@@ -1,6 +1,6 @@
 {
   "name": "@automatethecloud/openwaymark",
-  "version": "0.1.2",
+  "version": "0.2.0",
   "description": "Command-line validator, linter, and packer for OpenWaymark study bundles",
   "keywords": [
     "openwaymark",
