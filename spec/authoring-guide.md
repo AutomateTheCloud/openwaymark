@@ -299,8 +299,8 @@ license:
 created: "2026-10-18"
 updated: "2026-10-18"
 sources:
-  - title: Anatomy and Physiology 2e (OpenStax)
-    url: https://openstax.org/details/books/anatomy-and-physiology-2e
+  - title: Introductory Anatomy (Example Press)
+    url: https://books.example.org/introductory-anatomy/
 practice_defaults:
   passing_percentage: 75
 ```
