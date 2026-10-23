@@ -9,6 +9,9 @@ change.
 
 - **Ask a question or report a problem** by opening an issue. If something in
   the specification is unclear, that is a bug in the specification.
+- **Suggest a feature** by opening an issue. To change what bundles can
+  contain, use the "Format proposal" template. Larger format changes are
+  designed in the issue before the specification changes.
 - **Report a security problem privately**, as described in
   [SECURITY.md](SECURITY.md), not in a public issue.
 - **Propose a change** with a pull request.
