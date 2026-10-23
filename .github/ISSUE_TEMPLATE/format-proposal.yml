@@ -1,0 +1,38 @@
+name: Format proposal
+description: Suggest a change to what OpenWaymark bundles can contain.
+labels: [enhancement, format-proposal]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for proposing a change. A rough idea is welcome; the questions
+        below help turn it into a design. Check Appendix C of the specification
+        first: your idea may already be listed as an open issue.
+  - type: textarea
+    id: goal
+    attributes:
+      label: What are you trying to do?
+      description: Describe what a learner or an author should be able to do, with an example.
+    validations:
+      required: true
+  - type: textarea
+    id: gap
+    attributes:
+      label: What can't the format express today?
+      description: Say what you tried with the current format, and where it falls short.
+    validations:
+      required: true
+  - type: textarea
+    id: sketch
+    attributes:
+      label: Sketch
+      description: Optional. How it might look in study.yaml, even roughly.
+      render: yaml
+  - type: textarea
+    id: impact
+    attributes:
+      label: Compatibility, privacy, and security
+      description: >-
+        How should readers that don't support the change behave? Could it load
+        anything from the network, reveal anything about the learner, or make
+        bundles harder to check? "Not sure" is a fine answer.
