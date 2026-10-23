@@ -58,7 +58,7 @@ jobs:
   # conformance fixture must get the same verdict as in Node.
   browser:
     runs-on: ubuntu-24.04
-    timeout-minutes: 20
+    timeout-minutes: 35
     env:
       COREPACK_ENABLE_DOWNLOAD_PROMPT: "0"
     steps:
@@ -70,5 +70,31 @@ jobs:
           node-version-file: .node-version
       - run: corepack enable
       - run: pnpm install --frozen-lockfile
-      - run: pnpm --filter @automatethecloud/openwaymark-web-validator exec playwright install --with-deps chromium firefox webkit
+      # The browsers need about 100 system packages from the runner's Ubuntu
+      # mirror, which has stalled long enough to use up the whole job. Keep
+      # apt's downloads and the browsers between runs, per runner image and
+      # Playwright version, and retry a stalled install instead of waiting.
+      - id: playwright
+        run: echo "version=$(pnpm --filter @automatethecloud/openwaymark-web-validator exec playwright --version | awk '{print $2}')" >> "$GITHUB_OUTPUT"
+      - run: |
+          mkdir -p ~/apt-archives/partial
+          printf '%s\n' "Dir::Cache::Archives \"$HOME/apt-archives\";" \
+            'APT::Keep-Downloaded-Packages "true";' \
+            'Binary::apt::APT::Keep-Downloaded-Packages "true";' |
+            sudo tee /etc/apt/apt.conf.d/90-keep-downloads
+      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: |
+            ~/apt-archives
+            ~/.cache/ms-playwright
+          key: playwright-${{ env.ImageOS }}-${{ env.ImageVersion }}-${{ steps.playwright.outputs.version }}
+          restore-keys: playwright-${{ env.ImageOS }}-
+      - run: |
+          for attempt in 1 2 3; do
+            timeout 480 pnpm --filter @automatethecloud/openwaymark-web-validator exec playwright install --with-deps chromium firefox webkit && exit 0
+            echo "Install attempt $attempt failed or took over 8 minutes; trying again."
+          done
+          exit 1
+      # apt runs as root; let the cache step read what it downloaded.
+      - run: sudo chown -R "$(id -u):$(id -g)" ~/apt-archives
       - run: pnpm test:browser
