@@ -54,20 +54,29 @@ Work out these from the request; ask only about the ones that are missing and
 change the result:
 
 - **Source and scope:** which files, and which chapter or sections of them.
+- **Learners:** level and purpose (an introductory course, exam review, a
+  certification). Default: the level the source is written for.
+- **Mix and size:** questions, flashcards, or both, and roughly how many.
+  Default: both, sized by the blueprint rules in the study-design reference.
+- **Answer variants:** whether the questions' choices, right and wrong, should
+  each get several wordings, so the app can show a different one each time
+  and learners recognize what an answer means rather than how it looks.
+  **Always ask this** when the bundle will have questions, unless the person
+  already said: it changes what you write and which apps can open the result.
+  Say what it involves in a sentence or two: variants need format draft 0.2,
+  so the app the learners use must read 0.2; they take longer to write and to
+  check; and they suit questions whose answers are ideas, not numbers or
+  names. If you cannot ask and the person did not say, write no variants, and
+  say in the report that they are available.
+- **Output folder:** where the bundle goes. Never inside a repository whose
+  license would claim it (see the licensing reference). If none is given,
+  propose a folder and say which one you used.
 
 Work only from the files the person provides. Do not go online for anything:
 no downloads, no looking up the publisher's pages, no checking that a URL
 works. When something can only be settled online, such as a section's license
 or a publisher's terms, ask the person, and record their answer in the
 report.
-
-- **Learners:** level and purpose (an introductory course, exam review, a
-  certification). Default: the level the source is written for.
-- **Mix and size:** questions, flashcards, or both, and roughly how many.
-  Default: both, sized by the blueprint rules in the study-design reference.
-- **Output folder:** where the bundle goes. Never inside a repository whose
-  license would claim it (see the licensing reference). If none is given,
-  propose a folder and say which one you used.
 
 Use this layout in the output folder. `pack` zips the whole bundle folder, so
 working files stay outside it:
@@ -171,10 +180,9 @@ choice fields: `hint`, `tags`, `references`, `revision`, and `extensions`
 (spec section 7.2). Any member not defined in the format is an error, so a
 misspelled field fails validation rather than disappearing.
 
-If the person asks for answer variants (several wordings of each choice, shown
-at random), write them as the authoring rules and section 9 of the
-study-design reference describe, and set `format_version: "0.2"`. Otherwise
-keep `"0.1"`, which more apps can open.
+If the person chose answer variants (see "Settle the request"), write them as
+the authoring rules and section 9 of the study-design reference describe, and
+set `format_version: "0.2"`. Otherwise keep `"0.1"`, which more apps can open.
 
 The most common format slip is unquoted text containing `: `, which YAML reads
 as a mapping. Use `text: |` blocks for anything longer than a phrase, and quote
@@ -251,6 +259,9 @@ Write `<bundle-name>-review.md` for the person, and keep it short:
 
 - **Source and license:** what was used, the license found, and the bundle's
   license.
+- **Answer variants:** whether the bundle has them, and the format version
+  that follows (0.2 with variants, 0.1 without). If the person was not asked,
+  say that variants are available on request.
 - **Coverage:** the blueprint as a table, with the actual item counts per
   objective, and anything deliberately left out.
 - **Checks:** the lint result, the item-check result, and the blind-solve

@@ -206,8 +206,8 @@ answers are right. Before finishing:
 
 ## 9. Answer variants
 
-Write variants only when the person asks for them (they need format draft
-0.2). A variant is another wording of a choice; the app shows each choice in
+Write variants only when the person chose them; the skill asks whether to
+(see "Settle the request" in SKILL.md), since they need format draft 0.2. A variant is another wording of a choice; the app shows each choice in
 one of its wordings, picked at random, so a learner has to recognize what the
 answer means, not what it looks like.
 
