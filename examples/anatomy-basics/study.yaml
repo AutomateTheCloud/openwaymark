@@ -22,8 +22,8 @@ license:
 created: "2026-10-18"
 updated: "2026-10-18"
 sources:
-  - title: Anatomy and Physiology 2e (OpenStax)
-    url: https://openstax.org/details/books/anatomy-and-physiology-2e
+  - title: Introductory Anatomy (Example Press)
+    url: https://books.example.org/introductory-anatomy/
 
 questions:
   - id: heart-chamber-001
@@ -83,7 +83,7 @@ questions:
         ![Blood flows from the body to the right atrium, right ventricle, lungs, left atrium, left ventricle, and aorta, then back to the body.](assets/blood-flow.webp)
     tags: [heart, circulation]
     references:
-      - title: Anatomy and Physiology 2e (OpenStax)
+      - title: Introductory Anatomy (Example Press)
         reference: Chapter 19, The Cardiovascular System - The Heart
 
   - id: skeleton-count-001
