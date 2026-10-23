@@ -16,7 +16,8 @@ PDF's metadata and page count. Use it to choose what to build from.
 <dir>/source-pack.md and <dir>/source.json. `--items` picks EPUB documents by
 the numbers `list` shows; `--pages` picks PDF pages. HTML keeps its headings,
 lists, tables, figure captions, and image descriptions; PDF text is extracted
-with pdftotext (poppler), with a [p. N] marker at each page.
+with pdftotext (poppler), with a [PDF p. N] marker at each page; with
+--page-offset, the markers give the printed page number too.
 
 Both commands also print sentences that look like license or copyright
 statements, and sentences about AI or permissions, from the whole file. They
@@ -54,7 +55,10 @@ BOX_LABELS = {
     "exercises": "Exercises",
     "examples": "Examples",
 }
-LICENSE_PATTERN = re.compile(r"\b(licen[cs]ed?|copyright|all rights reserved|public domain)\b|©", re.I)
+LICENSE_PATTERN = re.compile(
+    r"\b(licen[cs]ed?|copyright|all rights reserved|public domain|CC[ -]BY|CC0|adapted from|derived from|remix\w*)\b|©",
+    re.I,
+)
 # "AI" alone is too common (it also abbreviates "Adequate Intake"), so it
 # counts only next to words that make it mean artificial intelligence.
 TERMS_PATTERN = re.compile(
@@ -66,8 +70,13 @@ TERMS_PATTERN = re.compile(
 # Credit lines under images name their own licenses; they are not the
 # source's license, so they are left out of the statements.
 IMAGE_CREDIT = re.compile(
-    r"\b(image|photo|figure|illustration|graphic)s? (\d|by|courtesy|credit)|/ ?(CC|Public Domain|Pixabay)", re.I
+    r"\b(image|photo|figure|illustration|graphic)s? (\d|by|courtesy|credit)|\breused\b|"
+    r"(?<!/)/ ?(CC|Public Domain|Pixabay|Unsplash)",
+    re.I,
 )
+# Machine-readable requests not to use content for AI, in HTML <meta> tags:
+# robots "noai"/"noimageai", and the TDM Reservation Protocol.
+OPT_OUT_META = re.compile(r"<meta\b[^>]*>", re.I)
 # Where books state their license and terms: front and back matter.
 FRONT_MATTER = re.compile(
     r"copyright|licen[cs]e|legal|colophon|title|about|preface|acknowledg|front|imprint|terms|rights", re.I
@@ -265,6 +274,8 @@ class Converter:
             if kind == "exercises":
                 self.exercises += [line for line in body if line] + [""]
                 return []
+            if not any(line and not line.startswith("#") for line in body):
+                return []  # a box whose content (an interactive widget) did not survive
             return [f"> **[{label}]**", ">"] + [f"> {line}" if line else ">" for line in body] + [""]
         return self.blocks(node, depth)
 
@@ -336,6 +347,18 @@ class Converter:
         return title, lines
 
 
+def opt_outs(markup: str, where: str) -> list[str]:
+    """Machine-readable AI opt-outs in an HTML document's meta tags."""
+    found = []
+    for tag in OPT_OUT_META.findall(markup):
+        lowered = tag.lower()
+        if re.search(r"\bnoai\b|\bnoimageai\b", lowered) or (
+            "tdm-reservation" in lowered and re.search(r"content=[\"']?1", lowered)
+        ):
+            found.append(f"Machine-readable AI opt-out in {where}: {' '.join(tag.split())}")
+    return found
+
+
 def plain(markup: str) -> str:
     return " ".join(html.unescape(re.sub(r"<[^>]+>", " ", markup)).split())
 
@@ -402,7 +425,10 @@ def pdf_pages(path: Path, first: int | None, last: int | None) -> list[str]:
     result = subprocess.run(command + [str(path), "-"], capture_output=True, text=True, timeout=600)
     if result.returncode != 0:
         sys.exit(f"pdftotext failed on {path}: {result.stderr.strip()}")
-    return result.stdout.split("\f")
+    pages = result.stdout.split("\f")
+    if pages and not pages[-1].strip():
+        pages.pop()  # pdftotext ends every page, the last one included, with a form feed
+    return pages
 
 
 def pdf_info(path: Path) -> dict[str, str]:
@@ -433,14 +459,20 @@ def statements(text: str) -> tuple[list[str], list[str]]:
     for pattern in (LICENSE_PATTERN, TERMS_PATTERN):
         matches = []
         for sentence in sentences:
-            match = pattern.search(sentence)
-            if not match or (pattern is LICENSE_PATTERN and IMAGE_CREDIT.search(sentence)):
+            hits = list(pattern.finditer(sentence))
+            if not hits:
                 continue
-            if len(sentence) > 400:
-                start = max(0, match.start() - 200)
-                sentence = "..." + sentence[start : start + 400] + "..."
-            matches.append(sentence)
-        found.append(list(dict.fromkeys(matches))[:20])
+            if len(sentence) <= 400:
+                pieces = [sentence]
+            else:
+                # A long run of text without sentence breaks (a list of
+                # adapted sources, say): show an excerpt around each match.
+                pieces = ["..." + sentence[max(0, m.start() - 150) : m.end() + 150] + "..." for m in hits]
+            for piece in pieces:
+                if pattern is LICENSE_PATTERN and IMAGE_CREDIT.search(piece):
+                    continue
+                matches.append(piece)
+        found.append(list(dict.fromkeys(matches))[:25])
     return found[0], found[1]
 
 
@@ -451,23 +483,37 @@ def print_statements(licenses: list[str], terms: list[str]) -> None:
     print("\n".join(f"  - {s}" for s in terms) or "  none found")
 
 
-def front_matter(path: Path) -> str:
-    """The parts of a file where a license and terms are usually stated."""
+def front_matter(path: Path) -> tuple[str, list[str]]:
+    """The parts of a file where a license and terms are usually stated, and
+    any machine-readable AI opt-outs anywhere in it."""
     kind = path.suffix.lower()
     if kind == ".epub":
         book = Epub(path)
         parts = [" ".join(book.metadata.get("rights", []))]
+        flags: list[str] = []
         for number, name in enumerate(book.documents, start=1):
             markup = book.text(name)
+            flags += opt_outs(markup, name)
             if number <= 3 or FRONT_MATTER.search(name) or FRONT_MATTER.search(" ".join(parse(markup).title.split())):
                 parts.append(plain(markup))
-        return "\n".join(parts)
+        return "\n".join(parts), list(dict.fromkeys(flags))
     if kind == ".pdf":
         pages = pdf_pages(path, None, None)
-        return "\n".join(pages[:PDF_FRONT_PAGES] + pages[-PDF_BACK_PAGES:])
+        return "\n".join(pages[:PDF_FRONT_PAGES] + pages[-PDF_BACK_PAGES:]), []
     if kind in (".html", ".htm", ".xhtml"):
-        return plain(path.read_text(encoding="utf-8", errors="replace"))
-    return path.read_text(encoding="utf-8", errors="replace")
+        markup = path.read_text(encoding="utf-8", errors="replace")
+        return plain(markup), opt_outs(markup, path.name)
+    return path.read_text(encoding="utf-8", errors="replace"), []
+
+
+def scan(paths: list[Path], extra: str = "") -> tuple[list[str], list[str]]:
+    texts, flags = [], []
+    for path in paths:
+        text, found = front_matter(path)
+        texts.append(text)
+        flags += found
+    licenses, terms = statements("\n".join(texts + [extra]))
+    return licenses, flags + terms
 
 
 def list_file(path: Path) -> None:
@@ -482,26 +528,31 @@ def list_file(path: Path) -> None:
             markup = book.text(name)
             title, _ = Converter().document(markup, 3)
             print(f"{number:4}  {title or '(untitled)'}  [{name}, {len(plain(markup).split())} words]")
-        print_statements(*statements(front_matter(path)))
+        print_statements(*scan([path]))
     elif kind == ".pdf":
         for key, value in pdf_info(path).items():
             if key in ("Title", "Author", "Subject", "Creator", "Producer", "CreationDate", "Pages"):
                 print(f"{key}: {value}")
-        print(f"Statements below come from the first {PDF_FRONT_PAGES} and last {PDF_BACK_PAGES} pages.")
-        print_statements(*statements(front_matter(path)))
+        print("\nPages that start like a chapter or part (PDF page numbers):")
+        for number, text in enumerate(pdf_pages(path, None, None), start=1):
+            head = " ".join(text.split()[:14])
+            if re.match(r"(?i)(part|chapter|unit|module|section)\s+[\dIVXLC]+\b", head):
+                print(f"  {number:5}  {head[:90]}")
+        print(f"\nStatements below come from the first {PDF_FRONT_PAGES} and last {PDF_BACK_PAGES} pages.")
+        print_statements(*scan([path]))
     elif kind in (".html", ".htm", ".xhtml"):
         markup = path.read_text(encoding="utf-8", errors="replace")
         title, lines = Converter().document(markup, 2)
         print(f"title: {title}")
         print("\n".join(line for line in lines if line.startswith("#")))
-        print_statements(*statements(front_matter(path)))
+        print_statements(*scan([path]))
     else:
         text = path.read_text(encoding="utf-8", errors="replace")
         print(f"{len(text.split())} words")
-        print_statements(*statements(front_matter(path)))
+        print_statements(*scan([path]))
 
 
-def build(paths: list[Path], items: str | None, pages: str | None, out: Path) -> None:
+def build(paths: list[Path], items: str | None, pages: str | None, page_offset: int, out: Path) -> None:
     converter = Converter()
     pack: list[str] = []
     inputs = []
@@ -531,8 +582,10 @@ def build(paths: list[Path], items: str | None, pages: str | None, out: Path) ->
             record["pages"] = f"{start}-{start + len(texts) - 1}"
             pack += [f"## {path.name}", ""]
             for offset, text in enumerate(texts):
+                number = start + offset
+                label = f"PDF p. {number}" + (f", book p. {number - page_offset}" if page_offset else "")
                 if text.strip():
-                    pack += [f"[p. {start + offset}]", "", text.rstrip(), ""]
+                    pack += [f"[{label}]", "", text.rstrip(), ""]
             all_text += texts
         elif kind in (".html", ".htm", ".xhtml"):
             markup = path.read_text(encoding="utf-8", errors="replace")
@@ -547,7 +600,7 @@ def build(paths: list[Path], items: str | None, pages: str | None, out: Path) ->
 
     # Selected chapters rarely state the license, so scan each whole file's
     # front matter, plus the selected text.
-    licenses, terms = statements("\n".join([front_matter(p) for p in paths] + all_text))
+    licenses, terms = scan(paths, "\n".join(all_text))
     header = [
         f"# Source pack: {', '.join(p.name for p in paths)}",
         "",
@@ -587,11 +640,17 @@ def main() -> None:
     build_cmd.add_argument("-o", "--output", type=Path, required=True)
     build_cmd.add_argument("--items", help="EPUB documents to include, by number from `list`, such as 3-7")
     build_cmd.add_argument("--pages", help="PDF pages to include, such as 12-40")
+    build_cmd.add_argument(
+        "--page-offset",
+        type=int,
+        default=0,
+        help="PDF page minus printed page number, to label pages with both (such as 42)",
+    )
     args = parser.parse_args()
     if args.command == "list":
         list_file(args.file)
     else:
-        build(args.files, args.items, args.pages, args.output)
+        build(args.files, args.items, args.pages, args.page_offset, args.output)
 
 
 if __name__ == "__main__":

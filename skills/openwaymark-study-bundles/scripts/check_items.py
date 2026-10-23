@@ -178,7 +178,9 @@ def check(manifest: dict) -> tuple[list[str], list[str], list[str]]:
             where = str(reference.get("reference") or reference.get("title"))
             # Skip figure and table numbers ("Figure 9.1"), which look alike.
             number = re.search(r"(?<!Figure )(?<!Table )\b\d+\.\d+\b", where)
-            cited.add(f"Section {number.group(0)}" if number else where)
+            # Without a number, group by the part before any subsection
+            # ("Chapter 4, Digestion: From the Mouth" -> "Chapter 4, Digestion").
+            cited.add(f"Section {number.group(0)}" if number else re.split(r":| - | — | – ", where)[0].strip())
         for section in cited:
             by_section[section] += 1
     if by_section:

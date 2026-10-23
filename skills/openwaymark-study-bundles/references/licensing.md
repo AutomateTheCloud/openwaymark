@@ -19,9 +19,12 @@ where otherwise noted", or acknowledgments that list adapted sources under
 other licenses, are signs of this: a book licensed CC BY may contain chapters
 adapted from a CC BY-NC-SA source. Downloaded copies often leave out the
 per-section notices that the publisher's web pages show. When the signs are
-there and the files do not settle it, ask the person to confirm the license of
-the sections used (they can check the publisher's pages), and take the most
-restrictive. Say in the report what was confirmed and how.
+there, ask the person to confirm the license of the sections used (they can
+check the publisher's pages; do not go online yourself). Do not settle it by
+inference from the acknowledgments: they are often incomplete. Until the
+person answers, use the most restrictive license the named sources could
+impose. Say in the report what was confirmed, by whom, and what is still
+open.
 
 Licenses change between editions and over time, and a work keeps the license
 it was released under. If the source shows a different license from the one
@@ -35,6 +38,11 @@ about AI. Look in the book's copyright and front matter for words like "AI",
 license. Such terms are often stated only on the publisher's web pages, so
 when the person got the book from a publisher's site, ask whether the site
 states any terms about AI use.
+
+Some publishers say it in machine-readable form instead: a `noai` or
+`noimageai` robots tag, or a text-and-data-mining reservation, in the HTML of
+the book's pages. `source_pack.py` reports these when they are in the files
+(saved web pages, an EPUB's documents). Treat them like written terms.
 
 Such terms can forbid more than training: for example, a statement that a
 book may not be "ingested into large language models or generative AI
@@ -95,8 +103,9 @@ and a sentence in `description` naming the source and its license.
 - It says the work is not endorsed by the source. Licenses forbid implying
   endorsement, and publishers' names are often trademarks: name them only in
   attribution, never in the bundle title as if it were their product.
-- Use only URLs you have confirmed, such as the ones the extraction scripts
-  report.
+- Use only URLs printed in the source or given by the person, and only
+  `https` ones. Do not fetch them to check; if the source gives only an
+  `http` address, leave `url` out.
 
 ## Images
 

@@ -54,7 +54,13 @@ Work out these from the request; ask only about the ones that are missing and
 change the result:
 
 - **Source and scope:** which files, and which chapter or sections of them.
-  The skill works only from files the person provides.
+
+Work only from the files the person provides. Do not go online for anything:
+no downloads, no looking up the publisher's pages, no checking that a URL
+works. When something can only be settled online, such as a section's license
+or a publisher's terms, ask the person, and record their answer in the
+report.
+
 - **Learners:** level and purpose (an introductory course, exam review, a
   certification). Default: the level the source is written for.
 - **Mix and size:** questions, flashcards, or both, and roughly how many.
@@ -88,9 +94,15 @@ terms from the front and back matter without reading the chapter text.
 Stop and tell the person, before reading the source into your context, if:
 
 - the license forbids derivatives;
-- the publisher restricts AI use and the person has not said they have
-  permission;
+- the publisher restricts AI use, in words or with a machine-readable opt-out
+  such as a `noai` tag, and the person has not said they have permission;
 - NonCommercial terms clash with what they said they will do with the bundle.
+
+Ask the person, and do not settle it by inference, when the copyright page
+says "except where otherwise noted" or the acknowledgments name adapted
+sources under other licenses: only the person can check the license of the
+sections used. Until they answer, plan on the most restrictive license those
+sources could impose, and say so in the report.
 
 Note the license and attribution details for step 4.
 
@@ -136,7 +148,7 @@ created: "<today, YYYY-MM-DD>"
 sources:
   - title: <source title>
     reference: <chapter or sections used>
-    url: <only a URL you have confirmed>
+    url: <the source's own https URL, as printed in it; leave out if it has none>
 ```
 
 Leave out `authors` unless the person says who should be credited for the
@@ -153,6 +165,11 @@ the source title and the most specific location.
 
 For a long chapter, it helps to write one section's items, then the next, and
 merge, rather than holding the whole chapter at once.
+
+Flashcards take the same optional members as questions do, apart from the
+choice fields: `hint`, `tags`, `references`, `revision`, and `extensions`
+(spec section 7.2). Any member not defined in the format is an error, so a
+misspelled field fails validation rather than disappearing.
 
 The most common format slip is unquoted text containing `: `, which YAML reads
 as a mapping. Use `text: |` blocks for anything longer than a phrase, and quote

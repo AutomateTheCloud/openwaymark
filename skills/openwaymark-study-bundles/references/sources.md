@@ -43,6 +43,12 @@ python3 scripts/source_pack.py build <file.pdf> --pages 290-330 -o <output>/work
   with `--pages`, or whole HTML and text files, several at once if needed) and
   writes `source-pack.md` and `source.json`. It prints the statements again.
 
+For a PDF, `list` also shows the pages that start like a chapter or part, to
+find a chapter's page range. Page markers in the pack are PDF page numbers
+(`[PDF p. 555]`). When the printed page numbers differ, pass their difference
+as `--page-offset` (PDF page 555 printed as 513 is `--page-offset 42`) so the
+markers carry both, and cite the printed page in `references`.
+
 Prefer formats in this order, because structure survives better toward the
 top:
 

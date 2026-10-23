@@ -72,7 +72,8 @@ def make(manifest_path: Path, out: Path, only: set[str] | None = None) -> None:
         lines += [f"## Q{number}", "", text(question.get("prompt")).strip(), ""]
         lines += [f"{letters[c.get('id')]}. {text(c).strip()}" for c in choices]
         lines += ["", instruction(question), ""]
-    (out / "blind-questions.md").write_text("\n".join(lines), encoding="utf-8")
+    if key:
+        (out / "blind-questions.md").write_text("\n".join(lines), encoding="utf-8")
 
     cards = ["# Flashcards", "", "Check that each back is correct and supported by the cited passage.", ""]
     flashcards = manifest.get("flashcards") or []
@@ -89,8 +90,10 @@ def make(manifest_path: Path, out: Path, only: set[str] | None = None) -> None:
             f"Reference: {where or 'none'}",
             "",
         ]
-    (out / "blind-cards.md").write_text("\n".join(cards), encoding="utf-8")
-    (out / "blind-key.json").write_text(json.dumps(key, indent=2) + "\n", encoding="utf-8")
+    if flashcards:
+        (out / "blind-cards.md").write_text("\n".join(cards), encoding="utf-8")
+    if key:
+        (out / "blind-key.json").write_text(json.dumps(key, indent=2) + "\n", encoding="utf-8")
     print(f"Wrote {len(key)} questions and {len(flashcards)} flashcards to {out}")
 
 
