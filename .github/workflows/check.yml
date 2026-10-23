@@ -73,7 +73,8 @@ jobs:
       # The browsers need about 100 system packages from the runner's Ubuntu
       # mirror, which has stalled long enough to use up the whole job. Keep
       # apt's downloads and the browsers between runs, per runner image and
-      # Playwright version, and retry a stalled install instead of waiting.
+      # Playwright version, and retry a stalled install on another mirror
+      # (tools/install-playwright-browsers.sh) instead of waiting.
       # ImageOS and ImageVersion are set on the runner machine, which the
       # env context cannot see, so a step reads them.
       - id: playwright
@@ -93,12 +94,7 @@ jobs:
             ~/.cache/ms-playwright
           key: playwright-${{ steps.playwright.outputs.image }}-${{ steps.playwright.outputs.version }}
           restore-keys: playwright-${{ steps.playwright.outputs.image }}-
-      - run: |
-          for attempt in 1 2 3; do
-            timeout 480 pnpm --filter @automatethecloud/openwaymark-web-validator exec playwright install --with-deps chromium firefox webkit && exit 0
-            echo "Install attempt $attempt failed or took over 8 minutes; trying again."
-          done
-          exit 1
+      - run: tools/install-playwright-browsers.sh packages/web-validator/node_modules/.bin/playwright
       # apt runs as root; let the cache step read what it downloaded.
       - run: sudo chown -R "$(id -u):$(id -g)" ~/apt-archives
       - run: pnpm test:browser
