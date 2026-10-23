@@ -41,12 +41,54 @@ def text(content: object) -> str:
     return "" if content is None else str(content)
 
 
+def wordings(choice: dict) -> list[str]:
+    """A choice's own text and, in format 0.2, its variants' texts."""
+    return [text(choice), *(text(v) for v in choice.get("variants") or [])]
+
+
+def wording_length(choice: dict) -> float:
+    """Average length of a choice's wordings, since any of them may be shown."""
+    texts = wordings(choice)
+    return sum(len(t) for t in texts) / len(texts)
+
+
 def words(value: str) -> int:
     return len(re.findall(r"\w+", value))
 
 
 def normalized(value: str) -> str:
     return " ".join(re.findall(r"[a-z0-9]+", value.lower()))
+
+
+def check_variants(question: dict, warnings: list[str], notes: list[str]) -> None:
+    """Answer variants (format 0.2): wordings that repeat, stand out, or vary
+    only on the correct answer."""
+    choices = question.get("choices") or []
+    if not any(c.get("variants") for c in choices):
+        return
+    qid = question.get("id")
+    seen: set[str] = set()
+    for choice in choices:
+        for wording in wordings(choice):
+            key = normalized(wording)
+            if key and key in seen:
+                warnings.append(f"`{qid}`: the wording \"{wording}\" appears twice in the question.")
+            seen.add(key)
+        own = len(text(choice))
+        for variant in choice.get("variants") or []:
+            length = len(text(variant))
+            if own and abs(length - own) >= 15 and not 0.6 <= length / own <= 1.6:
+                notes.append(
+                    f"`{qid}`: a variant of `{choice.get('id')}` is {length} characters against "
+                    f"{own} for its choice; wordings of different lengths stand out when mixed."
+                )
+    correct = set(question.get("correct_answers") or [])
+    varied = {c.get("id") for c in choices if c.get("variants")}
+    if varied and varied <= correct:
+        warnings.append(
+            f"`{qid}`: only the correct choice has variants, so it is the one whose wording "
+            "changes. Give the wrong choices variants too."
+        )
 
 
 def check(manifest: dict) -> tuple[list[str], list[str], list[str]]:
@@ -77,7 +119,7 @@ def check(manifest: dict) -> tuple[list[str], list[str], list[str]]:
         if correct not in ids:
             continue
         positions[ids.index(correct)] += 1
-        lengths = [len(text(c)) for c in choices]
+        lengths = [wording_length(c) for c in choices]
         right = lengths[ids.index(correct)]
         others = [n for i, n in enumerate(lengths) if i != ids.index(correct)]
         if others and right > max(others):
@@ -86,7 +128,7 @@ def check(manifest: dict) -> tuple[list[str], list[str], list[str]]:
             if right >= 1.5 * max(others) and right - max(others) >= 15:
                 warnings.append(
                     f"`{question.get('id')}`: the correct choice is much longer than every distractor "
-                    f"({right} vs at most {max(others)} characters), which gives it away."
+                    f"({right:.0f} vs at most {max(others):.0f} characters), which gives it away."
                 )
     if singles:
         spread = ", ".join(f"{chr(65 + p)}: {positions[p]}" for p in sorted(positions))
@@ -114,6 +156,7 @@ def check(manifest: dict) -> tuple[list[str], list[str], list[str]]:
         qid = question.get("id")
         prompt = text(question.get("prompt"))
         choices = question.get("choices") or []
+        check_variants(question, warnings, notes)
         if not text(question.get("explanation")) and not any(text(c.get("explanation")) for c in choices):
             warnings.append(f"`{qid}`: no explanation.")
         if not question.get("references"):

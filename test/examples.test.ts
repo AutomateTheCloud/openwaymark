@@ -1,7 +1,7 @@
 // Copyright 2026 Automate the Cloud Inc.
 // SPDX-License-Identifier: Apache-2.0
 
-// Every example in examples/ must conform to draft 0.1, as far as checks
+// Every example in examples/ must conform to its draft (0.1 or 0.2), as far as checks
 // available before the reference engine (M2) can tell: YAML profile, JSON
 // Schema (Ajv), cross-references, asset presence and signatures, and https-only
 // links. The examples are also expected to be lint-clean: no unused assets.

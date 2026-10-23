@@ -222,6 +222,13 @@ const QUESTION = `questions:
       text: The first choice is correct.
 `;
 const VALID = BASE + QUESTION;
+// Format 0.2 (answer variants): the same bundle, with `variants` on a choice.
+const withVariants = (variants, version = "0.2") =>
+  VALID.replace('"0.1"', `"${version}"`).replace(
+    "      - id: a\n        text: First\n",
+    `      - id: a\n        text: First\n        variants:\n${variants}`,
+  );
+const variant = (text) => `          - text: ${text}\n`;
 const withPromptImage = (src, alt = "A small gray square.") =>
   BASE +
   QUESTION.replace(
@@ -890,6 +897,64 @@ const FIXTURES = [
     VALID.replace("selection: single", "selection: multiple\n    selection_count: 2"),
   ],
 
+  // Answer variants (section 7.3, format 0.2).
+  [
+    "valid-answer-variants",
+    "Format 0.2: choices with other wordings, one in another language.",
+    "accept",
+    [],
+    withVariants(
+      `${variant("The first one")}${variant("Number one")}          - text: Primero\n            language: es\n`,
+    ),
+  ],
+  [
+    "variants-in-0-1",
+    "Answer variants in a bundle that declares format 0.1.",
+    "reject",
+    ["OWM-VER-004"],
+    withVariants(variant("The first one"), "0.1"),
+  ],
+  [
+    "variant-without-text-or-image",
+    "A variant with neither text nor an image.",
+    "reject",
+    ["OWM-Q-014"],
+    withVariants("          - language: en\n"),
+  ],
+  [
+    "variants-too-many",
+    "A choice with nine variants; at most eight are permitted.",
+    "reject",
+    ["OWM-Q-013"],
+    withVariants(
+      Array.from({ length: 9 }, (_, index) => variant(`First, wording ${index + 1}`)).join(""),
+    ),
+  ],
+  [
+    "variant-unknown-member",
+    "A variant with its own explanation, which belongs to the choice.",
+    "reject",
+    ["OWM-VER-004"],
+    withVariants(`${variant("The first one")}            explanation:\n              text: Why.\n`),
+  ],
+  [
+    "variant-missing-image",
+    "A variant whose image is not in the bundle.",
+    "reject",
+    ["OWM-IMG-001"],
+    withVariants(
+      "          - image:\n              src: assets/missing.png\n              alt: A small gray square.\n",
+    ),
+  ],
+  [
+    "lint-variant-same-text",
+    "A variant repeats another choice's text; it passes, with a lint warning.",
+    "accept",
+    ["OWM-LINT-003"],
+    withVariants(variant("Second")),
+    "lint",
+  ],
+
   // Markdown and links (section 9).
   [
     "markdown-raw-html",
@@ -1056,7 +1121,10 @@ export function generateFixtures() {
     const bytes = asInput(input);
     const isArchive = bytes[0] === 0x50 && bytes[1] === 0x4b;
     files.set(`${id}/${isArchive ? "input.waymark" : "input.bin"}`, bytes);
-    const expect = { description, format_version: "0.1", mode, outcome, rules };
+    // The draft a fixture tests: 0.2 when its manifest declares it, else 0.1.
+    const version =
+      typeof input === "string" && input.startsWith('format_version: "0.2"') ? "0.2" : "0.1";
+    const expect = { description, format_version: version, mode, outcome, rules };
     files.set(`${id}/expect.json`, utf8(`${JSON.stringify(expect, null, 2)}\n`));
   }
   return files;

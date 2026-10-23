@@ -1,7 +1,7 @@
 # OpenWaymark Bundle Format
 
-- **Version:** Draft 0.1 (working draft)
-- **Date:** 2026-10-18
+- **Version:** Draft 0.2 (working draft)
+- **Date:** 2026-10-23
 - **Editors:** Automate the Cloud Inc.
 - **License:** [Apache License 2.0](../LICENSE). Copyright 2026 Automate the
   Cloud Inc.
@@ -13,9 +13,11 @@ change before version 1.0. Every change between drafts is recorded in
 [CHANGELOG.md](CHANGELOG.md). Questions that this draft leaves open are listed
 in [Appendix C](#appendix-c-open-issues-in-this-draft).
 
-Implementations identify this draft by its exact version, "0.1". Conformance
+Implementations identify this draft by its exact version, "0.2". Conformance
 to this draft says nothing about conformance to any other version
-(OWM-CONF-004, OWM-VER-003).
+(OWM-CONF-004, OWM-VER-003). Draft 0.2 is draft 0.1 with one addition: answer
+variants, other wordings of a choice (section 7.3). Section 5.1 says how a
+reader of this draft also reads 0.1 bundles.
 
 ## Abstract
 
@@ -441,8 +443,7 @@ never apply to the YAML text.
 - **OWM-YAML-008.** A null value MUST NOT appear anywhere in the manifest. To
   omit an optional member, leave it out.
 - **OWM-YAML-009.** Floating-point numbers MUST NOT appear anywhere in a
-  manifest that conforms to format version 0.1. That includes infinities and
-  NaN.
+  manifest. That includes infinities and NaN.
 - **OWM-YAML-010.** Every string that this specification marks as nonblank MUST
   contain at least one character other than white space. Unless stated
   otherwise, every string member is nonblank.
@@ -455,13 +456,22 @@ never apply to the YAML text.
 
 - **OWM-VER-001.** The root member `format_version` MUST be a string of the form
   `MAJOR.MINOR`, where each part is a decimal integer without leading zeros.
-  A bundle conforming to this draft MUST use `"0.1"`.
+  A bundle conforming to this draft MUST use `"0.2"`. A bundle conforming to
+  draft 0.1 uses `"0.1"`.
 - **OWM-VER-002.** A reader MUST reject a bundle whose `format_version` it does
   not support. It MUST report the version it found and the versions it
   supports.
 - **OWM-VER-003.** While the major version is 0, every minor version is a
   distinct, possibly incompatible draft. A reader that supports `0.N` MUST NOT
   accept any other `0.M` unless it also implements `0.M` in full.
+
+- **OWM-VER-008.** Draft 0.2 is draft 0.1 plus the members this document
+  marks "(0.2)". A reader that implements this draft MAY also accept bundles
+  whose `format_version` is `"0.1"`. If it does, it MUST check and read them by
+  the rules of this document, with one difference: a member marked "(0.2)" is
+  an unknown member in a 0.1 bundle (OWM-VER-004).
+- **OWM-VER-009.** Producers SHOULD write `"0.1"` for a bundle that uses no
+  member marked "(0.2)", so that readers of draft 0.1 can open it.
 
 > **Note (informative).** From version 1.0, minor versions are intended to be
 > backward compatible within a major version. A later draft will define exactly
@@ -493,8 +503,8 @@ never apply to the YAML text.
 - **OWM-VER-006.** A reader MUST reject a bundle that lists a feature it does not
   implement.
 
-Format version 0.1 defines no features. A 0.1 bundle can therefore list only
-extension features.
+Neither draft 0.1 nor draft 0.2 defines any features. A bundle can therefore
+list only extension features.
 
 ### 5.4 Extensions
 
@@ -715,10 +725,45 @@ A choice is a mapping with these members:
 | `image`       | image object      | see below | The choice's image                                            |
 | `explanation` | content object    | no        | Why this choice is right or wrong                             |
 | `language`    | string (BCP 47)   | no        | Language of the choice's text and image `alt` (section 9.1.1) |
+| `variants`    | sequence          | no        | Other wordings of the same choice (0.2); see below            |
 | `extensions`  | mapping           | no        | Extension data                                                |
 
 - **OWM-Q-008.** A choice MUST have a `text`, an `image`, or both. `text` and
   `image` follow the same rules as in a content object (section 9.1).
+
+#### Answer variants (0.2)
+
+A variant is another wording of a choice: the same answer in different words,
+or with a different image. When readers vary the wording from one attempt to
+the next, learners have to recognize what an answer means, not what it looks
+like. Correct and incorrect choices can both have variants.
+
+| Member     | Type              | Required  | Meaning                                                             |
+| ---------- | ----------------- | --------- | ------------------------------------------------------------------- |
+| `text`     | string (Markdown) | see below | The variant's text                                                  |
+| `image`    | image object      | see below | The variant's image                                                 |
+| `language` | string (BCP 47)   | no        | Language of the variant's text and image `alt`, if not the choice's |
+
+- **OWM-Q-013.** `variants`, when present on a choice, MUST be a nonempty
+  sequence of at most 8 variants.
+- **OWM-Q-014.** A variant MUST be a mapping with a `text`, an `image`, or both,
+  and MAY have a `language`. They follow the same rules as in a choice
+  (OWM-Q-008, section 9.1.1). A variant without `language` is in the choice's
+  language.
+- **OWM-Q-015.** Every variant MUST make the same claim as its choice: a learner
+  who knows the material judges every wording of a choice the same way, as
+  correct or as incorrect. The choice's `explanation` applies to every wording.
+- **OWM-Q-016.** Each time readers present a question, they MUST show every
+  choice exactly once, in one of its wordings: the choice's own `text` and
+  `image`, or one of its variants. They SHOULD choose the wording at random,
+  separately for each choice, each time they present the question.
+- **OWM-Q-017.** Readers MUST keep the wording they chose for a choice until the
+  learner leaves the question, including in any feedback after grading.
+
+> **Note (informative).** Grading uses choice identifiers (OWM-Q-009, section
+> 8), so a choice is graded the same way whichever wording is shown. A reader
+> that always shows each choice's own wording still conforms, but learners lose
+> the benefit of the variants.
 
 #### Presenting choices
 
@@ -1108,8 +1153,9 @@ understanding still holds.
 
 - **OWM-UPD-004.** Producers MUST increase an item's `revision` when they change
   its meaning in a way that OWM-UPD-003 would not otherwise detect. One example
-  is changing what a correct choice's text claims. Producers SHOULD NOT
-  increase it for wording or formatting changes.
+  is changing what a correct choice's text, or one of its variants, claims.
+  Producers SHOULD NOT increase it for wording or formatting changes, including
+  adding or removing variants that make the same claim.
 
 > **Note (informative).** This specification defines the classification only.
 > What a reader does about a material change is the reader's decision. It might
@@ -1296,6 +1342,7 @@ issue 4).
 - **[OWASP-XSS]** OWASP, "Cross Site Scripting Prevention Cheat Sheet".
 - **[JSONSCHEMA]** "JSON Schema: A Media Type for Describing JSON Documents",
   draft 2020-12. The schema for this draft is
+  `schema/openwaymark-0.2.schema.json`, and for draft 0.1,
   `schema/openwaymark-0.1.schema.json`. It expresses the structure of the
   manifest but not every rule. Cross-references, uniqueness, archive rules,
   Markdown rules, and assets require the checks described in this document.
@@ -1311,8 +1358,8 @@ report them as warnings (OWM-VAL-005). Each check has a stable identifier.
 | ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | OWM-LINT-001 | A question has no `explanation`, and none of its choices has one                                                                                                               |
 | OWM-LINT-002 | An informative image has weak `alt` text: it repeats the file name, or is a single generic word such as "image" or "diagram"                                                   |
-| OWM-LINT-003 | Two choices in one question have the same text                                                                                                                                 |
-| OWM-LINT-004 | A question allows shuffling, but a choice refers to other choices or to positions ("all of the above", "none of the above", "both A and B")                                    |
+| OWM-LINT-003 | Two wordings in one question have the same text: two choices, two variants, or a choice and a variant                                                                          |
+| OWM-LINT-004 | A question allows shuffling, but a choice or variant refers to other choices or to positions ("all of the above", "none of the above", "both A and B")                         |
 | OWM-LINT-005 | An asset is not referenced (OWM-IMG-012)                                                                                                                                       |
 | OWM-LINT-006 | A `multiple` question has every choice correct                                                                                                                                 |
 | OWM-LINT-007 | A question has more than 8 choices                                                                                                                                             |
@@ -1408,7 +1455,7 @@ flashcards:
 
 ## Appendix C: Open issues in this draft
 
-_Informative._ These questions are deliberately unresolved in draft 0.1.
+_Informative._ These questions are deliberately unresolved in this draft.
 
 1. **Media type.** No media type is registered or defined yet.
 2. **Tags beyond ASCII.** Tags are lowercase ASCII slugs, which suits English
@@ -1476,23 +1523,14 @@ _Informative._ These questions are deliberately unresolved in draft 0.1.
     - Whether to name video hosts at all, or treat every video as a plain
       `https` URL.
 
-12. **Answer variants.** A question could hold several wordings of its
-    correct answers and more wrong answers than it shows, and a reader could
-    choose which to present each time. Learners would then have to recognize
-    what an answer means, not what it looks like. Questions to settle:
-    - Whether a variant is another text for an existing choice, sharing its
-      `id`, or a choice in a pool with a count of how many to show. Choice
-      identifiers carry grading and learner progress (OWM-Q-009, section 12),
-      so variants of one answer probably share an identifier.
-    - How a `multiple` question draws its set: how many correct choices to
-      show, and how that interacts with `selection_count` and with stems such
-      as "Which two...".
-    - Whether variants of the same choice may differ in what they claim, and
-      how a change to one variant counts under the material-change rules
-      (section 12.2).
-    - Whether prompts may have variants too.
-    - Readers that do not support variants must still present a valid
-      question, for example by showing each choice's first wording.
+12. **Answer variants.** Draft 0.2 adds wording variants for choices (section
+    7.3): every choice keeps its identifier, and readers show one of its
+    wordings each time. Still open:
+    - Distractor pools: a question holding more incorrect choices than it
+      shows, with readers drawing which to present.
+    - Variants of prompts, hints, and flashcard sides.
+    - Whether readers should avoid repeating the wording a learner saw last
+      time, rather than choosing at random.
 
 ---
 

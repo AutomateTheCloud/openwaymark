@@ -171,6 +171,11 @@ choice fields: `hint`, `tags`, `references`, `revision`, and `extensions`
 (spec section 7.2). Any member not defined in the format is an error, so a
 misspelled field fails validation rather than disappearing.
 
+If the person asks for answer variants (several wordings of each choice, shown
+at random), write them as the authoring rules and section 9 of the
+study-design reference describe, and set `format_version: "0.2"`. Otherwise
+keep `"0.1"`, which more apps can open.
+
 The most common format slip is unquoted text containing `: `, which YAML reads
 as a mapping. Use `text: |` blocks for anything longer than a phrase, and quote
 short text that contains a colon.
@@ -222,6 +227,11 @@ where a card's back is not supported.
 Check every item you change again, the same way: make a blind set of just
 those items (`--only <id>,<id>` into `work/blind-2`, and so on) and give it to
 a fresh helper, since one that saw the earlier wording is no longer blind.
+
+If choices have answer variants, `make` also writes `blind-variants.md`: every
+wording of each choice, without the key. Give it to the helper too, and fix
+every wording it says makes a different claim from its choice, or stands out
+next to the other choices.
 
 For a bundle of flashcards only, the card check is the whole content check.
 Have the helper record a verdict for each card (supported, partly supported,

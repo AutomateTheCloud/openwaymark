@@ -1,0 +1,9 @@
+{
+  "description": "A variant with neither text nor an image.",
+  "format_version": "0.2",
+  "mode": "validate",
+  "outcome": "reject",
+  "rules": [
+    "OWM-Q-014"
+  ]
+}

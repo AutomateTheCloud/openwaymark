@@ -1,0 +1,9 @@
+{
+  "description": "A variant whose image is not in the bundle.",
+  "format_version": "0.2",
+  "mode": "validate",
+  "outcome": "reject",
+  "rules": [
+    "OWM-IMG-001"
+  ]
+}

@@ -5,7 +5,7 @@ flashcards, or both. You need a text editor, and a way to pack a folder into a
 ZIP file: the `openwaymark pack` command, the browser validator, or the ZIP
 tool every computer already has.
 
-The guide follows format **draft 0.1**. The [specification](openwaymark.md) is
+The guide follows format **draft 0.1**, plus answer variants from draft 0.2. The [specification](openwaymark.md) is
 the authority; this guide links to it where the details matter. Working
 examples are in [`examples/`](../examples/).
 
@@ -121,6 +121,56 @@ shuffling off:
 ```yaml
 shuffle_choices: false
 ```
+
+### Several wordings of an answer (format 0.2)
+
+A learner who sees the same four choices every time can learn to spot the
+right one by its look rather than its meaning. To prevent that, give a choice
+other wordings in `variants`. Each time the question appears, the app shows
+every choice once, in one of its wordings, picked at random. Variants need
+`format_version: "0.2"`:
+
+```yaml
+format_version: "0.2"
+id: 7d1f3a52-9c4e-4b8a-a6f0-2e5b8c9d0a13
+title: Cell Transport
+version: 1.0.0
+language: en
+
+questions:
+  - id: osmosis-direction
+    type: multiple_choice
+    selection: single
+    prompt:
+      text: In osmosis, which way does water move across a membrane?
+    choices:
+      - id: toward-more-solute
+        text: Toward the side with more dissolved solute
+        variants:
+          - text: From the dilute side to the concentrated side
+          - text: Toward the more concentrated solution
+      - id: toward-less-solute
+        text: Toward the side with less dissolved solute
+        variants:
+          - text: From the concentrated side to the dilute side
+      - id: no-movement
+        text: It does not move unless energy is supplied
+    correct_answers: [toward-more-solute]
+    explanation:
+      text: Water moves toward the side where it is less concentrated, which is
+        the side with more solute.
+```
+
+- Every variant must say the same thing as its choice, in other words. A
+  learner who knows the answer should judge every wording the same way.
+- Wrong choices can have variants too, so the right answer is not the only
+  one that changes.
+- A choice can have up to 8 variants. Each has `text`, an `image`, or both,
+  and can set its own `language`.
+- The choice's `explanation` covers all its wordings, so variants have none of
+  their own. Grading uses the choice's `id`, whichever wording was shown.
+- Keep `format_version: "0.1"` for bundles without variants: apps that only
+  read 0.1 can then still open them.
 
 ## 3. Writing flashcards
 

@@ -1,19 +1,21 @@
 // Copyright 2026 Automate the Cloud Inc.
 // SPDX-License-Identifier: Apache-2.0
 
-// Test-only helpers for checking example manifests against draft 0.1. They are
+// Test-only helpers for checking example manifests against drafts 0.1 and 0.2. They are
 // not the reference engine (milestone M2) and cover only what the examples
 // need: the YAML profile (section 4), schema validation with an off-the-shelf
 // validator, and the cross-reference rules a schema cannot express.
 
 import { readFileSync } from "node:fs";
-import { Ajv2020 } from "ajv/dist/2020.js";
+import { Ajv2020, type ErrorObject } from "ajv/dist/2020.js";
 import addFormatsModule from "ajv-formats";
 import { isMap, isScalar, parseAllDocuments, visit } from "yaml";
 
 const addFormats = addFormatsModule as unknown as typeof addFormatsModule.default;
 
-const SCHEMA_PATH = new URL("../../schema/openwaymark-0.1.schema.json", import.meta.url);
+const SCHEMA_VERSIONS = ["0.1", "0.2"] as const;
+const schemaPath = (version: string) =>
+  new URL(`../../schema/openwaymark-${version}.schema.json`, import.meta.url);
 const INTEGER_SOURCE = /^[-+]?(?:[0-9]+|0o[0-7]+|0x[0-9a-fA-F]+)$/;
 
 export type Value = string | number | boolean | Value[] | { [key: string]: Value };
@@ -81,14 +83,36 @@ export function parseManifest(source: string): Manifest {
   return document.toJS() as Manifest;
 }
 
-/** Compiles the draft 0.1 schema with Ajv in strict mode. */
+/**
+ * Compiles the schemas for drafts 0.1 and 0.2 with Ajv in strict mode. The
+ * returned function checks a manifest against the schema its format_version
+ * names, or the 0.1 schema when that is missing or unknown, and exposes that
+ * schema's errors as `validate.errors`.
+ */
 export function compileSchema() {
   // strictRequired is off: `required` inside anyOf names properties defined at the parent,
   // which is valid JSON Schema but a style Ajv's strict mode rejects.
   const ajv = new Ajv2020({ strict: true, strictRequired: false, allErrors: true });
   addFormats(ajv);
-  const schema = JSON.parse(readFileSync(SCHEMA_PATH, "utf8")) as object;
-  return ajv.compile(schema);
+  const compiled = new Map(
+    SCHEMA_VERSIONS.map((version) => [
+      version as string,
+      ajv.compile(JSON.parse(readFileSync(schemaPath(version), "utf8")) as object),
+    ]),
+  );
+  const validate = (manifest: unknown): boolean => {
+    const version =
+      typeof manifest === "object" && manifest !== null && "format_version" in manifest
+        ? String(manifest.format_version)
+        : "0.1";
+    const check = compiled.get(version) ?? compiled.get("0.1");
+    if (!check) throw new Error("no schema compiled");
+    const valid = check(manifest);
+    validate.errors = check.errors;
+    return valid;
+  };
+  validate.errors = undefined as ErrorObject[] | null | undefined;
+  return validate;
 }
 
 export interface ImageRef {

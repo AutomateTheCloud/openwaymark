@@ -18,7 +18,7 @@ import {
 import { utf8Length } from "./bytes.js";
 import { pointerJoin, type Mapping, type ParsedManifest, type Value } from "./yaml.js";
 
-export const SUPPORTED_FORMAT_VERSIONS = ["0.1"] as const;
+export const SUPPORTED_FORMAT_VERSIONS = ["0.1", "0.2"] as const;
 
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
 const SEMVER =
@@ -105,6 +105,9 @@ export function validateManifest(
     questions: 0,
     flashcards: 0,
   };
+  // Set once the format version is known: 0.2 adds answer variants
+  // (OWM-VER-008); in a 0.1 bundle they are unknown members.
+  let formatVersion: string | undefined = "0.1";
   const err = (rule: string, pointer: string, message: string, useKey = false) => {
     const where =
       (useKey ? parsed.keyPositions.get(pointer) : undefined) ??
@@ -397,6 +400,22 @@ export function validateManifest(
     return id;
   };
 
+  /** Other wordings of a choice (OWM-Q-013, OWM-Q-014; format 0.2). */
+  const variants = (value: Value | undefined, pointer: string) => {
+    const list = sequence(value, pointer, "variants", LIMITS.variantsMax, "OWM-Q-013");
+    list?.forEach((variantValue, index) => {
+      const at = pointerJoin(pointer, index);
+      const variant = mapping(variantValue, at, "Each variant");
+      if (!variant) return;
+      members(variant, at, ["text", "image", "language"], {}, "a variant");
+      if (!("text" in variant) && !("image" in variant))
+        err("OWM-Q-014", at, "A variant must have text, an image, or both.");
+      partLanguage(variant.language, pointerJoin(at, "language"));
+      text(variant.text, pointerJoin(at, "text"), "Variant text", "choice");
+      if ("image" in variant) image(variant.image, pointerJoin(at, "image"), "choice");
+    });
+  };
+
   const question = (value: Value, pointer: string) => {
     const q = mapping(value, pointer, "Each question");
     if (!q) return;
@@ -435,7 +454,7 @@ export function validateManifest(
       err(
         "OWM-Q-001",
         pointerJoin(pointer, "type"),
-        `The question type "${type}" is not defined in format 0.1; use multiple_choice.`,
+        `The question type "${type}" is not defined in format ${formatVersion ?? ""}; use multiple_choice.`,
       );
     const selection = string(q.selection, pointerJoin(pointer, "selection"), "selection", {
       rule: "OWM-Q-002",
@@ -463,10 +482,18 @@ export function validateManifest(
       const at = pointerJoin(choicesPointer, index);
       const choice = mapping(choiceValue, at, "Each choice");
       if (!choice) return;
+      const variantsAllowed = formatVersion !== "0.1";
+      if ("variants" in choice && !variantsAllowed)
+        err(
+          "OWM-VER-004",
+          pointerJoin(at, "variants"),
+          'Unknown member "variants" in a choice. Answer variants need format_version "0.2".',
+          true,
+        );
       members(
         choice,
         at,
-        ["id", "text", "image", "explanation", "language", "extensions"],
+        ["id", "text", "image", "explanation", "language", "variants", "extensions"],
         { id: "OWM-ID-003" },
         "a choice",
       );
@@ -499,6 +526,7 @@ export function validateManifest(
           "explanation",
         );
       if ("extensions" in choice) extensions(choice.extensions, pointerJoin(at, "extensions"));
+      if (variantsAllowed) variants(choice.variants, pointerJoin(at, "variants"));
     });
 
     const correctPointer = pointerJoin(pointer, "correct_answers");
@@ -601,7 +629,7 @@ export function validateManifest(
 
   // The collection (section 6).
   const root = parsed.root;
-  const formatVersion = string(root.format_version, "/format_version", "format_version", {
+  formatVersion = string(root.format_version, "/format_version", "format_version", {
     rule: "OWM-VER-001",
   });
   if (formatVersion === undefined) {
