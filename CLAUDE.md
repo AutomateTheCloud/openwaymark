@@ -2,9 +2,13 @@
 
 Rules for anyone changing this repository, people and AI coding assistants
 alike. This repo holds the OpenWaymark format specification, its schema,
-examples, and conformance fixtures, plus the reference engine, the CLI, and the
-browser validator. See [CONTRIBUTING.md](CONTRIBUTING.md) for how to propose a
-change.
+examples, and conformance fixtures, plus the reference engine, the CLI, the
+browser validator, and agent skills for writing bundles (`skills/`). See
+[CONTRIBUTING.md](CONTRIBUTING.md) for how to propose a change.
+
+Bundles that a skill generates from outside sources carry those sources'
+licenses. They never go in this repository, least of all in `examples/` or
+`fixtures/`, which are Apache 2.0.
 
 ## Independence
 
